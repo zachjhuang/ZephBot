@@ -298,6 +298,11 @@ def main():
             # only do floor3 if user has set to do, and when aor/multi-char is presented
             if args.endless == True or states["multiCharacterMode"]:
                 states["floor3Mode"] = True
+            if (args.endless == True
+            and args.guild == False
+            and args.chaos == False
+            and args.unas == False):
+                states["multiCharacterMode"] = False
 
             sleep(500, 600)
             # clearQuest()
