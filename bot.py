@@ -6,6 +6,7 @@ import time
 import random
 import math
 import argparse
+from datetime import datetime
 from datetime import date
 import keyboard
 import os
@@ -36,7 +37,7 @@ newStates = {
     "gameOfflineCount": 0,
     "minTime": config["timeLimit"],
     "maxTime": -1,
-    "floor3Mode": False,
+    "floor3Mode": True,
     "multiCharacterMode": False,
     "currentCharacter": config["mainCharacter"],
     "multiCharacterModeState": [],
@@ -60,7 +61,12 @@ def main():
     parser.add_argument("--endless", action="store_true", help="Enables infinite chaos on main character")
     args = parser.parse_args()
 
-    if args.chaos:
+    states["doChaos"] = args.chaos
+    states["doUnas"] = args.unas
+    states["doGuild"] = args.guild
+    states["doEndless"] = args.endless
+
+    if states["doChaos"]:
         states["multiCharacterMode"] = True
         for i in range(len(config["characters"])):
             states["multiCharacterModeState"].append(2)
@@ -69,7 +75,7 @@ def main():
                 states["multiCharacterModeState"]
             )
         )
-    elif args.unas or args.guild:
+    elif states["doUnas"] or states["doGuild"] :
         states["multiCharacterMode"] = True
         for i in range(len(config["characters"])):
             states["multiCharacterModeState"].append(-1)
@@ -221,7 +227,7 @@ def main():
                 sleep(1400, 1600)
                 # guild dono
                 if (
-                    args.guild
+                    states["doGuild"]
                     and config["characters"][states["currentCharacter"]]["guildDonation"]
                 ):
                     sleep(1400, 1600)
@@ -245,7 +251,7 @@ def main():
 
                 # lopang
                 if (
-                    args.unas
+                    states["doUnas"]
                     and config["characters"][states["currentCharacter"]]["unas"] == "lopang"
                 ):
                     # do lopang
@@ -255,7 +261,7 @@ def main():
                     sleep(1400, 1600)
 
                 if (
-                    args.unas
+                    states["doUnas"]
                     and "leaps" in config["characters"][states["currentCharacter"]]["unas"]
                 ):
                     # do lopang
@@ -296,17 +302,17 @@ def main():
 
             states["floor3Mode"] = False
             # only do floor3 if user has set to do, and when aor/multi-char is presented
-            if args.endless == True or states["multiCharacterMode"]:
+            if states["doEndless"] or states["multiCharacterMode"]:
                 states["floor3Mode"] = True
-            if (args.endless == True
-            and args.guild == False
-            and args.chaos == False
-            and args.unas == False):
+            if (states["doEndless"]
+            and not states["doChaos"]
+            and not states["doGuild"]
+            and not states["doChaos"]):
                 states["multiCharacterMode"] = False
 
             sleep(500, 600)
             # clearQuest()
-            if args.chaos or args.endless:
+            if states["doChaos"] or states["doEndless"]:
                 enterChaos()
 
             # save instance start time
@@ -397,7 +403,7 @@ def main():
                     continue
                 quitChaos()
                 continue
-            doFloor3(args.endless)
+            doFloor3(states["doEndless"])
         elif states["status"] == "restart":
             sleep(10000, 12200)
             restartGame()
@@ -501,6 +507,9 @@ def enterChaos():
                     and states["multiCharacterMode"] == False
                 ):
                     states["multiCharacterMode"] = True
+                    states["doChaos"] = True
+                    states["doGuild"] = True
+                    states["doUnas"] = True
                     for i in range(len(config["characters"])):
                         states["multiCharacterModeState"].append(2)
                     print(
