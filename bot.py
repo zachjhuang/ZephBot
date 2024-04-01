@@ -67,6 +67,15 @@ def main():
     states["doEndless"] = args.endless
 
     if states["doChaos"]:
+        print("doing 2x chaos")
+    if states["doUnas"]:
+        print("doing unas")
+    if states["doGuild"]:
+        print("doing guild donations/research")
+    if states["doEndless"]:
+        print("doing infinite chaos")
+
+    if states["doChaos"]:
         states["multiCharacterMode"] = True
         for i in range(len(config["characters"])):
             states["multiCharacterModeState"].append(2)
@@ -117,53 +126,12 @@ def main():
     # save bot start time
     states["botStartTime"] = int(time.time_ns() / 1000000)
 
-    ranOnceFlag = False
-    # ranOnceFlag = True
 
     while True:
         if states["status"] == "inCity":
             sleep(1000, 1200)
 
-            if not ranOnceFlag:
-                ranOnceFlag = True
-
-                # sleep lol
-                # sleepDur = 60 * 60 * 1000 # min * sec * ms
-                # sleep(sleepDur, sleepDur)
-
-                # pydirectinput.keyDown('alt')
-                # pydirectinput.press('`')
-                # pydirectinput.keyUp('alt')
-
-                # wed: 2
-                if date.today().weekday() == 2:
-                    sleepDur = 78
-                else:
-                    sleepDur = 56
-                    
-                sleepDur *= 60 * 1000
-                # sleep(sleepDur, sleepDur)
-
-                # pydirectinput.press('esc')
-                # sleep(2000, 2000)
-                # pydirectinput.click(x=1900, y=1050, button="left") # services
-                # sleep(3000, 3000)
-                # pydirectinput.click(x=1900, y=950, button="left") # game menu
-                # sleep(3000, 3000)
-                # pydirectinput.click(x=1025, y=730, button="left") # settings
-                # sleep(3000, 3000)
-                # pydirectinput.click(x=700, y=225, button="left") # favorite settings
-                # sleep(2000, 2000)
-                # pydirectinput.click(x=1210, y=377, button="left") # 21:9
-                # sleep(2000, 2000)
-                # pydirectinput.click(x=1345, y=545, button="left") # hud size
-                # sleep(2000, 2000)
-                # pydirectinput.click(x=1220, y=815, button="left") # OK
-                # sleep(2000, 2000)
-                # pydirectinput.click(x=920, y=505, button="left") # OK accept settings
-                # sleep(2000, 2000)
-
-                switchToCharacter(config["mainCharacter"])
+            switchToCharacter(config["mainCharacter"])
 
             if offlineCheck():
                 closeGameByClickingDialogue()
@@ -496,7 +464,9 @@ def enterChaos():
                 sleep(2000, 2400)
 
             aor = pyautogui.locateCenterOnScreen(
-                "./screenshots/aor.png", confidence=0.8, region=(592, 304, 192, 95)
+                "./screenshots/aor.png", 
+                region=(592, 304, 192, 95),
+                confidence=0.8
             )
             if aor != None and config["performance"] == False:
                 states["floor3Mode"] = True
@@ -519,7 +489,7 @@ def enterChaos():
                     )
             elif aor == None and sum(states["multiCharacterModeState"]) != 0:
                 states["multiCharacterModeState"][states["currentCharacter"]] = 0
-                print("no remaining aor on character")
+                print("no remaining aor on character, still have other chaos to run")
                 return
 
             mouseMoveTo(x=886, y=346)
@@ -537,29 +507,33 @@ def enterChaos():
 
             # select chaos dungeon level based on current Character
             _curr = config["characters"][states["currentCharacter"]]
+            punikaChaosTabLoc = [920, 307]
+            svernChaosTabLoc = [1060, 307]
+            elgaciaChaosTabLoc = [1200, 307]
+            voldisChaosTabLoc = [1350, 307]
             chaosTabPosition = {
                 # punika
-                1100: [[920, 307], [524, 400]],
-                1310: [[920, 307], [524, 455]],
-                1325: [[920, 307], [524, 505]],
-                1340: [[920, 307], [524, 555]],
-                1355: [[920, 307], [524, 605]],
-                1370: [[920, 307], [524, 662]],
-                1385: [[920, 307], [524, 715]],
-                1400: [[920, 307], [524, 770]],
+                1100: [punikaChaosTabLoc, [524, 400]],
+                1310: [punikaChaosTabLoc, [524, 455]],
+                1325: [punikaChaosTabLoc, [524, 505]],
+                1340: [punikaChaosTabLoc, [524, 555]],
+                1355: [punikaChaosTabLoc, [524, 605]],
+                1370: [punikaChaosTabLoc, [524, 660]],
+                1385: [punikaChaosTabLoc, [524, 715]],
+                1400: [punikaChaosTabLoc, [524, 770]],
                 # south vern
-                1415: [[1060, 307], [524, 400]],
-                1445: [[1060, 307], [524, 455]],
-                1475: [[1060, 307], [524, 505]],
-                1490: [[1060, 307], [524, 555]],
-                1520: [[1060, 307], [524, 605]],
-                1540: [[1060, 307], [524, 662]],
-                1560: [[1060, 307], [524, 715]],
+                1415: [svernChaosTabLoc, [524, 400]],
+                1445: [svernChaosTabLoc, [524, 455]],
+                1475: [svernChaosTabLoc, [524, 505]],
+                1490: [svernChaosTabLoc, [524, 555]],
+                1520: [svernChaosTabLoc, [524, 605]],
+                1540: [svernChaosTabLoc, [524, 660]],
+                1560: [svernChaosTabLoc, [524, 715]],
                 # elgacia
-                1580: [[1200, 307], [524, 400]],
-                1600: [[1200, 307], [524, 455]],
+                1580: [elgaciaChaosTabLoc, [524, 400]],
+                1600: [elgaciaChaosTabLoc, [524, 455]],
                 # voldis
-                1610: [[1350, 307], [524, 400]],
+                1610: [voldisChaosTabLoc, [524, 400]],
             }
             if states["multiCharacterMode"] or aor != None:
                 mouseMoveTo(
@@ -3028,8 +3002,7 @@ def switchToCharacter(index):
     print("switching to {}".format(index))
     while pyautogui.locateCenterOnScreen(
         "./screenshots/gameMenu.png",
-        confidence=0.95,
-        region=config["regions"]["center"],
+        confidence=0.8
     ) == None:
         pydirectinput.press("esc")
         sleep(1800, 1900)
