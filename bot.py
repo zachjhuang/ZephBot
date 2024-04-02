@@ -277,12 +277,12 @@ def main():
             if (states["doEndless"]
             and not states["doChaos"]
             and not states["doGuild"]
-            and not states["doChaos"]):
+            and not states["doUnas"]):
                 states["multiCharacterMode"] = False
 
             sleep(500, 600)
             # clearQuest()
-            if states["doChaos"] or states["doEndless"]:
+            if states["doChaos"] or (states["doEndless"] and not states["multiCharacterMode"]):
                 enterChaos()
 
             # save instance start time
@@ -3123,7 +3123,7 @@ def switchToCharacter(index):
 def doGuildDonation():
     toggleMenu("guild")
     sleep(5000, 5000)
-    
+
     ok = pyautogui.locateCenterOnScreen(
         "./screenshots/ok.png", region=config["regions"]["center"], confidence=0.75
     )
@@ -3604,9 +3604,10 @@ def checkBlueCrystal():
 def acceptDailies():
     sleep(500, 600)
     toggleMenu("unas")
-
-    if pyautogui.locateOnScreen("./screenshots/noUnasAvailable.png", confidence = 0.9) != None:
-        print("character has already ran all unas")
+    mouseMoveTo(x=400, y=540)
+    sleep(500, 500) 
+    if pyautogui.locateOnScreen("./screenshots/unasCompleted.png", confidence = 0.85) != None:
+        print("character has already ran unas")
         toggleMenu("unas")
         return False
 
