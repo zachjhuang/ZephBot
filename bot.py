@@ -126,12 +126,14 @@ def main():
     # save bot start time
     states["botStartTime"] = int(time.time_ns() / 1000000)
 
-
+    ranOnce = False
     while True:
         if states["status"] == "inCity":
             sleep(1000, 1200)
-
-            switchToCharacter(config["mainCharacter"])
+            
+            if not ranOnce:
+                ranOnce = True
+                switchToCharacter(config["mainCharacter"])
 
             if offlineCheck():
                 closeGameByClickingDialogue()
@@ -463,12 +465,11 @@ def enterChaos():
             if config["GFN"] == True and len(states["abilityScreenshots"]) < 8:
                 sleep(2000, 2400)
 
-            aor = pyautogui.locateCenterOnScreen(
-                "./screenshots/aor.png", 
-                region=(592, 304, 192, 95),
-                confidence=0.8
+            noAura = pyautogui.locateOnScreen(
+                "./screenshots/noAuraOfResonance.png",
+                confidence=0.85
             )
-            if aor != None and config["performance"] == False:
+            if noAura == None and config["performance"] == False:
                 states["floor3Mode"] = True
                 # print("aor detected")
                 if (
@@ -487,7 +488,7 @@ def enterChaos():
                             states["multiCharacterModeState"]
                         )
                     )
-            elif aor == None and sum(states["multiCharacterModeState"]) != 0:
+            elif noAura != None and sum(states["multiCharacterModeState"]) != 0:
                 states["multiCharacterModeState"][states["currentCharacter"]] = 0
                 print("no remaining aor on character, still have other chaos to run")
                 return
@@ -850,7 +851,7 @@ def doFloor3(endless):
         return
 
     print("Chaos Dungeon Full cleared")
-    if endless == True:
+    if endless and not states["multiCharacterMode"]:
         restartChaos()
         # quitChaos()  # to check aor, for multi-char mode
     else:
@@ -1315,7 +1316,7 @@ def performClassSpecialty(i, abilities):
         while pyautogui.locateOnScreen(
             "./screenshots/soulSnatch.png",
             region=config["regions"]["debuffs"],
-            confidence=0.95,
+            confidence=0.85,
         ) != None:
             checkCDandCast(abilities[0])
             sleep(300, 400)
@@ -1463,7 +1464,7 @@ def performClassSpecialty(i, abilities):
         scrapperSpecialty = pyautogui.locateOnScreen(
             "./screenshots/scrapperSpecialty.png",
             region=config["regions"]["specialty"],
-            confidence=0.95,
+            confidence=0.85,
         )
         if scrapperSpecialty != None:
             sleep(150, 160)
@@ -2412,7 +2413,7 @@ def diedCheck():  # get information about wait a few second to revive
     if pyautogui.locateOnScreen(
         "./screenshots/died.png",
         grayscale=True,
-        confidence=0.9,
+        confidence=0.8,
         region=(917, 145, 630, 550),
     ):
         print("died")
@@ -2845,20 +2846,21 @@ def restartGame():
                 pydirectinput.click(x=x, y=y, button="left")
                 sleep(1300, 1400)
                 continue
-        os.system('start steam://launch/1599340/dialog')
-        sleep(60000, 60000)
-        enterGame = pyautogui.locateCenterOnScreen(
-            "./screenshots/steamPlay.png", confidence=0.75
-        )
-        sleep(500, 600)
-        stopGame = pyautogui.locateCenterOnScreen(
-            "./screenshots/steamStop.png", confidence=0.75
-        )
-        sleep(500, 600)
-        confirm = pyautogui.locateCenterOnScreen(
-            "./screenshots/steamConfirm.png", confidence=0.75
-        )
-        sleep(500, 600)
+        else:
+            os.system('start steam://launch/1599340/dialog')
+            sleep(60000, 60000)
+            enterGame = pyautogui.locateCenterOnScreen(
+                "./screenshots/steamPlay.png", confidence=0.75
+            )
+            sleep(500, 600)
+            stopGame = pyautogui.locateCenterOnScreen(
+                "./screenshots/steamStop.png", confidence=0.75
+            )
+            sleep(500, 600)
+            confirm = pyautogui.locateCenterOnScreen(
+                "./screenshots/steamConfirm.png", confidence=0.75
+            )
+            sleep(500, 600)
         enterServer = pyautogui.locateCenterOnScreen(
             "./screenshots/enterServer.png",
             confidence=config["confidenceForGFN"],
@@ -3063,10 +3065,9 @@ def switchToCharacter(index):
     )
     sleep(1500, 1600)
 
-    
     if pyautogui.locateCenterOnScreen(
         "./screenshots/alreadyConnected.png",
-        confidence=0.95
+        confidence=0.85
     ) != None:
         print("character already connected")
         pydirectinput.press("esc")
