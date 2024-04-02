@@ -2661,13 +2661,14 @@ def gameCrashCheck():
             print("game inactive...")
             states["gameCrashCount"] = states["gameCrashCount"] + 1
             return True
-    bottom = pyautogui.screenshot(region=(500, 960, 250, 50))
+    # if bottom black bar is not black, then crash
+    bottom = pyautogui.screenshot(region=(600, 960, 250, 50))
     r1, g1, b1 = bottom.getpixel((0, 0))
     r2, g2, b2 = bottom.getpixel((0, 49))
     r3, g3, b3 = bottom.getpixel((249, 0))
     r4, g4, b4 = bottom.getpixel((249, 49))
     sum = r1 + g1 + b1 + r2 + g2 + b2 + r3 + g3 + b3 + r4 + g4 + b4
-    if sum > 10:
+    if sum > 50:
         print("game crashed, restarting game client...")
         currentTime = int(time.time_ns() / 1000000)
         crash = pyautogui.screenshot()
@@ -3121,7 +3122,8 @@ def switchToCharacter(index):
 
 def doGuildDonation():
     toggleMenu("guild")
-
+    sleep(5000, 5000)
+    
     ok = pyautogui.locateCenterOnScreen(
         "./screenshots/ok.png", region=config["regions"]["center"], confidence=0.75
     )
