@@ -664,7 +664,7 @@ def enterChaos():
             confidence=config["confidenceForGFN"],
         )
         enterServer = pyautogui.locateCenterOnScreen(
-            "./screenshots/enterServer.png", confidence=0.98, region=(885, 801, 160, 55)
+            "./screenshots/enterServer.png", confidence=0.95, region=(885, 801, 160, 55)
         )
         if dc != None or enterServer != None:
             closeGameByClickingDialogue()
@@ -2849,18 +2849,18 @@ def restartGame():
         else:
             os.system('start steam://launch/1599340/dialog')
             sleep(60000, 60000)
-            enterGame = pyautogui.locateCenterOnScreen(
-                "./screenshots/steamPlay.png", confidence=0.75
-            )
-            sleep(500, 600)
-            stopGame = pyautogui.locateCenterOnScreen(
-                "./screenshots/steamStop.png", confidence=0.75
-            )
-            sleep(500, 600)
-            confirm = pyautogui.locateCenterOnScreen(
-                "./screenshots/steamConfirm.png", confidence=0.75
-            )
-            sleep(500, 600)
+        enterGame = pyautogui.locateCenterOnScreen(
+            "./screenshots/steamPlay.png", confidence=0.75
+        )
+        sleep(500, 600)
+        stopGame = pyautogui.locateCenterOnScreen(
+            "./screenshots/steamStop.png", confidence=0.75
+        )
+        sleep(500, 600)
+        confirm = pyautogui.locateCenterOnScreen(
+            "./screenshots/steamConfirm.png", confidence=0.75
+        )
+        sleep(500, 600)
         enterServer = pyautogui.locateCenterOnScreen(
             "./screenshots/enterServer.png",
             confidence=config["confidenceForGFN"],
@@ -3601,7 +3601,7 @@ def acceptDailies():
     sleep(500, 600)
     toggleMenu("unas")
 
-    if pyautogui.locateOnScreen("./screenshots/noUnasAvailable.png", confidence = 0.99) != None:
+    if pyautogui.locateOnScreen("./screenshots/noUnasAvailable.png", confidence = 0.9) != None:
         print("character has already ran all unas")
         toggleMenu("unas")
         return False
