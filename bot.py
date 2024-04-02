@@ -536,7 +536,7 @@ def enterChaos():
                 # voldis
                 1610: [voldisChaosTabLoc, [524, 400]],
             }
-            if states["multiCharacterMode"] or aor != None:
+            if states["multiCharacterMode"] or noAura == None:
                 mouseMoveTo(
                     x=chaosTabPosition[_curr["ilvl-aor"]][0][0],
                     y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
