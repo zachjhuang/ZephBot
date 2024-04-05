@@ -3377,6 +3377,15 @@ def doLeapstoneUnas(unas):
         if bifrostAvailable == True:
             doHesteraGardenUna()
 
+    if "sageTower" in unas:
+        bifrostAvailable = bifrostGoTo("sageTower")
+        if gameCrashCheck():
+            return
+        if offlineCheck():
+            return
+        if bifrostAvailable == True:
+            doSageTowerUna()
+
     print("done")
 
 def doBleakNightFogUna():
@@ -3396,6 +3405,15 @@ def doHesteraGardenUna():
 
     toggleMenu("defaultCombatPreset")
 
+def doSageTowerUna():
+    sleep(5000,5000)
+    spamInteract(15000)
+    mouseMoveTo(x=1560, y=540)
+    sleep(500, 600)
+    pydirectinput.click(x=1560, y=540, button=config["move"])
+    sleep(500, 600)
+    spamInteract(4000)
+
 def doMokomokoUna():
     spamInteract(4000)
     mouseMoveTo(x=416, y=766)
@@ -3405,23 +3423,23 @@ def doMokomokoUna():
 
     mouseMoveTo(x=960, y=770)
     sleep(500, 600)
-    pydirectinput.click(x=960, y=770, button="left")
+    pydirectinput.click(x=960, y=770, button=config["move"])
     sleep(1500, 1600)
     pydirectinput.press(config["interact"])
     sleep(5500, 5600)
 
     mouseMoveTo(x=1360, y=900)
     sleep(500, 600)
-    pydirectinput.click(x=1360, y=900, button="left")
+    pydirectinput.click(x=1360, y=900, button=config["move"])
     sleep(1500, 1600)
     pydirectinput.press(config["interact"])
     sleep(5500, 5600)
 
     mouseMoveTo(x=960, y=330)
     sleep(1500, 1600)
-    pydirectinput.click(x=980, y=280, button="left")
+    pydirectinput.click(x=980, y=280, button=config["move"])
     sleep(1500, 1600)
-    pydirectinput.click(x=980, y=280, button="left")
+    pydirectinput.click(x=980, y=280, button=config["move"])
     sleep(1500, 1600)
     spamInteract(4000)
     sleep(1500, 1600)
