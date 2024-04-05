@@ -851,11 +851,24 @@ def doFloor3(endless):
         return
 
     print("Chaos Dungeon Full cleared")
-    if endless and not states["multiCharacterMode"]:
+    if states["multiCharacterModeState"][states["currentCharacter"]] == 2:
+        restartChaos()
+    elif datetime.now().hour == config["resetHour"]:
+        quitChaos()
+    elif endless and not states["multiCharacterMode"]:
         restartChaos()
         # quitChaos()  # to check aor, for multi-char mode
     else:
         quitChaos()
+    if states["multiCharacterMode"]:
+        states["multiCharacterModeState"][states["currentCharacter"]] = (
+            states["multiCharacterModeState"][states["currentCharacter"]] - 1
+        )
+        print(
+            "currentCharacter: {}, multiCharacterModeState: {}".format(
+                states["currentCharacter"], states["multiCharacterModeState"]
+            )
+        )
     return
 
 
@@ -935,15 +948,6 @@ def quitChaos():
     # this line and following if block to the top of method if select level prob
     # timeout is alright but d/c still weird
     printResult()
-    if states["multiCharacterMode"]:
-        states["multiCharacterModeState"][states["currentCharacter"]] = (
-            states["multiCharacterModeState"][states["currentCharacter"]] - 1
-        )
-        print(
-            "currentCharacter: {}, multiCharacterModeState: {}".format(
-                states["currentCharacter"], states["multiCharacterModeState"]
-            )
-        )
 
         # if states["multiCharacterModeState"][states["currentCharacter"]] > 0:
         #     click(60, 370, 2000) # select level
