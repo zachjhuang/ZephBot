@@ -851,7 +851,7 @@ def doFloor3(endless):
         return
 
     print("Chaos Dungeon Full cleared")
-    if states["multiCharacterModeState"][states["currentCharacter"]] == 2:
+    if states["multiCharacterMode"] and states["multiCharacterModeState"][states["currentCharacter"]] == 2:
         restartChaos()
     elif datetime.now().hour == config["resetHour"]:
         quitChaos()
