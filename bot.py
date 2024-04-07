@@ -1391,7 +1391,7 @@ def performClassSpecialty(i, abilities):
                     pydirectinput.press(config["specialty2"])
                     sleep(150, 160)
         # swap to sniper
-        if i == 1:
+        elif i < 3:
             if pyautogui.locateOnScreen(
                 "./screenshots/sniperStance.png",
                 region=(930, 819, 58, 56),
@@ -1416,7 +1416,7 @@ def performClassSpecialty(i, abilities):
                     pydirectinput.press(config["specialty1"])
                     sleep(150, 160)
         # swap to pistol
-        if i == 3:
+        else:
             if pyautogui.locateOnScreen(
                 "./screenshots/pistolStance.png",
                 region=(930, 819, 58, 56),
