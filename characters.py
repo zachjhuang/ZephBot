@@ -38,8 +38,8 @@ characters = [
     {
         "index": 4,
         "class": "aeromancer",
-        "ilvl-endless": 1600,
-        "ilvl-aor": 1600,
+        "ilvl-endless": 1610,
+        "ilvl-aor": 1610,
         "unas": "leaps bleakNight hesteraGarden sageTower",
         "guildDonation": True,
         "rapport": False,

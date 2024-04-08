@@ -26,7 +26,7 @@
 from characters import characters
 
 config = {
-    "mainCharacter": 1,  # must be in number 0 to 5 (0 is the first character)
+    "mainCharacter": 4,  # must be in number 0 to 5 (0 is the first character)
     "resetHour": 5,
     "GFN": True,  # set True for Geforce Now users
     "enableMultiCharacterMode": True,  # this is lit
