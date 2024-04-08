@@ -41,6 +41,9 @@ newStates = {
     "multiCharacterMode": False,
     "currentCharacter": config["mainCharacter"],
     "multiCharacterModeState": [],
+    "remainingChaosRuns": [],
+    "remainingUnasTasks": [],
+    "remainingGuildSupport": [],
 }
 
 def abortScript():
@@ -68,10 +71,13 @@ def main():
 
     if states["doChaos"]:
         print("doing 2x chaos")
+        states["remainingChaosRuns"] = [2] * len(config["characters"])
     if states["doUnas"]:
         print("doing unas")
+        states["remainingUnasTasks"] = [3] * len(config["characters"])
     if states["doGuild"]:
         print("doing guild donations/research")
+        states["remainingGuildSupport"] = [1] * len(config["characters"])
     if states["doEndless"]:
         print("doing infinite chaos")
 
@@ -185,6 +191,7 @@ def main():
             if gameCrashCheck():
                 states["status"] = "restart"
                 continue
+
             # for non-aura users: MUST have your character parked near a repairer in city before starting the script
             if config["auraRepair"] == False:
                 doCityRepair()
@@ -2818,20 +2825,20 @@ def restartGame():
                 "./screenshots/loaGFNplay.png",
                 confidence=0.8,
             )
-            if loaGFN != None:
-                x, y = loaGFN
-                mouseMoveTo(x=x, y=y)
-                sleep(2200, 2300)
-                pydirectinput.click(x=x, y=y, button="left")
-                print("clicked image restart on GFN")
-                sleep(40000, 42000)
-                break
             if loaGFNplay != None:
                 x, y = loaGFNplay
                 mouseMoveTo(x=x, y=y)
                 sleep(2200, 2300)
                 pydirectinput.click(x=x, y=y, button="left")
                 print("clicked play restart on GFN")
+                sleep(40000, 42000)
+                break
+            if loaGFN != None:
+                x, y = loaGFN
+                mouseMoveTo(x=x, y=y)
+                sleep(2200, 2300)
+                pydirectinput.click(x=x, y=y, button="left")
+                print("clicked image restart on GFN")
                 sleep(40000, 42000)
                 break
             afkGFN = pyautogui.locateCenterOnScreen(
