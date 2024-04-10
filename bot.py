@@ -3495,6 +3495,7 @@ def bifrostGoTo(location):
 
     print("bifrost to: {}".format(location))
     toggleMenu("bifrost")
+    sleep(1500, 1600)
     bifrost = pyautogui.locateCenterOnScreen("./screenshots/" + location + "Bifrost.png", confidence=0.85)
     if bifrost == None:
         print(location + " bifrost not found, skipping")
@@ -3529,21 +3530,9 @@ def bifrostGoTo(location):
             if okButton != None:
                 x, y = okButton
                 mouseMoveTo(x=x, y=y)
-                sleep(1500, 1600)
-                pydirectinput.click(
-                    x=x,
-                    y=y,
-                    button="left",
-                )
-                sleep(500, 600)
-                pydirectinput.click(
-                    x=x,
-                    y=y,
-                    button="left",
-                )
-                sleep(500, 600)
-                pydirectinput.click(button="left")
-                sleep(1500, 1600)
+                sleep(2000, 2100)
+                pydirectinput.click(x=x, y=y, button="left")
+                sleep(2000, 2100)
                 break
             sleep(300, 400)
     sleep(10000, 12000)
@@ -3650,7 +3639,6 @@ def acceptDailies():
     pydirectinput.press("esc")
     sleep(2800, 2900)
 
-
 def walkWithAlt(lopangX, lopangY, milliseconds):
     lopangX = lopangX
     lopangY = lopangY
@@ -3680,6 +3668,43 @@ def spamInteract(milliseconds):
         sleep(90, 120)
         timeCount = timeCount - 1
 
+def doSailingWeekly(n):
+    sleep(2000,2100)
+    bifrostGoTo("sailingWeekly")
+    # open map
+    sleep(2000,2100)
+    toggleMenu("map")
+    for i in range(0, n):
+        # open menu
+        sleep(2000,2100)
+        toggleMenu("unas")
+        sleep(5000,5100)
+        # select guild weekly
+        mouseMoveTo(x=920, y=255)
+        sleep(100, 100)
+        pydirectinput.click(button="left")
+        sleep(2000,2100)
+        # accept quest
+        mouseMoveTo(x=1200, y=610)
+        sleep(100, 100)
+        pydirectinput.click(button="left")
+        sleep(2000,2100)
+        # close menu
+        toggleMenu("unas")
+        sleep(2000,2100)
+        # move to second location
+        if i % 2 == 0:
+            mouseMoveTo(x=1445, y=348)
+        else: 
+            mouseMoveTo(x=960, y=440)
+        sleep(100, 100)
+        pydirectinput.keyDown("alt")
+        sleep(300, 400)
+        pydirectinput.click(button="left")
+        sleep(300,400)
+        pydirectinput.keyUp("alt")
+        sleep(90000, 91000)
+        claimCompletedQuest()
 
 def buyAuctionFirstFav():
     while True:

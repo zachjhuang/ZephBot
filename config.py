@@ -60,6 +60,7 @@ config = {
     "pet": "alt f",
     "guild": "alt a",
     "unas": "alt r",
+    "map": "alt d",
     "defaultCombatPreset": "ctrl q",
     "hesteraGardenCombatPreset": "ctrl r",
     "hesteraGardenEmoteSlot": "8",
