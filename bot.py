@@ -62,12 +62,14 @@ def main():
     parser.add_argument("--unas", action="store_true", help="Enables unas on entire roster")
     parser.add_argument("--guild", action="store_true", help="Enables guild donation/support on entire roster")
     parser.add_argument("--endless", action="store_true", help="Enables infinite chaos on main character")
+    parser.add_argument("--sailing", action="store_true", help="Enables sailing weekly on entire roster")
     args = parser.parse_args()
 
     states["doChaos"] = args.chaos
     states["doUnas"] = args.unas
     states["doGuild"] = args.guild
     states["doEndless"] = args.endless
+    states["doSailing"] = args.sailing
 
     if states["doChaos"]:
         print("doing 2x chaos")
@@ -90,7 +92,7 @@ def main():
                 states["multiCharacterModeState"]
             )
         )
-    elif states["doUnas"] or states["doGuild"] :
+    elif states["doUnas"] or states["doGuild"] or states["doSailing"]:
         states["multiCharacterMode"] = True
         for i in range(len(config["characters"])):
             states["multiCharacterModeState"].append(-1)
@@ -247,6 +249,16 @@ def main():
                     print("leapstone dailies done on : {}".format(states["currentCharacter"]))
                     sleep(1400, 1600)
 
+                if (
+                    states["doSailing"]
+                    # and config["characters"][states["currentCharacter"]]["unas"] == "lopang"
+                ):
+                    # do lopang
+                    print("doing sailing on : {}".format(states["currentCharacter"]))
+                    doSailingWeekly()
+                    print("sailing done on : {}".format(states["currentCharacter"]))
+                    sleep(1400, 1600)
+                    
                 # cleanInventory()
 
                 if gameCrashCheck():
