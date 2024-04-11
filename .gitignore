@@ -130,4 +130,5 @@ dmypy.json
 
 # debug screenshots
 debug/
+characters.py
 .vscode/

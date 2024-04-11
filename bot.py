@@ -251,11 +251,11 @@ def main():
 
                 if (
                     states["doSailing"]
-                    # and config["characters"][states["currentCharacter"]]["unas"] == "lopang"
+                    and config["characters"][states["currentCharacter"]]["guildSailingWeekly"]
                 ):
                     # do lopang
                     print("doing sailing on : {}".format(states["currentCharacter"]))
-                    doSailingWeekly()
+                    doSailingWeekly(4)
                     print("sailing done on : {}".format(states["currentCharacter"]))
                     sleep(1400, 1600)
                     
@@ -3634,8 +3634,11 @@ def checkBlueCrystal():
 def acceptDailies():
     sleep(500, 600)
     toggleMenu("unas")
-    mouseMoveTo(x=400, y=540)
-    sleep(500, 500) 
+    sleep(5000,5100)
+    mouseMoveTo(x=550, y=255)
+    sleep(100, 100)
+    pydirectinput.click(button="left")
+    sleep(2000,2100)
     if pyautogui.locateOnScreen("./screenshots/unasCompleted.png", confidence = 0.85) != None:
         print("character has already ran unas")
         toggleMenu("unas")

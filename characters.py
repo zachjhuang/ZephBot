@@ -6,6 +6,7 @@ characters = [
         "ilvl-aor": 1580,
         "unas": "leaps bleakNight hesteraGarden sageTower",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -15,6 +16,7 @@ characters = [
         "ilvl-aor": 1610,
         "unas": "leaps bleakNight hesteraGarden sageTower",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -24,6 +26,7 @@ characters = [
         "ilvl-aor": 1540,
         "unas": "leaps bleakNight mokomoko hesteraGarden",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -33,6 +36,7 @@ characters = [
         "ilvl-aor": 1540,
         "unas": "leaps bleakNight mokomoko hesteraGarden",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -42,6 +46,7 @@ characters = [
         "ilvl-aor": 1610,
         "unas": "leaps bleakNight hesteraGarden sageTower",
         "guildDonation": True,
+        "guildSailingWeekly": False,
         "rapport": False,
     },
     {
@@ -51,6 +56,7 @@ characters = [
         "ilvl-aor": 1540,
         "unas": "leaps bleakNight mokomoko hesteraGarden",
         "guildDonation": True,
+        "guildSailingWeekly": False,
         "rapport": False,
     },
     {
@@ -60,6 +66,7 @@ characters = [
         "ilvl-aor": 1540,
         "unas": "leaps bleakNight mokomoko hesteraGarden",
         "guildDonation": True,
+        "guildSailingWeekly": False,
         "rapport": False,
     },
     {
@@ -69,6 +76,7 @@ characters = [
         "ilvl-aor": 1520,
         "unas": "lopang",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -78,6 +86,7 @@ characters = [
         "ilvl-aor": 1520,
         "unas": "lopang",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -87,6 +96,7 @@ characters = [
         "ilvl-aor": 1520,
         "unas": "leaps bleakNight mokomoko hesteraGarden",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -96,6 +106,7 @@ characters = [
         "ilvl-aor": 1490,
         "unas": "lopang",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
     {
@@ -105,6 +116,7 @@ characters = [
         "ilvl-aor": 1490,
         "unas": "lopang",
         "guildDonation": True,
+        "guildSailingWeekly": True,
         "rapport": False,
     },
 ]
