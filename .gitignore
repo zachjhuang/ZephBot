@@ -130,6 +130,7 @@ dmypy.json
 
 # debug screenshots
 debug/
+abilities.py
 characters.py
 config.py
 .vscode/
