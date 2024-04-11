@@ -1,5 +1,3 @@
-# python .\bot.py --lunshua
-
 """
     IMPORTANT #1:
     Please change game settings to EXACTLY these numbers:
@@ -17,11 +15,25 @@
     config must be set up correctly in order for the bot to work properly on your machine.
     Refer to the inline comments below:
 
-    For Lopang enjoyers: https://github.com/any-other-guy/LostArk-Endless-Chaos/issues/15
-    Set your first bifrost point to be at lopang island.
-    Exact location to be right in front of the NPC machine which stands farthest to the entrance.
-    Then set your 2/4/5 (because i dont have no3 unlocked) bifrost location to be right in front of those three lopang quest hand-in NPCs.
-    Set your lopang quests as your ONLY 3 favourite quests
+    IMPORTANT #3:
+    Please set up bifrost menu according to the examples bifrost_ex.png,
+    depending on your Una's tasks.
+    
+    For Lopang Unas:
+    Register exact location to be right in front of the NPC machine in the bottom right. (lopangNPC.png)
+    Set the Shushire/Arthetine/Vern Lopang quests as the ONLY 3 favourite quests
+
+    For leapstone Unas:
+    Follow examples in characters_template.py for characters.py
+    If running Hestera Garden, please configure "hesteraGardenCombatPreset" and "hesteraGardenEmoteSlot".
+    If running Mokomoko Island, please register bifrost when bottom left of screen matches mokomokoUna_ex.png
+    If running Sage's Tower, please register bifrost between two POI nearest 
+    the hand-in NPC as shown in sageTowerUna_ex.png
+    Set the leapstone quests as your ONLY 3 favourite quests
+
+    For sailing weekly:
+    Register the bifrost in the exact middle of the POI closest to the South Vern/Punika/Shushire port,
+    depending on the level specified (currently only level 3 near Shushire supported)
 """
 from characters import characters
 
