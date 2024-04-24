@@ -296,7 +296,8 @@ def main():
             if (states["doEndless"]
             and not states["doChaos"]
             and not states["doGuild"]
-            and not states["doUnas"]):
+            and not states["doUnas"]
+            and not states["doSailing"]):
                 states["multiCharacterMode"] = False
 
             sleep(500, 600)
