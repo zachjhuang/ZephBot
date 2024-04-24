@@ -228,35 +228,33 @@ def main():
                     closeGameByClickingDialogue()
                     continue
 
+                # sailing level 3
+                if (
+                    states["doSailing"]
+                    and config["characters"][states["currentCharacter"]]["guildSailingWeekly"]
+                ):
+                    # do sailing
+                    print("doing sailing on : {}".format(states["currentCharacter"]))
+                    doSailingWeekly(4)
+                    print("sailing done on : {}".format(states["currentCharacter"]))
+                    sleep(1400, 1600)
                 # lopang
                 if (
                     states["doUnas"]
                     and config["characters"][states["currentCharacter"]]["unas"] == "lopang"
                 ):
-                    # do lopang
                     print("doing lopang on : {}".format(states["currentCharacter"]))
                     doLopang()
                     print("lopang done on : {}".format(states["currentCharacter"]))
                     sleep(1400, 1600)
-
+                # leapstones
                 if (
                     states["doUnas"]
                     and "leaps" in config["characters"][states["currentCharacter"]]["unas"]
                 ):
-                    # do lopang
                     print("doing leapstone dailies on : {}".format(states["currentCharacter"]))
                     doLeapstoneUnas(config["characters"][states["currentCharacter"]]["unas"])
                     print("leapstone dailies done on : {}".format(states["currentCharacter"]))
-                    sleep(1400, 1600)
-
-                if (
-                    states["doSailing"]
-                    and config["characters"][states["currentCharacter"]]["guildSailingWeekly"]
-                ):
-                    # do lopang
-                    print("doing sailing on : {}".format(states["currentCharacter"]))
-                    doSailingWeekly(4)
-                    print("sailing done on : {}".format(states["currentCharacter"]))
                     sleep(1400, 1600)
                     
                 # cleanInventory()
@@ -296,7 +294,8 @@ def main():
             if (states["doEndless"]
             and not states["doChaos"]
             and not states["doGuild"]
-            and not states["doUnas"]):
+            and not states["doUnas"]
+            and not states["doSailing"]):
                 states["multiCharacterMode"] = False
 
             sleep(500, 600)
