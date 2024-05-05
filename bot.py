@@ -3507,7 +3507,7 @@ def bifrostGoTo(location):
     print("bifrost to: {}".format(location))
     toggleMenu("bifrost")
     sleep(1500, 1600)
-    bifrost = pyautogui.locateCenterOnScreen("./screenshots/bifrosts/" + location + "Bifrost.png", confidence=0.90)
+    bifrost = pyautogui.locateCenterOnScreen("./screenshots/bifrosts/" + location + "Bifrost.png", confidence=0.80)
     if bifrost == None:
         print(location + " bifrost not found, skipping")
         toggleMenu("bifrost")
