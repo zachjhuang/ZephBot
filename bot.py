@@ -2670,7 +2670,7 @@ def gameCrashCheck():
         inactiveGFN = pyautogui.locateCenterOnScreen(
             "./screenshots/inactiveGFN.png",
             region=config["regions"]["center"],
-            confidence=0.9,
+            confidence=0.8,
         )
         if inactiveGFN != None:
             currentTime = int(time.time_ns() / 1000000)
@@ -2861,7 +2861,7 @@ def restartGame():
                 "./screenshots/closeGFN.png",
                 confidence=0.75,
             )
-            if afkGFN != None and closeGFN != None:
+            if closeGFN != None:
                 print("afk GFN")
                 x, y = closeGFN
                 mouseMoveTo(x=x, y=y)
