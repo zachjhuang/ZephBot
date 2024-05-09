@@ -235,7 +235,7 @@ def main():
                 ):
                     # do sailing
                     print("doing sailing on : {}".format(states["currentCharacter"]))
-                    doSailingWeekly(states["doSailing"])
+                    doSailingWeekly(config["characters"][states["currentCharacter"]]["guildSailingWeekly"])
                     print("sailing done on : {}".format(states["currentCharacter"]))
                     sleep(1400, 1600)
                 # lopang
