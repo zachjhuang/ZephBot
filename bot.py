@@ -553,6 +553,7 @@ def enterChaos():
                 1600: [elgaciaChaosTabLoc, [524, 455]],
                 # voldis
                 1610: [voldisChaosTabLoc, [524, 400]],
+                1630: [voldisChaosTabLoc, [524, 455]],
             }
             if states["multiCharacterMode"] or noAura == None:
                 mouseMoveTo(
@@ -1335,7 +1336,7 @@ def performClassSpecialty(i, abilities):
     #     pydirectinput.press("z")
 
     elif (currentCharacterClass == "souleater"):
-        while pyautogui.locateOnScreen(
+        if pyautogui.locateOnScreen(
             "./screenshots/soulSnatch.png",
             region=config["regions"]["debuffs"],
             confidence=0.85,
@@ -2265,7 +2266,7 @@ def enterPortal():
         im = pyautogui.screenshot(region=(1652, 168, 240, 210))
         r, g, b = im.getpixel((1772 - 1652, 272 - 168))
         # print(r + g + b)
-        if r + g + b < 60:
+        if r + g + b < 30:
             # print("portal entered")
             mouseMoveTo(x=config["screenCenterX"], y=config["screenCenterY"])
             return True
@@ -3027,7 +3028,7 @@ def switchToCharacter(index):
     print("switching to {}".format(index))
     while pyautogui.locateCenterOnScreen(
         "./screenshots/gameMenu.png",
-        confidence=0.8
+        confidence=0.7
     ) == None:
         pydirectinput.press("esc")
         sleep(1800, 1900)
@@ -3585,20 +3586,20 @@ def walkLopang():
     walkWithAlt(1339, 246, 1300)
     walkWithAlt(1223, 406, 800)
     walkWithAlt(1223, 406, 800)
-    walkWithAlt(1263, 404, 800)
-    spamInteract(1000)
+    walkWithAlt(1263, 404, 1300)
+    spamInteract(500)
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
     # lopangDebug.save("./debug/lopangDebug_" + str(nowTime) + ".png")
-    walkWithAlt(496, 750, 800)
-    walkWithAlt(496, 750, 800)
-    walkWithAlt(496, 750, 150)
-    walkWithAlt(653, 737, 500)
-    walkWithAlt(653, 737, 500)
+    walkWithAlt(496, 750, 1200)
+    walkWithAlt(496, 750, 1200)
+    walkWithAlt(496, 750, 1200)
+    walkWithAlt(753, 687, 800)
+    walkWithAlt(753, 687, 800)
     walkWithAlt(674, 264, 800)
     walkWithAlt(573, 301, 1200)
-    walkWithAlt(820, 240, 800)
-    spamInteract(1000)
+    walkWithAlt(820, 240, 1300)
+    spamInteract(500)
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
     # lopangDebug.save("./debug/lopangDebug_" + str(nowTime) + ".png")
@@ -3640,8 +3641,8 @@ def acceptDailies():
         toggleMenu("unas")
         return False
 
-    while pyautogui.locateOnScreen("./screenshots/acceptUna.png", confidence = 0.85) != None:
-        x, y = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.85)
+    while pyautogui.locateOnScreen("./screenshots/acceptUna.png", confidence = 0.75) != None:
+        x, y = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.75)
         mouseMoveTo(x=x, y=y)
         sleep(500, 500)
         pydirectinput.click(x=x, y=y, button="left")
@@ -3681,7 +3682,8 @@ def spamInteract(milliseconds):
 
 def doSailingWeekly(n):
     sleep(2000,2100)
-    bifrostGoTo("sailingWeekly")
+    if not bifrostGoTo("sailingWeekly"):
+        return
     # open map
     sleep(2000,2100)
     toggleMenu("map")
