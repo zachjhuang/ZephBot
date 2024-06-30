@@ -63,6 +63,7 @@ def main():
     parser.add_argument("--guild", action="store_true", help="Enables guild donation/support on entire roster")
     parser.add_argument("--endless", action="store_true", help="Enables infinite chaos on main character")
     parser.add_argument("--sailing", action="store_true", help="Enables sailing weekly on entire roster")
+    parser.add_argument("--cubes", action="store_true", help="testing cubes")
     args = parser.parse_args()
 
     states["doChaos"] = args.chaos
@@ -70,6 +71,7 @@ def main():
     states["doGuild"] = args.guild
     states["doEndless"] = args.endless
     states["doSailing"] = args.sailing
+    states["cubes"] = args.cubes
 
     if states["doChaos"]:
         print("doing 2x chaos")
@@ -92,7 +94,7 @@ def main():
                 states["multiCharacterModeState"]
             )
         )
-    elif states["doUnas"] or states["doGuild"] or states["doSailing"]:
+    elif states["doUnas"] or states["doGuild"] or states["doSailing"] or states["cubes"]:
         states["multiCharacterMode"] = True
         for i in range(len(config["characters"])):
             states["multiCharacterModeState"].append(-1)
@@ -179,6 +181,8 @@ def main():
                     quitChaos()
                     # states["multiCharacterModeState"][states["currentCharacter"]] = temp - 1
                     sleep(4000, 6000)
+                if states["cubes"]:
+                    break
                 sleep(1400, 1600)
 
             # battle item preset
@@ -204,6 +208,11 @@ def main():
                 if config["auraRepair"]:
                     doAuraRepair(True)
                 sleep(1400, 1600)
+                if (
+                    states["cubes"]
+                ):
+                    doCubes()
+
                 # guild dono
                 if (
                     states["doGuild"]
@@ -2464,6 +2473,28 @@ def diedCheck():  # get information about wait a few second to revive
                 return
     return
 
+def doCubes():
+    states["status"] = "cube"
+    states["currentCharacter"] = 9
+    states["instanceStartTime"] = int(time.time_ns() / 1000000)
+    saveAbilitiesScreenshots()
+    while True:
+        diedCheck()
+        healthCheck()
+
+        allAbilities = [*range(0, len(states["abilityScreenshots"]))]
+
+        for i in allAbilities:
+            if states["status"] == "floor3" and checkChaosFinish():
+                print("checkChaosFinish == True")
+                return
+            diedCheck()
+            healthCheck()
+            
+            performClassSpecialty(i, states["abilityScreenshots"])
+            # cast spells
+            checkCDandCast(states["abilityScreenshots"][i])
+
 
 def doAuraRepair(forced):
     # Check if repair needed
@@ -3408,6 +3439,15 @@ def doLeapstoneUnas(unas):
         if bifrostAvailable == True:
             doSageTowerUna()
 
+    if "southKurzan" in unas:
+        bifrostAvailable = bifrostGoTo("southKurzan")
+        if gameCrashCheck():
+            return
+        if offlineCheck():
+            return
+        if bifrostAvailable == True:
+            doSouthKurzanUna()
+
     print("done")
 
 def doBleakNightFogUna():
@@ -3435,6 +3475,18 @@ def doSageTowerUna():
     pydirectinput.click(x=1560, y=540, button=config["move"])
     sleep(500, 600)
     spamInteract(4000)
+
+def doSouthKurzanUna():
+    sleep(5000,5000)
+    selfieMode = pyautogui.locateCenterOnScreen("./screenshots/selfieMode.png", confidence=0.85)
+    if selfieMode == None:
+        print("selfie mode icon not found")
+        return
+    x, y = selfieMode
+    mouseMoveTo(x=x, y=y)
+    sleep(500, 600)
+    pydirectinput.click(x=416, y=766, button="left")
+    mouseMoveTo()
 
 def doMokomokoUna():
     spamInteract(4000)
@@ -3585,20 +3637,21 @@ def walkLopang():
     walkWithAlt(1339, 246, 1300)
     walkWithAlt(1223, 406, 800)
     walkWithAlt(1223, 406, 800)
-    walkWithAlt(1263, 404, 800)
-    spamInteract(1000)
+    walkWithAlt(1263, 404, 1300)
+    spamInteract(500)
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
     # lopangDebug.save("./debug/lopangDebug_" + str(nowTime) + ".png")
-    walkWithAlt(496, 750, 800)
-    walkWithAlt(496, 750, 800)
-    walkWithAlt(496, 750, 150)
-    walkWithAlt(653, 737, 500)
-    walkWithAlt(653, 737, 500)
+    walkWithAlt(496, 750, 1200)
+    walkWithAlt(496, 750, 1200)
+    walkWithAlt(496, 750, 1200)
+    walkWithAlt(753, 687, 800)
+    walkWithAlt(753, 687, 800)
+    print("here")
     walkWithAlt(674, 264, 800)
     walkWithAlt(573, 301, 1200)
-    walkWithAlt(820, 240, 800)
-    spamInteract(1000)
+    walkWithAlt(820, 240, 1300)
+    spamInteract(500)
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
     # lopangDebug.save("./debug/lopangDebug_" + str(nowTime) + ".png")
