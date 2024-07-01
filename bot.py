@@ -3486,8 +3486,21 @@ def doSouthKurzanUna():
     x, y = selfieMode
     mouseMoveTo(x=x, y=y)
     sleep(500, 600)
-    pydirectinput.click(x=416, y=766, button="left")
-    mouseMoveTo()
+    pydirectinput.click(x=x, y=y, button="left")
+    sleep(4000, 4100)
+    pydirectinput.press(config["printscreenMacro"])
+    sleep(5000, 6000)
+    pydirectinput.press("esc")
+    sleep(500, 600)
+    pydirectinput.press("enter")
+    sleep(500, 600)
+    mouseMoveTo(x=700, y=200)
+    sleep(500, 600)
+    pydirectinput.click(x=650, y=180, button="left")
+    sleep(2500, 2600)
+    pydirectinput.click(x=650, y=180, button="left")
+    sleep(2500, 2600)
+    spamInteract(5000)
 
 def doMokomokoUna():
     spamInteract(4000)
