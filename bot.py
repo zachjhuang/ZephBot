@@ -3653,8 +3653,6 @@ def walkLopang():
     walkWithAlt(1223, 406, 800)
     walkWithAlt(1263, 404, 1300)
     spamInteract(500)
-    walkWithAlt(1263, 404, 1300)
-    spamInteract(500)
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
     # lopangDebug.save("./debug/lopangDebug_" + str(nowTime) + ".png")
