@@ -3089,18 +3089,20 @@ def switchToCharacter(index):
     sleep(500, 600)
     pydirectinput.click(x=1260, y=392, button="left")
     sleep(500, 600)
+    pydirectinput.click(x=1260, y=392, button="left")
+    sleep(500, 600)
+    pydirectinput.click(x=1260, y=392, button="left")
+    sleep(500, 600)
+    pydirectinput.click(x=1260, y=392, button="left")
+    sleep(500, 600)
     if index > 8:
-        # mouseMoveTo(
-        #     x=config["charPositions"][index][0], y=config["charPositions"][index][1]
-        # )
-        # pyautogui.scroll(-5)
-        # sleep(1500, 1600)
         mouseMoveTo(x=1260, y=638)
         sleep(500, 600)
-        pydirectinput.click(x=1260, y=638, button="left")
-        sleep(500, 600)
-        pydirectinput.click(x=1260, y=638, button="left")
-        sleep(500, 600)
+        for i in range(math.floor(index/3) - 2):
+            pydirectinput.click(x=1260, y=638, button="left")
+            sleep(500, 600)
+
+    
 
     mouseMoveTo(
         x=config["charPositions"][index][0], 
@@ -3562,14 +3564,6 @@ def toggleMenu(menuType):
         sleep(300, 400)
 
 def bifrostGoTo(location):
-    # meleeClick = "right"
-    # if config["move"] == "right":
-    #     meleeClick = "left"
-    # mouseMoveTo(x=config["screenCenterX"], y=config["screenCenterY"])
-    # sleep(200, 300)
-    # pydirectinput.click(button=meleeClick)
-    # sleep(300, 400)
-
     print("bifrost to: {}".format(location))
     toggleMenu("bifrost")
     sleep(1500, 1600)
