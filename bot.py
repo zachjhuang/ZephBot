@@ -222,14 +222,14 @@ def main():
                     doGuildDonation()
                     sleep(1400, 1600)
                 # rapport
-                if (
-                    config["enableRapport"]
-                    and config["characters"][states["currentCharacter"]]["rapport"]
-                ):
-                    sleep(500, 1000)
-                    print("Doing Rapport")
-                    doRapport()
-                    sleep(1400, 1600)
+                # if (
+                #     config["enableRapport"]
+                #     and config["characters"][states["currentCharacter"]]["rapport"]
+                # ):
+                #     sleep(500, 1000)
+                #     print("Doing Rapport")
+                #     doRapport()
+                #     sleep(1400, 1600)
                 if gameCrashCheck():
                     states["status"] = "restart"
                     continue
@@ -719,9 +719,6 @@ def enterChaos():
 
 
 def doFloor1():
-    # clearQuest()
-    # sleep(500, 550)
-
     # check repair
     if config["auraRepair"]:
         doAuraRepair(False)
@@ -731,18 +728,6 @@ def doFloor1():
     sleep(450, 500)
     pydirectinput.click(button=config["move"])
     sleep(450, 500)
-
-    # switch to skill 4
-    # if config["characters"][states["currentCharacter"]]["class"] == "summoner":
-    #     mouseMoveTo(x=1010, y=865)
-    #     sleep(800, 900)
-    #     pydirectinput.click(x=985, y=865, button="left")
-    #     sleep(800, 900)
-
-    # berserker z
-    # if config["characters"][states["currentCharacter"]]["class"] == "berserker":
-    #     pydirectinput.press("z")
-    #     sleep(800, 900)
 
     # delayed start for better aoe abiltiy usage at floor1 beginning
     if config["delayedStart"] != None and config["performance"] == False:
@@ -792,8 +777,6 @@ def doFloor1():
 
 def doFloor2():
     states["bossBarLocated"] = False
-    # clearQuest()
-    # sleep(500, 550)
     # check repair
     if config["auraRepair"]:
         doAuraRepair(False)
@@ -1160,14 +1143,6 @@ def useAbilities():
         #     fightFloor2Boss()
 
         allAbilities = [*range(0, len(states["abilityScreenshots"]))]
-        # add randomness to spell order
-        # if config["characters"][states["currentCharacter"]]["class"] != "gunslinger":
-        #     half = int(len(allAbilities) / 2)
-        #     first = allAbilities[:half]
-        #     second = allAbilities[len(allAbilities) - half :]
-        #     random.shuffle(first)
-        #     random.shuffle(second)
-        #     allAbilities = first + second
 
         # cast sequence
         for i in allAbilities:
@@ -3178,7 +3153,8 @@ def switchToCharacter(index):
 
 def doGuildDonation():
     toggleMenu("guild")
-    sleep(5000, 5000)
+    while pyautogui.locateOnScreen("./screenshots/menus/guildMenu.png", confidence=0.75) == None:
+        sleep(200,300)
 
     ok = pyautogui.locateCenterOnScreen(
         "./screenshots/ok.png", region=config["regions"]["center"], confidence=0.75
@@ -3199,8 +3175,6 @@ def doGuildDonation():
     sleep(500, 600)
     pydirectinput.click(button="left")
     sleep(500, 600)
-    # pydirectinput.click(button="left")
-    # sleep(500, 600)
 
     # dono silver
     mouseMoveTo(x=767, y=561)
@@ -3209,8 +3183,6 @@ def doGuildDonation():
     sleep(500, 600)
     pydirectinput.click(button="left")
     sleep(500, 600)
-    # pydirectinput.click(button="left")
-    # sleep(500, 600)
 
     pydirectinput.press("esc")
     sleep(3500, 3600)
@@ -3246,8 +3218,6 @@ def doGuildDonation():
             sleep(500, 600)
             pydirectinput.click(button="left")
             sleep(500, 600)
-            # pydirectinput.click(button="left")
-            # sleep(500, 600)
 
             mouseMoveTo(x=921, y=701)
             sleep(500, 600)
@@ -3255,8 +3225,6 @@ def doGuildDonation():
             sleep(500, 600)
             pydirectinput.click(button="left")
             sleep(500, 600)
-            # pydirectinput.click(button="left")
-            # sleep(500, 600)
         else:
             pydirectinput.press("esc")
             sleep(800, 900)
@@ -3266,85 +3234,85 @@ def doGuildDonation():
     sleep(2800, 2900)
 
 
-def doRapport():
-    sleep(1000, 2000)
-    print("doing Rapport")
-    if gameCrashCheck():
-        return
-    if offlineCheck():
-        return
-    sleep(3500, 4600)
-    # dorapport
-    bifrostAvailable = bifrostGoTo(2)
-    if bifrostAvailable == False:
-        return
-    if gameCrashCheck():
-        return
-    if offlineCheck():
-        return
-    songandemoterapport()
+# def doRapport():
+#     sleep(1000, 2000)
+#     print("doing Rapport")
+#     if gameCrashCheck():
+#         return
+#     if offlineCheck():
+#         return
+#     sleep(3500, 4600)
+#     # dorapport
+#     bifrostAvailable = bifrostGoTo(2)
+#     if bifrostAvailable == False:
+#         return
+#     if gameCrashCheck():
+#         return
+#     if offlineCheck():
+#         return
+#     songandemoterapport()
 
 
-def songandemoterapport():
-    print("song and emote for rapport")
-    pydirectinput.keyDown("alt")
-    sleep(800, 900)
-    pydirectinput.press("w")
-    sleep(800, 900)
-    pydirectinput.keyUp("alt")
-    sleep(800, 900)
-    spamInteract(1000)
-    sleep(2000, 3000)
-    mouseMoveTo(x=105, y=870)
-    sleep(200, 300)
-    pydirectinput.click(button="left")
-    sleep(200, 300)
-    mouseMoveTo(x=1630, y=403)
-    sleep(300, 600)
-    pydirectinput.click(button="left")
-    sleep(300, 600)
-    mouseMoveTo(x=1676, y=551)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    sleep(30000, 31000)  # 1songduration
-    mouseMoveTo(x=105, y=870)
-    sleep(300, 600)
-    pydirectinput.click(button="left")
-    sleep(300, 600)
-    mouseMoveTo(x=1676, y=452)
-    sleep(300, 600)
-    pydirectinput.click(button="left")
-    sleep(300, 600)
-    mouseMoveTo(x=1676, y=551)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    sleep(30000, 31000)  # 2songduration
-    mouseMoveTo(x=118, y=904)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    sleep(300, 400)
-    mouseMoveTo(x=155, y=454)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    sleep(300, 400)
-    mouseMoveTo(x=203, y=595)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    sleep(17000, 20000)  # 1emoteduration
-    mouseMoveTo(x=118, y=904)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    mouseMoveTo(x=311, y=454)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    sleep(300, 400)
-    mouseMoveTo(x=203, y=595)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
-    sleep(17000, 20000)  # 2emoteduration
-    mouseMoveTo(x=1832, y=900)
-    sleep(300, 400)
-    pydirectinput.click(button="left")
+# def songandemoterapport():
+#     print("song and emote for rapport")
+#     pydirectinput.keyDown("alt")
+#     sleep(800, 900)
+#     pydirectinput.press("w")
+#     sleep(800, 900)
+#     pydirectinput.keyUp("alt")
+#     sleep(800, 900)
+#     spamInteract(1000)
+#     sleep(2000, 3000)
+#     mouseMoveTo(x=105, y=870)
+#     sleep(200, 300)
+#     pydirectinput.click(button="left")
+#     sleep(200, 300)
+#     mouseMoveTo(x=1630, y=403)
+#     sleep(300, 600)
+#     pydirectinput.click(button="left")
+#     sleep(300, 600)
+#     mouseMoveTo(x=1676, y=551)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     sleep(30000, 31000)  # 1songduration
+#     mouseMoveTo(x=105, y=870)
+#     sleep(300, 600)
+#     pydirectinput.click(button="left")
+#     sleep(300, 600)
+#     mouseMoveTo(x=1676, y=452)
+#     sleep(300, 600)
+#     pydirectinput.click(button="left")
+#     sleep(300, 600)
+#     mouseMoveTo(x=1676, y=551)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     sleep(30000, 31000)  # 2songduration
+#     mouseMoveTo(x=118, y=904)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     sleep(300, 400)
+#     mouseMoveTo(x=155, y=454)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     sleep(300, 400)
+#     mouseMoveTo(x=203, y=595)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     sleep(17000, 20000)  # 1emoteduration
+#     mouseMoveTo(x=118, y=904)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     mouseMoveTo(x=311, y=454)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     sleep(300, 400)
+#     mouseMoveTo(x=203, y=595)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
+#     sleep(17000, 20000)  # 2emoteduration
+#     mouseMoveTo(x=1832, y=900)
+#     sleep(300, 400)
+#     pydirectinput.click(button="left")
 
 
 def doLopang():
@@ -3370,7 +3338,7 @@ def doLopang():
         return
     if offlineCheck():
         return
-    sleep(5500, 6600)
+    sleep(1500, 1600)
     spamInteract(3000)
     walkLopang()
     sleep(1500, 1600)
@@ -3379,21 +3347,21 @@ def doLopang():
         return
     if offlineCheck():
         return
-    spamInteract(10000)
+    spamInteract(6000)
     sleep(1500, 1600)
     bifrostGoTo("lopangArthetine")
     if gameCrashCheck():
         return
     if offlineCheck():
         return
-    spamInteract(10000)
+    spamInteract(6000)
     sleep(1500, 1600)
     bifrostGoTo("lopangVern")
     if gameCrashCheck():
         return
     if offlineCheck():
         return
-    spamInteract(10000)
+    spamInteract(6000)
 
 def doLeapstoneUnas(unas):
     sleep(1000, 2000)
@@ -3461,7 +3429,7 @@ def doBleakNightFogUna():
     claimCompletedQuest()
 
 def doHesteraGardenUna():
-    toggleMenu("hesteraGardenCombatPreset")
+    toggleMenu("unaTaskCombatPreset")
 
     pydirectinput.press(config["hesteraGardenEmoteSlot"])
     sleep(140000, 141000)
@@ -3471,32 +3439,22 @@ def doHesteraGardenUna():
     toggleMenu("defaultCombatPreset")
 
 def doSageTowerUna():
-    sleep(5000,5000)
-    spamInteract(15000)
+    spamInteract(12000)
     mouseMoveTo(x=1560, y=540)
     sleep(500, 600)
     pydirectinput.click(x=1560, y=540, button=config["move"])
     sleep(500, 600)
-    spamInteract(4000)
+    spamInteract(3000)
 
 def doSouthKurzanUna():
-    sleep(5000,5000)
-    selfieMode = pyautogui.locateCenterOnScreen("./screenshots/selfieMode.png", confidence=0.85)
-    if selfieMode == None:
-        print("selfie mode icon not found")
-        return
-    x, y = selfieMode
-    mouseMoveTo(x=x, y=y)
-    sleep(500, 600)
-    pydirectinput.click(x=x, y=y, button="left")
-    sleep(4000, 4100)
-    pydirectinput.press(config["printscreenMacro"])
-    sleep(5000, 6000)
-    pydirectinput.press("esc")
-    sleep(500, 600)
-    pydirectinput.press("enter")
-    sleep(500, 600)
-    mouseMoveTo(x=700, y=200)
+    toggleMenu("unaTaskCombatPreset")
+
+    pydirectinput.press(config["southKurzanPoseSlot"])
+    sleep(14000, 14100)
+
+    toggleMenu("defaultCombatPreset")
+    
+    mouseMoveTo(x=650, y=180)
     sleep(500, 600)
     pydirectinput.click(x=650, y=180, button="left")
     sleep(2500, 2600)
@@ -3558,7 +3516,7 @@ def toggleMenu(menuType):
         pydirectinput.press(keys[1])
         sleep(300, 400)
         pydirectinput.keyUp(keys[0])
-        sleep(2500, 2600)
+        sleep(300, 400)
     elif len(keys) == 1:
         pydirectinput.press(keys[0])
         sleep(300, 400)
@@ -3618,10 +3576,9 @@ def bifrostGoTo(location):
             region=(1870, 133, 25, 30),
         )
         if inTown != None:
-            # print("city loaded")
+            print("bifrost location loaded")
             break
         sleep(1400, 1600)
-    sleep(3500, 3600)
     if gameCrashCheck():
         return
     if offlineCheck():
@@ -3690,11 +3647,32 @@ def checkBlueCrystal():
 def acceptDailies():
     sleep(500, 600)
     toggleMenu("unas")
-    sleep(5000,5100)
-    mouseMoveTo(x=550, y=255)
-    sleep(100, 100)
-    pydirectinput.click(button="left")
-    sleep(2000,2100)
+    while pyautogui.locateOnScreen("./screenshots/menus/unasMenu.png", confidence = 0.75) == None:
+        sleep(200,300)
+    # switch to daily tab
+    if pyautogui.locateOnScreen("./screenshots/dailyTabActive.png", confidence = 0.75) == None:
+        mouseMoveTo(x=550, y=255)
+        sleep(100, 200)
+        pydirectinput.click(button="left")
+        sleep(1000,1100)
+    # toggle dropdown and swap to favorites
+    if pyautogui.locateOnScreen("./screenshots/addedToFavorites.png", confidence = 0.75) == None:
+        mouseMoveTo(x=632, y=316)
+        sleep(100, 200)
+        pydirectinput.click(button="left")
+        sleep(1000,1100)
+        mouseMoveTo(x=634, y=337)
+        sleep(100, 200)
+        pydirectinput.click(button="left")
+        sleep(500,600)
+        pydirectinput.click(button="left")
+        sleep(500,600)
+        pydirectinput.click(button="left")
+        sleep(500,600)
+        mouseMoveTo(x=548, y=404)
+        sleep(100, 200)
+        pydirectinput.click(button="left")
+        sleep(500,600)
     if pyautogui.locateOnScreen("./screenshots/unasCompleted.png", confidence = 0.85) != None:
         print("character has already ran unas")
         toggleMenu("unas")
@@ -3703,11 +3681,11 @@ def acceptDailies():
     while pyautogui.locateOnScreen("./screenshots/acceptUna.png", confidence = 0.75) != None:
         x, y = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.75)
         mouseMoveTo(x=x, y=y)
-        sleep(500, 500)
-        pydirectinput.click(x=x, y=y, button="left")
-        sleep(2500, 2500)
+        sleep(100, 200)
+        pydirectinput.click(button="left")
+        sleep(1000, 1100)
 
-    pydirectinput.press("esc")
+    toggleMenu("unas")
     sleep(2800, 2900)
 
 def walkWithAlt(lopangX, lopangY, milliseconds):
