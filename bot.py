@@ -3001,7 +3001,7 @@ def switchToCharacter(index):
         pydirectinput.press("esc")
         sleep(1800, 1900)
     print("game menu detected")
-    mouseMoveTo(x=config["charSwitchX"], y=config["charSwitchY"])
+    mouseMoveTo(x=540, y=700)
     sleep(500, 600)
     pydirectinput.click(button="left")
     sleep(500, 600)
@@ -3014,7 +3014,7 @@ def switchToCharacter(index):
     # sleep(1500, 1600)
     # pyautogui.scroll(5)  # fix character switch if you have more then 9 characters
     # sleep(1500, 1600)
-    mouseMoveTo(x=1267, y=392)
+    mouseMoveTo(x=1267, y=412)
     sleep(500, 600)
     pydirectinput.click(button="left")
     sleep(500, 600)
