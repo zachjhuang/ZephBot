@@ -206,7 +206,7 @@ def main():
             if states["multiCharacterMode"] and states["multiCharacterModeState"][states["currentCharacter"]] <= 0:
                 # repair
                 if config["auraRepair"]:
-                    doAuraRepair(True)
+                    doAuraRepair(False)
                 sleep(1400, 1600)
                 if (
                     states["cubes"]
@@ -3610,12 +3610,17 @@ def acceptDailies():
         toggleMenu("unas")
         return False
 
-    while pyautogui.locateOnScreen("./screenshots/acceptUna.png", confidence = 0.85) != None:
-        x, y = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.85)
-        mouseMoveTo(x=x, y=y)
-        sleep(100, 200)
-        pydirectinput.click(button="left")
-        sleep(1000, 1100)
+    while True:
+        acceptUna = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.85)
+        if acceptUna != None:
+            x, y = acceptUna
+            mouseMoveTo(x=x, y=y)
+            sleep(100, 200)
+            pydirectinput.click(button="left")
+            sleep(1000, 1100)
+        else:
+            break
+
 
     toggleMenu("unas")
     sleep(800, 900)
