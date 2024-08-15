@@ -519,50 +519,60 @@ def enterChaos():
                 states["multiCharacterModeState"][states["currentCharacter"]] = 0
                 print("no remaining aor on character, still have other chaos to run")
                 return
+            
+            weeklyPurificationClaimAll = pyautogui.locateCenterOnScreen("./screenshots/weeklyPurificationClaimAll.png", confidence = 0.85)
+            if weeklyPurificationClaimAll != None:
+                x, y = weeklyPurificationClaimAll
+                mouseMoveTo(x=x, y=y)
+                sleep(500, 600)
+                pydirectinput.click(button="left")
+                mouseMoveTo(x=920, y=575)
+                sleep(500, 600)
+                pydirectinput.click(button="left")
 
             mouseMoveTo(x=886, y=346)
             sleep(500, 600)
-            pydirectinput.click(x=886, y=346, button="left")
+            pydirectinput.click(button="left")
             sleep(500, 600)
             mouseMoveTo(x=886, y=346)
             sleep(500, 600)
-            pydirectinput.click(x=886, y=346, button="left")
+            pydirectinput.click(button="left")
             sleep(500, 600)
 
             for _ in range(2):
-                pydirectinput.click(x=1480, y=310, button="left") # right arrow
+                pydirectinput.click(x=1580, y=310, button="left") # right arrow
                 sleep(500, 600)
 
             # select chaos dungeon level based on current Character
             _curr = config["characters"][states["currentCharacter"]]
-            punikaChaosTabLoc = [920, 307]
-            svernChaosTabLoc = [1060, 307]
-            elgaciaChaosTabLoc = [1200, 307]
-            voldisChaosTabLoc = [1350, 307]
+            punikaChaosTabLoc = [1020, 307]
+            svernChaosTabLoc = [1160, 307]
+            elgaciaChaosTabLoc = [1300, 307]
+            voldisChaosTabLoc = [1440, 307]
             chaosTabPosition = {
                 # punika
-                1100: [punikaChaosTabLoc, [524, 400]],
-                1310: [punikaChaosTabLoc, [524, 455]],
-                1325: [punikaChaosTabLoc, [524, 505]],
-                1340: [punikaChaosTabLoc, [524, 555]],
-                1355: [punikaChaosTabLoc, [524, 605]],
-                1370: [punikaChaosTabLoc, [524, 660]],
-                1385: [punikaChaosTabLoc, [524, 715]],
-                1400: [punikaChaosTabLoc, [524, 770]],
+                1100: [punikaChaosTabLoc, [624, 400]],
+                1310: [punikaChaosTabLoc, [624, 455]],
+                1325: [punikaChaosTabLoc, [624, 505]],
+                1340: [punikaChaosTabLoc, [624, 555]],
+                1355: [punikaChaosTabLoc, [624, 605]],
+                1370: [punikaChaosTabLoc, [624, 660]],
+                1385: [punikaChaosTabLoc, [624, 715]],
+                1400: [punikaChaosTabLoc, [624, 770]],
                 # south vern
-                1415: [svernChaosTabLoc, [524, 400]],
-                1445: [svernChaosTabLoc, [524, 455]],
-                1475: [svernChaosTabLoc, [524, 505]],
-                1490: [svernChaosTabLoc, [524, 555]],
-                1520: [svernChaosTabLoc, [524, 605]],
-                1540: [svernChaosTabLoc, [524, 660]],
-                1560: [svernChaosTabLoc, [524, 715]],
+                1415: [svernChaosTabLoc, [624, 400]],
+                1445: [svernChaosTabLoc, [624, 455]],
+                1475: [svernChaosTabLoc, [624, 505]],
+                1490: [svernChaosTabLoc, [624, 555]],
+                1520: [svernChaosTabLoc, [624, 605]],
+                1540: [svernChaosTabLoc, [624, 660]],
+                1560: [svernChaosTabLoc, [624, 715]],
                 # elgacia
-                1580: [elgaciaChaosTabLoc, [524, 400]],
-                1600: [elgaciaChaosTabLoc, [524, 455]],
+                1580: [elgaciaChaosTabLoc, [624, 400]],
+                1600: [elgaciaChaosTabLoc, [624, 455]],
                 # voldis
-                1610: [voldisChaosTabLoc, [524, 400]],
-                1630: [voldisChaosTabLoc, [524, 455]],
+                1610: [voldisChaosTabLoc, [624, 400]],
+                1630: [voldisChaosTabLoc, [624, 455]],
             }
             if states["multiCharacterMode"] or noAura == None:
                 mouseMoveTo(
@@ -570,34 +580,18 @@ def enterChaos():
                     y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
                 )
                 sleep(800, 900)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-aor"]][0][0],
-                    y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left")
                 sleep(500, 600)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-aor"]][0][0],
-                    y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left")
                 sleep(500, 600)
                 mouseMoveTo(
                     x=chaosTabPosition[_curr["ilvl-aor"]][1][0],
                     y=chaosTabPosition[_curr["ilvl-aor"]][1][1],
                 )
                 sleep(800, 900)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-aor"]][1][0],
-                    y=chaosTabPosition[_curr["ilvl-aor"]][1][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left")
                 sleep(500, 600)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-aor"]][1][0],
-                    y=chaosTabPosition[_curr["ilvl-aor"]][1][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left",)
                 sleep(500, 600)
             else:
                 mouseMoveTo(
@@ -605,63 +599,39 @@ def enterChaos():
                     y=chaosTabPosition[_curr["ilvl-endless"]][0][1],
                 )
                 sleep(800, 900)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-endless"]][0][0],
-                    y=chaosTabPosition[_curr["ilvl-endless"]][0][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left")
                 sleep(500, 600)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-endless"]][0][0],
-                    y=chaosTabPosition[_curr["ilvl-endless"]][0][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left")
                 sleep(500, 600)
                 mouseMoveTo(
                     x=chaosTabPosition[_curr["ilvl-endless"]][1][0],
                     y=chaosTabPosition[_curr["ilvl-endless"]][1][1],
                 )
                 sleep(800, 900)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-endless"]][1][0],
-                    y=chaosTabPosition[_curr["ilvl-endless"]][1][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left")
                 sleep(500, 600)
-                pydirectinput.click(
-                    x=chaosTabPosition[_curr["ilvl-endless"]][1][0],
-                    y=chaosTabPosition[_curr["ilvl-endless"]][1][1],
-                    button="left",
-                )
+                pydirectinput.click(button="left")
                 sleep(500, 600)
 
             enterButton = pyautogui.locateCenterOnScreen(
                 "./screenshots/enterButton.png",
                 confidence=0.75,
-                region=(1334, 754, 120, 60),
+                region=(1380, 760, 210, 60),
             )
             if enterButton != None:
                 x, y = enterButton
                 mouseMoveTo(x=x, y=y)
                 sleep(800, 900)
-                pydirectinput.click(x=x, y=y, button="left")
+                pydirectinput.click(button="left")
                 sleep(100, 200)
-                pydirectinput.click(x=x, y=y, button="left")
-                sleep(100, 200)
-                pydirectinput.click(x=x, y=y, button="left")
-                sleep(100, 200)
-                pydirectinput.click(x=x, y=y, button="left")
-                sleep(100, 200)
-                pydirectinput.click(x=x, y=y, button="left")
+                pydirectinput.click(button="left")
                 break
             else:
                 mouseMoveTo(x=886, y=346)
                 sleep(800, 900)
-                pydirectinput.click(x=886, y=346, button="left")
+                pydirectinput.click(button="left")
                 sleep(200, 300)
-                pydirectinput.click(x=886, y=346, button="left")
-                sleep(200, 300)
-                pydirectinput.click(x=886, y=346, button="left")
+                pydirectinput.click(button="left")
                 sleep(1800, 1900)
 
     else:
@@ -707,8 +677,6 @@ def enterChaos():
             x, y = acceptButton
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
-            pydirectinput.click(x=x, y=y, button="left")
-            sleep(100, 200)
             pydirectinput.click(x=x, y=y, button="left")
             sleep(100, 200)
             pydirectinput.click(x=x, y=y, button="left")
@@ -992,11 +960,9 @@ def restartChaos():
 
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             sleep(100, 200)
-            pydirectinput.click(x=x, y=y, button="left")
-            sleep(100, 200)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             break
         sleep(100, 200)
     sleep(100, 200)
@@ -1004,17 +970,15 @@ def restartChaos():
         enterButton = pyautogui.locateCenterOnScreen(
             "./screenshots/enterButton.png",
             confidence=0.75,
-            region=(1334, 754, 120, 60),
+            region=(1380, 760, 210, 60),
         )
         if enterButton != None:
             x, y = enterButton
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             sleep(100, 200)
-            pydirectinput.click(x=x, y=y, button="left")
-            sleep(100, 200)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             break
         sleep(100, 200)
     sleep(100, 200)
@@ -1028,11 +992,9 @@ def restartChaos():
             x, y = acceptButton
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             sleep(100, 200)
-            pydirectinput.click(x=x, y=y, button="left")
-            sleep(100, 200)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             break
         sleep(100, 200)
     states["status"] = "floor1"
@@ -2437,7 +2399,7 @@ def diedCheck():  # get information about wait a few second to revive
             mouseMoveTo(x=1275, y=400)
             sleep(1600, 1800)
             print("rez clicked")
-            pydirectinput.click(1275, 400, button="left")
+            pydirectinput.click(button="left")
             sleep(600, 800)
             mouseMoveTo(x=config["screenCenterX"], y=config["screenCenterY"])
             sleep(600, 800)
@@ -2484,11 +2446,11 @@ def doAuraRepair(forced):
         toggleMenu("pet")
         mouseMoveTo(x=1142, y=661)
         sleep(2500, 2600)
-        pydirectinput.click(1142, 661, button="left")
+        pydirectinput.click(button="left")
         sleep(5500, 5600)
         mouseMoveTo(x=1054, y=455)
         sleep(2500, 2600)
-        pydirectinput.click(1054, 455, button="left")
+        pydirectinput.click(button="left")
         sleep(2500, 2600)
         pydirectinput.press("esc")
         sleep(2500, 2600)
@@ -2510,7 +2472,7 @@ def doCityRepair():
         sleep(600, 700)
         mouseMoveTo(x=1057, y=455)
         sleep(600, 700)
-        pydirectinput.click(1057, 455, button="left")
+        pydirectinput.click(button="left")
         sleep(600, 700)
         pydirectinput.press("esc")
         sleep(1500, 1900)
@@ -2566,7 +2528,7 @@ def clearQuest():
         x, y = quest
         mouseMoveTo(x=x, y=y)
         sleep(1800, 1900)
-        pydirectinput.click(x=x, y=y, button="left")
+        pydirectinput.click(button="left")
         sleep(1800, 1900)
         pydirectinput.press("esc")
         sleep(1800, 1900)
@@ -2575,7 +2537,7 @@ def clearQuest():
         x, y = leveledup
         mouseMoveTo(x=x, y=y)
         sleep(1800, 1900)
-        pydirectinput.click(x=x, y=y, button="left")
+        pydirectinput.click(button="left")
         sleep(1800, 1900)
         pydirectinput.press("esc")
         sleep(1800, 1900)
@@ -2669,7 +2631,7 @@ def gameCrashCheck():
             limitshot.save("./debug/sessionLimitReached" + str(currentTime) + ".png")
             mouseMoveTo(x=1029, y=822)
             sleep(1300, 1400)
-            pydirectinput.click(x=1029, y=822, button="left")
+            pydirectinput.click(button="left")
             sleep(1300, 1400)
             print("session limit...")
             states["gameCrashCount"] = states["gameCrashCount"] + 1
@@ -2685,7 +2647,7 @@ def gameCrashCheck():
             inactive.save("./debug/inactive_" + str(currentTime) + ".png")
             mouseMoveTo(x=1194, y=585)
             sleep(1300, 1400)
-            pydirectinput.click(x=1194, y=585, button="left")
+            pydirectinput.click(button="left")
             sleep(1300, 1400)
             print("game inactive...")
             states["gameCrashCount"] = states["gameCrashCount"] + 1
@@ -2734,7 +2696,7 @@ def offlineCheck():
             limitshot.save("./debug/sessionLimitReached" + str(currentTime) + ".png")
             mouseMoveTo(x=1029, y=822)
             sleep(1300, 1400)
-            pydirectinput.click(x=1029, y=822, button="left")
+            pydirectinput.click(button="left")
             sleep(1300, 1400)
             print("session limit...")
             states["gameCrashCount"] = states["gameCrashCount"] + 1
@@ -2750,7 +2712,7 @@ def offlineCheck():
             limitshot.save("./debug/updateMembership" + str(currentTime) + ".png")
             mouseMoveTo(x=1036, y=822)
             sleep(1300, 1400)
-            pydirectinput.click(x=1036, y=822, button="left")
+            pydirectinput.click(button="left")
             sleep(1300, 1400)
             print("update Membership...")
             states["gameCrashCount"] = states["gameCrashCount"] + 1
@@ -2814,7 +2776,7 @@ def closeGameByClickingDialogue():
             x, y = ok
             mouseMoveTo(x=x, y=y)
             sleep(300, 400)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             print("clicked ok")
         elif enterServer != None:
             break
@@ -2847,7 +2809,7 @@ def restartGame():
                 x, y = loaGFNplay
                 mouseMoveTo(x=x, y=y)
                 sleep(2200, 2300)
-                pydirectinput.click(x=x, y=y, button="left")
+                pydirectinput.click(button="left")
                 print("clicked play restart on GFN")
                 sleep(40000, 42000)
                 break
@@ -2855,7 +2817,7 @@ def restartGame():
                 x, y = loaGFN
                 mouseMoveTo(x=x, y=y)
                 sleep(2200, 2300)
-                pydirectinput.click(x=x, y=y, button="left")
+                pydirectinput.click(button="left")
                 print("clicked image restart on GFN")
                 sleep(40000, 42000)
                 break
@@ -2873,7 +2835,7 @@ def restartGame():
                 x, y = closeGFN
                 mouseMoveTo(x=x, y=y)
                 sleep(1300, 1400)
-                pydirectinput.click(x=x, y=y, button="left")
+                pydirectinput.click(button="left")
                 sleep(1300, 1400)
                 continue
         else:
@@ -2907,7 +2869,7 @@ def restartGame():
             x, y = stopGame
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             sleep(500, 600)
             confirm = pyautogui.locateCenterOnScreen(
                 "./screenshots/steamConfirm.png", confidence=0.75
@@ -2917,21 +2879,21 @@ def restartGame():
             x, y = confirm
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             sleep(10000, 12000)
         elif confirm != None:
             print("confirming stop game")
             x, y = confirm
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             sleep(10000, 12000)
         elif enterGame != None:
             print("restarting Lost Ark game client...")
             x, y = enterGame
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             break
         elif enterServer != None:
             # new eacoffline interface
@@ -2967,19 +2929,19 @@ def restartGame():
             # click first server
             mouseMoveTo(x=855, y=582)
             sleep(1200, 1300)
-            pydirectinput.click(x=855, y=582, button="left")
+            pydirectinput.click(button="left")
             sleep(1000, 1200)
             x, y = enterServer
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             break
         elif enterGame != None:
             print("clicking enterGame")
             x, y = enterGame
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             sleep(4200, 5300)
             continue
     sleep(3200, 4300)
@@ -3021,7 +2983,7 @@ def restartGame():
             x, y = enterCharacter
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
-            pydirectinput.click(x=x, y=y, button="left")
+            pydirectinput.click(button="left")
             break
         sleep(2200, 3300)
     states["gameRestartCount"] = states["gameRestartCount"] + 1
@@ -3041,15 +3003,9 @@ def switchToCharacter(index):
     print("game menu detected")
     mouseMoveTo(x=config["charSwitchX"], y=config["charSwitchY"])
     sleep(500, 600)
-    pydirectinput.click(
-        x=config["charSwitchX"], 
-        y=config["charSwitchY"], 
-        button="left")
+    pydirectinput.click(button="left")
     sleep(500, 600)
-    pydirectinput.click(
-        x=config["charSwitchX"], 
-        y=config["charSwitchY"], 
-        button="left")
+    pydirectinput.click(button="left")
     sleep(500, 600)
 
     # mouseMoveTo(
@@ -3058,23 +3014,23 @@ def switchToCharacter(index):
     # sleep(1500, 1600)
     # pyautogui.scroll(5)  # fix character switch if you have more then 9 characters
     # sleep(1500, 1600)
-    mouseMoveTo(x=1260, y=392)
+    mouseMoveTo(x=1267, y=392)
     sleep(500, 600)
-    pydirectinput.click(x=1260, y=392, button="left")
+    pydirectinput.click(button="left")
     sleep(500, 600)
-    pydirectinput.click(x=1260, y=392, button="left")
+    pydirectinput.click(button="left")
     sleep(500, 600)
-    pydirectinput.click(x=1260, y=392, button="left")
+    pydirectinput.click(button="left")
     sleep(500, 600)
-    pydirectinput.click(x=1260, y=392, button="left")
+    pydirectinput.click(button="left")
     sleep(500, 600)
-    pydirectinput.click(x=1260, y=392, button="left")
+    pydirectinput.click(button="left")
     sleep(500, 600)
     if index > 8:
-        mouseMoveTo(x=1260, y=638)
+        mouseMoveTo(x=1267, y=638)
         sleep(500, 600)
         for i in range(math.floor(index/3) - 2):
-            pydirectinput.click(x=1260, y=638, button="left")
+            pydirectinput.click(button="left")
             sleep(500, 600)
 
     
@@ -3084,17 +3040,9 @@ def switchToCharacter(index):
         y=config["charPositions"][index][1]
     )
     sleep(300, 400)
-    pydirectinput.click(
-        x=config["charPositions"][index][0],
-        y=config["charPositions"][index][1],
-        button="left",
-    )
+    pydirectinput.click(button="left")
     sleep(300, 400)
-    pydirectinput.click(
-        x=config["charPositions"][index][0],
-        y=config["charPositions"][index][1],
-        button="left",
-    )
+    pydirectinput.click(button="left")
     sleep(1500, 1600)
 
     if pyautogui.locateCenterOnScreen(
@@ -3108,19 +3056,11 @@ def switchToCharacter(index):
         sleep(500, 600)
         return
 
-    mouseMoveTo(x=config["charSelectConnectX"], y=config["charSelectConnectY"])
+    mouseMoveTo(x=1030, y=700)
     sleep(300, 400)
-    pydirectinput.click(
-        x=config["charSelectConnectX"], 
-        y=config["charSelectConnectY"], 
-        button="left"
-    )
+    pydirectinput.click(button="left")
     sleep(300, 400)
-    pydirectinput.click(
-        x=config["charSelectConnectX"], 
-        y=config["charSelectConnectY"], 
-        button="left"
-    )
+    pydirectinput.click(button="left")
     sleep(1000, 1000)
 
     # currentTime = int(time.time_ns() / 1000000)
@@ -3129,19 +3069,11 @@ def switchToCharacter(index):
     #     "./debug/switchToChar_" + str(index) + "_" + str(currentTime) + ".png"
     # )
 
-    mouseMoveTo(x=config["charSelectOkX"], y=config["charSelectOkY"])
+    mouseMoveTo(x=920, y=590)
     sleep(300, 400)
-    pydirectinput.click(
-        x=config["charSelectOkX"], 
-        y=config["charSelectOkY"], 
-        button="left"
-    )
+    pydirectinput.click(button="left")
     sleep(300, 400)
-    pydirectinput.click(
-        x=config["charSelectOkX"], 
-        y=config["charSelectOkY"], 
-        button="left"
-    )
+    pydirectinput.click(button="left")
     sleep(500, 600)
 
     states["currentCharacter"] = index
@@ -3164,9 +3096,9 @@ def doGuildDonation():
         x, y = ok
         mouseMoveTo(x=x, y=y)
         sleep(300, 400)
-        pydirectinput.click(x=x, y=y, button="left")
+        pydirectinput.click(button="left")
         sleep(300, 400)
-        pydirectinput.click(x=x, y=y, button="left")
+        pydirectinput.click(button="left")
     sleep(1500, 1600)
 
     mouseMoveTo(x=1431, y=843)
@@ -3444,7 +3376,7 @@ def doSageTowerUna():
     sleep(500, 600)
     pydirectinput.click(x=1560, y=540, button=config["move"])
     sleep(500, 600)
-    spamInteract(3000)
+    spamInteract(5000)
 
 def doSouthKurzanUna():
     toggleMenu("unaTaskCombatPreset")
@@ -3460,7 +3392,7 @@ def doSouthKurzanUna():
     sleep(2500, 2600)
     pydirectinput.click(x=650, y=180, button="left")
     sleep(2500, 2600)
-    spamInteract(5000)
+    spamInteract(4000)
 
 def doMokomokoUna():
     spamInteract(4000)
@@ -3595,26 +3527,26 @@ def walkLopang():
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
     # lopangDebug.save("./debug/lopangDebug_" + str(nowTime) + ".png")
-    walkWithAlt(315, 473, 1500)
-    walkWithAlt(407, 679, 1300)
-    walkWithAlt(584, 258, 1000)
-    walkWithAlt(1043, 240, 1200)
-    walkWithAlt(1339, 246, 1300)
-    walkWithAlt(1223, 406, 800)
-    walkWithAlt(1223, 406, 800)
-    walkWithAlt(1263, 404, 1300)
+    walkTo(315, 473, 1500)
+    walkTo(407, 679, 1300)
+    walkTo(584, 258, 1000)
+    walkTo(1043, 240, 1200)
+    walkTo(1339, 246, 1300)
+    walkTo(1223, 406, 800)
+    walkTo(1223, 406, 800)
+    walkTo(1263, 404, 1300)
     spamInteract(500)
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
     # lopangDebug.save("./debug/lopangDebug_" + str(nowTime) + ".png")
-    walkWithAlt(496, 750, 1200)
-    walkWithAlt(496, 750, 1200)
-    walkWithAlt(496, 750, 1200)
-    walkWithAlt(753, 687, 800)
-    walkWithAlt(753, 687, 800)
-    walkWithAlt(674, 264, 800)
-    walkWithAlt(573, 301, 1200)
-    walkWithAlt(820, 240, 1300)
+    walkTo(496, 750, 1200)
+    walkTo(496, 750, 1200)
+    walkTo(496, 750, 1200)
+    walkTo(753, 687, 800)
+    walkTo(753, 687, 800)
+    walkTo(674, 264, 800)
+    walkTo(573, 301, 1200)
+    walkTo(820, 240, 1300)
     spamInteract(500)
     # nowTime = int(time.time_ns() / 1000000)
     # lopangDebug = pyautogui.screenshot()
@@ -3645,69 +3577,67 @@ def checkBlueCrystal():
 
 
 def acceptDailies():
-    sleep(500, 600)
+    sleep(5000, 6000)
     toggleMenu("unas")
-    while pyautogui.locateOnScreen("./screenshots/menus/unasMenu.png", confidence = 0.75) == None:
-        sleep(200,300)
+    while pyautogui.locateOnScreen("./screenshots/menus/unasMenu.png", confidence = 0.95) == None:
+        sleep(200, 300)
     # switch to daily tab
-    if pyautogui.locateOnScreen("./screenshots/dailyTabActive.png", confidence = 0.75) == None:
+    if pyautogui.locateOnScreen("./screenshots/dailyTabActive.png", confidence = 0.95) == None:
         mouseMoveTo(x=550, y=255)
         sleep(100, 200)
         pydirectinput.click(button="left")
-        sleep(1000,1100)
+        sleep(500, 600)
     # toggle dropdown and swap to favorites
-    if pyautogui.locateOnScreen("./screenshots/addedToFavorites.png", confidence = 0.75) == None:
+    if pyautogui.locateOnScreen("./screenshots/addedToFavorites.png", confidence = 0.95) == None:
         mouseMoveTo(x=632, y=316)
         sleep(100, 200)
         pydirectinput.click(button="left")
-        sleep(1000,1100)
+        sleep(1000, 1100)
         mouseMoveTo(x=634, y=337)
         sleep(100, 200)
         pydirectinput.click(button="left")
-        sleep(500,600)
+        sleep(500, 600)
         pydirectinput.click(button="left")
-        sleep(500,600)
+        sleep(500, 600)
         pydirectinput.click(button="left")
-        sleep(500,600)
+        sleep(500, 600)
         mouseMoveTo(x=548, y=404)
         sleep(100, 200)
         pydirectinput.click(button="left")
-        sleep(500,600)
+        sleep(500, 600)
     if pyautogui.locateOnScreen("./screenshots/unasCompleted.png", confidence = 0.85) != None:
         print("character has already ran unas")
         toggleMenu("unas")
         return False
 
-    while pyautogui.locateOnScreen("./screenshots/acceptUna.png", confidence = 0.75) != None:
-        x, y = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.75)
+    while pyautogui.locateOnScreen("./screenshots/acceptUna.png", confidence = 0.85) != None:
+        x, y = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.85)
         mouseMoveTo(x=x, y=y)
         sleep(100, 200)
         pydirectinput.click(button="left")
         sleep(1000, 1100)
 
     toggleMenu("unas")
-    sleep(2800, 2900)
+    sleep(800, 900)
 
-def walkWithAlt(lopangX, lopangY, milliseconds):
-    lopangX = lopangX
-    lopangY = lopangY
-    mouseMoveTo(x=lopangX, y=lopangY)
+def walkTo(x, y, ms):
+    mouseMoveTo(x=x, y=y)
     sleep(100, 100)
-    pydirectinput.click(x=lopangX, y=lopangY, button=config["move"])
-    sleep(milliseconds, milliseconds)
+    pydirectinput.click(x=x, y=y, button=config["move"])
+    sleep(ms, ms)
 
 
-def walkPressG(lopangX, lopangY, milliseconds):
-    timeCount = milliseconds / 100
-    while timeCount != 0:
-        lopangX = lopangX
-        lopangY = lopangY
-        mouseMoveTo(x=lopangX, y=lopangY)
-        sleep(100, 100)
-        pydirectinput.click(button=config["move"])
-        timeCount = timeCount - 1
-        if lopangX % 2 == 0:
-            pydirectinput.press(config["interact"])
+# def walkPressG(lopangX, lopangY, milliseconds):
+#     timeCount = milliseconds / 100
+#     while timeCount != 0:
+#         lopangX = lopangX
+#         lopangY = lopangY
+#         mouseMoveTo(x=lopangX, y=lopangY)
+#         sleep(100, 100)
+#         pydirectinput.click(button=config["move"])
+#         timeCount = timeCount - 1
+#         if lopangX % 2 == 0:
+#             pydirectinput.press(config["interact"])
 
 
 def spamInteract(milliseconds):
@@ -3728,7 +3658,8 @@ def doSailingWeekly(n):
         # open menu
         sleep(2000,2100)
         toggleMenu("unas")
-        sleep(5000,5100)
+        while pyautogui.locateOnScreen("./screenshots/menus/unasMenu.png", confidence = 0.95) == None:
+            sleep(200, 300)
         if i == 0:
             # select guild weekly
             mouseMoveTo(x=920, y=255)
@@ -3757,7 +3688,7 @@ def doSailingWeekly(n):
         sleep(1000, 1100)
         # close menu
         toggleMenu("unas")
-        sleep(2000,2100)
+        sleep(1000,1100)
         # move to second location
         mouseMoveTo(x=763, y=427)
         sleep(100, 100)
@@ -3804,72 +3735,72 @@ def doSailingWeekly(n):
     sleep(15000, 16000)
     
 
-def buyAuctionFirstFav():
-    while True:
-        # buying first fav item for 2g or under
-        gold2 = pyautogui.locateCenterOnScreen(
-            "./screenshots/gold2.png", region=(934, 415, 36, 20), confidence=0.9
-        )
-        gold1 = pyautogui.locateCenterOnScreen(
-            "./screenshots/gold1.png", region=(934, 415, 36, 20), confidence=0.9
-        )
-        if gold1 != None:
-            # click price input
-            mouseMoveTo(x=977, y=504)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            sleep(700, 800)
-            pydirectinput.press("9")
-            sleep(220, 230)
-            pydirectinput.press("9")
-            sleep(220, 230)
-            pydirectinput.press("9")
-            sleep(220, 230)
-            # click buy
-            mouseMoveTo(x=956, y=726)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            sleep(700, 800)
-            # click ok
-            mouseMoveTo(x=959, y=562)
-            sleep(1500, 1600)
-            pydirectinput.click(button="left")
-            sleep(3000, 3500)
+# def buyAuctionFirstFav():
+#     while True:
+#         # buying first fav item for 2g or under
+#         gold2 = pyautogui.locateCenterOnScreen(
+#             "./screenshots/gold2.png", region=(934, 415, 36, 20), confidence=0.9
+#         )
+#         gold1 = pyautogui.locateCenterOnScreen(
+#             "./screenshots/gold1.png", region=(934, 415, 36, 20), confidence=0.9
+#         )
+#         if gold1 != None:
+#             # click price input
+#             mouseMoveTo(x=977, y=504)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             sleep(700, 800)
+#             pydirectinput.press("9")
+#             sleep(220, 230)
+#             pydirectinput.press("9")
+#             sleep(220, 230)
+#             pydirectinput.press("9")
+#             sleep(220, 230)
+#             # click buy
+#             mouseMoveTo(x=956, y=726)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             sleep(700, 800)
+#             # click ok
+#             mouseMoveTo(x=959, y=562)
+#             sleep(1500, 1600)
+#             pydirectinput.click(button="left")
+#             sleep(3000, 3500)
 
-            # click mail
-            mouseMoveTo(x=304, y=144)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            sleep(1700, 1800)
-            # click first mail
-            mouseMoveTo(x=212, y=219)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            # click accept
-            mouseMoveTo(x=440, y=515)
-            sleep(1700, 1800)
-            pydirectinput.click(button="left")
-            # click delete
-            mouseMoveTo(x=518, y=515)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            sleep(1000, 1500)
-            # click
-            mouseMoveTo(x=1320, y=355)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            sleep(700, 800)
-            # click bottom right buy
-            mouseMoveTo(x=1416, y=828)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            sleep(500, 600)
-        else:
-            # click refresh
-            mouseMoveTo(x=1062, y=298)
-            sleep(700, 800)
-            pydirectinput.click(button="left")
-            sleep(700, 800)
+#             # click mail
+#             mouseMoveTo(x=304, y=144)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             sleep(1700, 1800)
+#             # click first mail
+#             mouseMoveTo(x=212, y=219)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             # click accept
+#             mouseMoveTo(x=440, y=515)
+#             sleep(1700, 1800)
+#             pydirectinput.click(button="left")
+#             # click delete
+#             mouseMoveTo(x=518, y=515)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             sleep(1000, 1500)
+#             # click
+#             mouseMoveTo(x=1320, y=355)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             sleep(700, 800)
+#             # click bottom right buy
+#             mouseMoveTo(x=1416, y=828)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             sleep(500, 600)
+#         else:
+#             # click refresh
+#             mouseMoveTo(x=1062, y=298)
+#             sleep(700, 800)
+#             pydirectinput.click(button="left")
+#             sleep(700, 800)
 
 
 def mouseMoveTo(**kwargs):
@@ -3922,24 +3853,24 @@ def waitForCityLoaded():
             print("city loaded")
             states["status"] = "inCity"
             break
-        sleep(5000, 6000)
+        sleep(2000, 3000)
 
-def cardEater():
-    #consume cards
-    for card in ["white", "green", "blue", "purple"]:
-        while True:
-            location = pyautogui.locateCenterOnScreen(
-                "./screenshots/"+card+"Card.png",
-                confidence=0.75)
-            if location == None:
-                break
-            else:
-                x, y = location
-                mouseMoveTo(x=x, y=y)
-                sleep(200, 400)
-                pydirectinput.click(x=x, y=y, button="right")
-                pydirectinput.click(x=x, y=y, button="right")
-                sleep(700, 1100)
+# def cardEater():
+#     #consume cards
+#     for card in ["white", "green", "blue", "purple"]:
+#         while True:
+#             location = pyautogui.locateCenterOnScreen(
+#                 "./screenshots/"+card+"Card.png",
+#                 confidence=0.75)
+#             if location == None:
+#                 break
+#             else:
+#                 x, y = location
+#                 mouseMoveTo(x=x, y=y)
+#                 sleep(200, 400)
+#                 pydirectinput.click(x=x, y=y, button="right")
+#                 pydirectinput.click(x=x, y=y, button="right")
+#                 sleep(700, 1100)
 
 def cleanInventory():
     # sleep(1000,1500)
