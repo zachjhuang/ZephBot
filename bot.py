@@ -520,6 +520,16 @@ def enterChaos():
                 print("no remaining aor on character, still have other chaos to run")
                 return
             
+
+            mouseMoveTo(x=886, y=346)
+            sleep(500, 600)
+            pydirectinput.click(button="left")
+            sleep(500, 600)
+            mouseMoveTo(x=886, y=346)
+            sleep(500, 600)
+            pydirectinput.click(button="left")
+            sleep(500, 600)
+
             weeklyPurificationClaimAll = pyautogui.locateCenterOnScreen("./screenshots/weeklyPurificationClaimAll.png", confidence = 0.85)
             if weeklyPurificationClaimAll != None:
                 x, y = weeklyPurificationClaimAll
@@ -529,16 +539,7 @@ def enterChaos():
                 mouseMoveTo(x=920, y=575)
                 sleep(500, 600)
                 pydirectinput.click(button="left")
-
-            mouseMoveTo(x=886, y=346)
-            sleep(500, 600)
-            pydirectinput.click(button="left")
-            sleep(500, 600)
-            mouseMoveTo(x=886, y=346)
-            sleep(500, 600)
-            pydirectinput.click(button="left")
-            sleep(500, 600)
-
+                
             for _ in range(2):
                 pydirectinput.click(x=1580, y=310, button="left") # right arrow
                 sleep(500, 600)
