@@ -536,10 +536,12 @@ def enterChaos():
                 mouseMoveTo(x=x, y=y)
                 sleep(500, 600)
                 pydirectinput.click(button="left")
+                sleep(500, 600)
                 mouseMoveTo(x=920, y=575)
                 sleep(500, 600)
                 pydirectinput.click(button="left")
-                
+                sleep(500, 600)
+
             for _ in range(2):
                 pydirectinput.click(x=1580, y=310, button="left") # right arrow
                 sleep(500, 600)
