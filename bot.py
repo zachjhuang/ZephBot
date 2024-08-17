@@ -490,12 +490,9 @@ def enterChaos():
 
             toggleMenu("chaos")
             waitForMenuLoaded("content")
-
-            noAura = pyautogui.locateOnScreen(
-                "./screenshots/noAuraOfResonance.png",
-                confidence=0.95
-            )
-            if noAura == None and config["performance"] == False:
+            aura = pyautogui.locateOnScreen("./screenshots/aura.png", confidence = 0.85)
+            noAura = pyautogui.locateOnScreen("./screenshots/noAura.png", confidence=0.85)
+            if aura != None and noAura == None and config["performance"] == False:
                 states["floor3Mode"] = True
                 # print("aor detected")
                 if (
@@ -514,7 +511,7 @@ def enterChaos():
                             states["multiCharacterModeState"]
                         )
                     )
-            elif noAura != None and sum(states["multiCharacterModeState"]) != 0:
+            elif aura == None and noAura != None and sum(states["multiCharacterModeState"]) != 0:
                 states["multiCharacterModeState"][states["currentCharacter"]] = 0
                 print("no remaining aor on character, still have other chaos to run")
                 return
@@ -1285,7 +1282,7 @@ def performClassSpecialty(i, abilities):
 
     elif (currentCharacterClass == "souleater"):
         if pyautogui.locateOnScreen(
-            "./screenshots/soulSnatch.png",
+            "./screenshots/classSpecialties/soulSnatch.png",
             region=config["regions"]["debuffs"],
             confidence=0.85,
         ) != None:
@@ -1298,7 +1295,7 @@ def performClassSpecialty(i, abilities):
 
     elif (currentCharacterClass == "slayer"):
         slayerSpecialty = pyautogui.locateOnScreen(
-            "./screenshots/slayerSpecialty.png",
+            "./screenshots/classSpecialties/slayerSpecialty.png",
             region=config["regions"]["specialty"],
             confidence=0.85,
         )
@@ -1308,7 +1305,7 @@ def performClassSpecialty(i, abilities):
 
     elif (currentCharacterClass == "deathblade"):
         threeOrbDeathTrance = pyautogui.locateOnScreen(
-            "./screenshots/deathTrance.png",
+            "./screenshots/classSpecialties/deathTrance.png",
             region=config["regions"]["specialty"],
             confidence=0.80,
         )
@@ -1318,30 +1315,30 @@ def performClassSpecialty(i, abilities):
 
     elif (currentCharacterClass == "gunslinger"):
         pistolStance = pyautogui.locateOnScreen(
-            "./screenshots/pistolStance.png",
+            "./screenshots/classSpecialties/pistolStance.png",
             region=(930, 819, 58, 56),
             confidence=0.75,
         )
         shotgunStance = pyautogui.locateOnScreen(
-            "./screenshots/shotgunStance.png",
+            "./screenshots/classSpecialties/shotgunStance.png",
             region=(930, 819, 58, 56),
             confidence=0.75,
         )
         sniperStance = pyautogui.locateOnScreen(
-            "./screenshots/sniperStance.png",
+            "./screenshots/classSpecialties/sniperStance.png",
             region=(930, 819, 58, 56),
             confidence=0.75,
         )
         # swap to shotgun
         if i == 0:
             if pyautogui.locateOnScreen(
-                "./screenshots/shotgunStance.png",
+                "./screenshots/classSpecialties/shotgunStance.png",
                 region=(930, 819, 58, 56),
                 confidence=0.75,
             ) == None:
                 diedCheck()
                 pistolStance = pyautogui.locateOnScreen(
-                    "./screenshots/pistolStance.png",
+                    "./screenshots/classSpecialties/pistolStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
@@ -1350,7 +1347,7 @@ def performClassSpecialty(i, abilities):
                     sleep(150, 160)
 
                 sniperStance = pyautogui.locateOnScreen(
-                    "./screenshots/sniperStance.png",
+                    "./screenshots/classSpecialties/sniperStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
@@ -1360,13 +1357,13 @@ def performClassSpecialty(i, abilities):
         # swap to sniper
         elif i < 3:
             if pyautogui.locateOnScreen(
-                "./screenshots/sniperStance.png",
+                "./screenshots/classSpecialties/sniperStance.png",
                 region=(930, 819, 58, 56),
                 confidence=0.75,
             ) == None:
                 diedCheck()
                 pistolStance = pyautogui.locateOnScreen(
-                    "./screenshots/pistolStance.png",
+                    "./screenshots/classSpecialties/pistolStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
@@ -1375,7 +1372,7 @@ def performClassSpecialty(i, abilities):
                     sleep(150, 160)
 
                 shotgunStance = pyautogui.locateOnScreen(
-                    "./screenshots/shotgunStance.png",
+                    "./screenshots/classSpecialties/shotgunStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
@@ -1385,13 +1382,13 @@ def performClassSpecialty(i, abilities):
         # swap to pistol
         else:
             if pyautogui.locateOnScreen(
-                "./screenshots/pistolStance.png",
+                "./screenshots/classSpecialties/pistolStance.png",
                 region=(930, 819, 58, 56),
                 confidence=0.75,
             ) == None:
                 diedCheck()
                 shotgunStance = pyautogui.locateOnScreen(
-                    "./screenshots/shotgunStance.png",
+                    "./screenshots/classSpecialties/shotgunStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
@@ -1400,7 +1397,7 @@ def performClassSpecialty(i, abilities):
                     sleep(150, 160)
 
                 sniperStance = pyautogui.locateOnScreen(
-                    "./screenshots/sniperStance.png",
+                    "./screenshots/classSpecialties/sniperStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
@@ -1410,7 +1407,7 @@ def performClassSpecialty(i, abilities):
 
     elif (currentCharacterClass == "artist"):
         artistOrb = pyautogui.locateOnScreen(
-            "./screenshots/artistOrb.png",
+            "./screenshots/classSpecialties/artistOrb.png",
             region=config["regions"]["specialty"],
             confidence=0.85,
         )
@@ -1423,7 +1420,7 @@ def performClassSpecialty(i, abilities):
 
     elif (currentCharacterClass == "aeromancer"):
         aeroSpecialty = pyautogui.locateOnScreen(
-            "./screenshots/aeroSpecialty.png",
+            "./screenshots/classSpecialties/aeroSpecialty.png",
             region=config["regions"]["specialty"],
             confidence=0.95,
         )
@@ -1433,7 +1430,7 @@ def performClassSpecialty(i, abilities):
 
     elif (currentCharacterClass == "scrapper"):
         scrapperSpecialty = pyautogui.locateOnScreen(
-            "./screenshots/scrapperSpecialty.png",
+            "./screenshots/classSpecialties/scrapperSpecialty.png",
             region=config["regions"]["specialty"],
             confidence=0.85,
         )
@@ -1456,7 +1453,7 @@ def performClassSpecialty(i, abilities):
     # bard courage
     if currentCharacterClass == "bard":
         courageBuffActive = pyautogui.locateOnScreen(
-            "./screenshots/bardCourage120.png",
+            "./screenshots/classSpecialties/bardCourage120.png",
             region=config["regions"]["buffs"],
             confidence=0.75,
         )
