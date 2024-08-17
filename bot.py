@@ -2692,7 +2692,7 @@ def offlineCheck():
             states["gameCrashCount"] = states["gameCrashCount"] + 1
             return True
         updateMembership = pyautogui.locateCenterOnScreen(
-            "./screenshots/updateMembership.png",
+            "./screenshots/GFN/updateMembership.png",
             region=config["regions"]["center"],
             confidence=0.8,
         )
