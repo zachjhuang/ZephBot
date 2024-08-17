@@ -221,15 +221,6 @@ def main():
                     sleep(1400, 1600)
                     doGuildDonation()
                     sleep(1400, 1600)
-                # rapport
-                # if (
-                #     config["enableRapport"]
-                #     and config["characters"][states["currentCharacter"]]["rapport"]
-                # ):
-                #     sleep(500, 1000)
-                #     print("Doing Rapport")
-                #     doRapport()
-                #     sleep(1400, 1600)
                 if gameCrashCheck():
                     states["status"] = "restart"
                     continue
@@ -3163,88 +3154,6 @@ def doGuildDonation():
     pydirectinput.press("esc")
     sleep(2800, 2900)
 
-
-# def doRapport():
-#     sleep(1000, 2000)
-#     print("doing Rapport")
-#     if gameCrashCheck():
-#         return
-#     if offlineCheck():
-#         return
-#     sleep(3500, 4600)
-#     # dorapport
-#     bifrostAvailable = bifrostGoTo(2)
-#     if bifrostAvailable == False:
-#         return
-#     if gameCrashCheck():
-#         return
-#     if offlineCheck():
-#         return
-#     songandemoterapport()
-
-
-# def songandemoterapport():
-#     print("song and emote for rapport")
-#     pydirectinput.keyDown("alt")
-#     sleep(800, 900)
-#     pydirectinput.press("w")
-#     sleep(800, 900)
-#     pydirectinput.keyUp("alt")
-#     sleep(800, 900)
-#     spamInteract(1000)
-#     sleep(2000, 3000)
-#     mouseMoveTo(x=105, y=870)
-#     sleep(200, 300)
-#     pydirectinput.click(button="left")
-#     sleep(200, 300)
-#     mouseMoveTo(x=1630, y=403)
-#     sleep(300, 600)
-#     pydirectinput.click(button="left")
-#     sleep(300, 600)
-#     mouseMoveTo(x=1676, y=551)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     sleep(30000, 31000)  # 1songduration
-#     mouseMoveTo(x=105, y=870)
-#     sleep(300, 600)
-#     pydirectinput.click(button="left")
-#     sleep(300, 600)
-#     mouseMoveTo(x=1676, y=452)
-#     sleep(300, 600)
-#     pydirectinput.click(button="left")
-#     sleep(300, 600)
-#     mouseMoveTo(x=1676, y=551)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     sleep(30000, 31000)  # 2songduration
-#     mouseMoveTo(x=118, y=904)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     sleep(300, 400)
-#     mouseMoveTo(x=155, y=454)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     sleep(300, 400)
-#     mouseMoveTo(x=203, y=595)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     sleep(17000, 20000)  # 1emoteduration
-#     mouseMoveTo(x=118, y=904)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     mouseMoveTo(x=311, y=454)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     sleep(300, 400)
-#     mouseMoveTo(x=203, y=595)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-#     sleep(17000, 20000)  # 2emoteduration
-#     mouseMoveTo(x=1832, y=900)
-#     sleep(300, 400)
-#     pydirectinput.click(button="left")
-
-
 def doLopang():
     sleep(1000, 2000)
     print("accepting lopang daily")
@@ -3624,20 +3533,6 @@ def walkTo(x, y, ms):
     pydirectinput.click(x=x, y=y, button=config["move"])
     sleep(ms, ms)
 
-
-# def walkPressG(lopangX, lopangY, milliseconds):
-#     timeCount = milliseconds / 100
-#     while timeCount != 0:
-#         lopangX = lopangX
-#         lopangY = lopangY
-#         mouseMoveTo(x=lopangX, y=lopangY)
-#         sleep(100, 100)
-#         pydirectinput.click(button=config["move"])
-#         timeCount = timeCount - 1
-#         if lopangX % 2 == 0:
-#             pydirectinput.press(config["interact"])
-
-
 def spamInteract(milliseconds):
     timeCount = milliseconds / 100
     while timeCount != 0:
@@ -3730,82 +3625,12 @@ def doSailingWeekly(n):
     sleep(500, 600)
     pydirectinput.click(button="left")
     sleep(15000, 16000)
-    
-
-# def buyAuctionFirstFav():
-#     while True:
-#         # buying first fav item for 2g or under
-#         gold2 = pyautogui.locateCenterOnScreen(
-#             "./screenshots/gold2.png", region=(934, 415, 36, 20), confidence=0.9
-#         )
-#         gold1 = pyautogui.locateCenterOnScreen(
-#             "./screenshots/gold1.png", region=(934, 415, 36, 20), confidence=0.9
-#         )
-#         if gold1 != None:
-#             # click price input
-#             mouseMoveTo(x=977, y=504)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             sleep(700, 800)
-#             pydirectinput.press("9")
-#             sleep(220, 230)
-#             pydirectinput.press("9")
-#             sleep(220, 230)
-#             pydirectinput.press("9")
-#             sleep(220, 230)
-#             # click buy
-#             mouseMoveTo(x=956, y=726)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             sleep(700, 800)
-#             # click ok
-#             mouseMoveTo(x=959, y=562)
-#             sleep(1500, 1600)
-#             pydirectinput.click(button="left")
-#             sleep(3000, 3500)
-
-#             # click mail
-#             mouseMoveTo(x=304, y=144)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             sleep(1700, 1800)
-#             # click first mail
-#             mouseMoveTo(x=212, y=219)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             # click accept
-#             mouseMoveTo(x=440, y=515)
-#             sleep(1700, 1800)
-#             pydirectinput.click(button="left")
-#             # click delete
-#             mouseMoveTo(x=518, y=515)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             sleep(1000, 1500)
-#             # click
-#             mouseMoveTo(x=1320, y=355)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             sleep(700, 800)
-#             # click bottom right buy
-#             mouseMoveTo(x=1416, y=828)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             sleep(500, 600)
-#         else:
-#             # click refresh
-#             mouseMoveTo(x=1062, y=298)
-#             sleep(700, 800)
-#             pydirectinput.click(button="left")
-#             sleep(700, 800)
-
 
 def mouseMoveTo(**kwargs):
     x = kwargs["x"]
     y = kwargs["y"]
     pydirectinput.moveTo(x=x, y=y)
     pydirectinput.moveTo(x=x, y=y)
-
 
 def goInvisible():
     # pydirectinput.press(config["friends"])
@@ -3855,23 +3680,6 @@ def waitForCityLoaded():
 def waitForMenuLoaded(menu):
     while pyautogui.locateOnScreen("./screenshots/menus/" + menu + "Menu.png", confidence = 0.85) == None:
         sleep(200, 300)
-
-# def cardEater():
-#     #consume cards
-#     for card in ["white", "green", "blue", "purple"]:
-#         while True:
-#             location = pyautogui.locateCenterOnScreen(
-#                 "./screenshots/"+card+"Card.png",
-#                 confidence=0.75)
-#             if location == None:
-#                 break
-#             else:
-#                 x, y = location
-#                 mouseMoveTo(x=x, y=y)
-#                 sleep(200, 400)
-#                 pydirectinput.click(x=x, y=y, button="right")
-#                 pydirectinput.click(x=x, y=y, button="right")
-#                 sleep(700, 1100)
 
 def cleanInventory():
     # sleep(1000,1500)
