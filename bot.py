@@ -854,7 +854,7 @@ def quitChaos():
             states["status"] = "restart"
             return
         leaveButton = pyautogui.locateCenterOnScreen(
-            "./screenshots/leave.png",
+            "./screenshots/chaos/leave.png",
             grayscale=True,
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
@@ -941,7 +941,7 @@ def restartChaos():
 
     while True:
         selectLevelButton = pyautogui.locateCenterOnScreen(
-            "./screenshots/selectLevel.png",
+            "./screenshots/chaos/selectLevel.png",
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
         )
@@ -1550,28 +1550,28 @@ def checkPortal():
     if config["performance"] == False:
         # check portal image
         portal = pyautogui.locateCenterOnScreen(
-            "./screenshots/portal.png",
+            "./screenshots/chaos/portal.png",
             region=config["regions"]["minimap"],
             confidence=0.7,
         )
         portalTop = pyautogui.locateCenterOnScreen(
-            "./screenshots/portalTop.png",
+            "./screenshots/chaos/portalTop.png",
             region=config["regions"]["minimap"],
             confidence=0.7,
         )
         portalBot = pyautogui.locateCenterOnScreen(
-            "./screenshots/portalBot.png",
+            "./screenshots/chaos/portalBot.png",
             region=config["regions"]["minimap"],
             confidence=0.7,
         )
         """
         portalLeft = pyautogui.locateCenterOnScreen(
-            "./screenshots/portalLeft.png",
+            "./screenshots/chaos/portalLeft.png",
             region=config["regions"]["minimap"],
             confidence=0.9,
         )
         portalRight = pyautogui.locateCenterOnScreen(
-            "./screenshots/portalRight.png",
+            "./screenshots/chaos/portalRight.png",
             region=config["regions"]["minimap"],
             confidence=0.9,
         )
@@ -1739,7 +1739,7 @@ def checkFloor2Mob():
 def checkFloor2Boss():
     fightFloor2Boss()
     bossLocation = pyautogui.locateCenterOnScreen(
-        "./screenshots/boss.png", confidence=0.65, region=config["regions"]["minimap"]
+        "./screenshots/chaos/boss.png", confidence=0.65, region=config["regions"]["minimap"]
     )
     if bossLocation != None:
         left, top = bossLocation
@@ -1776,12 +1776,12 @@ def checkFloor2Boss():
 
 def clickTower():
     riftCore1 = pyautogui.locateCenterOnScreen(
-        "./screenshots/riftcore1.png",
+        "./screenshots/chaos/riftcore1.png",
         confidence=0.6,
         region=config["regions"]["portal"],
     )
     riftCore2 = pyautogui.locateCenterOnScreen(
-        "./screenshots/riftcore2.png",
+        "./screenshots/chaos/riftcore2.png",
         confidence=0.6,
         region=config["regions"]["portal"],
     )
@@ -1825,17 +1825,17 @@ def clickTower():
 
 def checkFloor3Tower():
     tower = pyautogui.locateCenterOnScreen(
-        "./screenshots/tower.png", 
+        "./screenshots/chaos/tower.png", 
         region=config["regions"]["minimap"], 
         confidence=0.7
     )
     towerTop = pyautogui.locateCenterOnScreen(
-        "./screenshots/towerTop.png",
+        "./screenshots/chaos/towerTop.png",
         region=config["regions"]["minimap"],
         confidence=0.7,
     )
     towerBot = pyautogui.locateCenterOnScreen(
-        "./screenshots/towerBot.png",
+        "./screenshots/chaos/towerBot.png",
         region=config["regions"]["minimap"],
         confidence=0.7,
     )
@@ -1899,11 +1899,11 @@ def checkFloor3Tower():
 
 def checkChaosFinish():
     clearOk = pyautogui.locateCenterOnScreen(
-        "./screenshots/clearOk.png", confidence=0.75, region=(625, 779, 500, 155)
+        "./screenshots/chaos/clearOk.png", confidence=0.75, region=(625, 779, 500, 155)
     )
     """
     selectLevelButton = pyautogui.locateCenterOnScreen(
-    "./screenshots/selectLevel.png",
+    "./screenshots/chaos/selectLevel.png",
     confidence=0.8,
     region=config["regions"]["leaveMenu"],
     )
@@ -1941,7 +1941,7 @@ def checkChaosFinish():
 
 def fightFloor2Boss():
     if pyautogui.locateOnScreen(
-        "./screenshots/bossBar.png", confidence=0.8, region=(406, 159, 1000, 200)
+        "./screenshots/chaos/bossBar.png", confidence=0.8, region=(406, 159, 1000, 200)
     ):
         # print("boss bar located")
         mouseMoveTo(x=states["moveToX"], y=states["moveToY"])
@@ -2322,7 +2322,7 @@ def waitForLoading():
             sleep(10000, 15000)
             return
         leaveButton = pyautogui.locateOnScreen(
-            "./screenshots/leave.png",
+            "./screenshots/chaos/leave.png",
             grayscale=True,
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
@@ -2370,7 +2370,7 @@ def saveAbilitiesScreenshots():
 
 def diedCheck():  # get information about wait a few second to revive
     if pyautogui.locateOnScreen(
-        "./screenshots/died.png",
+        "./screenshots/chaos/died.png",
         grayscale=True,
         confidence=0.8,
         region=(917, 145, 630, 550),
@@ -2380,7 +2380,7 @@ def diedCheck():  # get information about wait a few second to revive
         sleep(5000, 5500)
         while (
             pyautogui.locateOnScreen(
-                "./screenshots/resReady.png",
+                "./screenshots/chaos/resReady.png",
                 confidence=0.7,
                 region=(917, 145, 630, 550),
             )
@@ -2484,7 +2484,7 @@ def healthCheck():
         print("health pot pressed")
         # print(r1, r2, r3)
         leaveButton = pyautogui.locateCenterOnScreen(
-            "./screenshots/leave.png",
+            "./screenshots/chaos/leave.png",
             grayscale=True,
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
@@ -2505,7 +2505,7 @@ def clearQuest():
         "./screenshots/leveledup.png", confidence=0.9, region=(815, 600, 250, 200)
     )
     gameMenu = pyautogui.locateCenterOnScreen(
-        "./screenshots/gameMenu.png",
+        "./screenshots/menus/gameMenu.png",
         confidence=0.95,
         region=config["regions"]["center"],
     )
@@ -2611,7 +2611,7 @@ def gameCrashCheck():
     # should put these in crash check instead? No because it requires one more click
     if config["GFN"] == True:
         sessionLimitReached = pyautogui.locateCenterOnScreen(
-            "./screenshots/sessionLimitReached.png",
+            "./screenshots/GFN/sessionLimitReached.png",
             region=config["regions"]["center"],
             confidence=0.8,
         )
@@ -2627,7 +2627,7 @@ def gameCrashCheck():
             states["gameCrashCount"] = states["gameCrashCount"] + 1
             return True
         inactiveGFN = pyautogui.locateCenterOnScreen(
-            "./screenshots/inactiveGFN.png",
+            "./screenshots/GFN/inactiveGFN.png",
             region=config["regions"]["center"],
             confidence=0.8,
         )
@@ -2676,7 +2676,7 @@ def offlineCheck():
     # should put these in crash check instead? No because it requires one more click
     if config["GFN"] == True:
         sessionLimitReached = pyautogui.locateCenterOnScreen(
-            "./screenshots/sessionLimitReached.png",
+            "./screenshots/GFN/sessionLimitReached.png",
             region=config["regions"]["center"],
             confidence=0.8,
         )
@@ -2708,7 +2708,7 @@ def offlineCheck():
             states["gameCrashCount"] = states["gameCrashCount"] + 1
             return True
         inactiveGFN = pyautogui.locateCenterOnScreen(
-            "./screenshots/inactiveGFN.png",
+            "./screenshots/GFN/inactiveGFN.png",
             region=config["regions"]["center"],
             confidence=0.9,
         )
@@ -2788,11 +2788,11 @@ def restartGame():
         if config["GFN"] == True:
             sleep(10000, 12000)
             loaGFN = pyautogui.locateCenterOnScreen(
-                "./screenshots/loaGFN.png",
+                "./screenshots/GFN/loaGFN.png",
                 confidence=0.8,
             )
             loaGFNplay = pyautogui.locateCenterOnScreen(
-                "./screenshots/loaGFNplay.png",
+                "./screenshots/GFN/loaGFNplay.png",
                 confidence=0.8,
             )
             if loaGFNplay != None:
@@ -2812,12 +2812,12 @@ def restartGame():
                 sleep(40000, 42000)
                 break
             afkGFN = pyautogui.locateCenterOnScreen(
-                "./screenshots/afkGFN.png",
+                "./screenshots/GFN/afkGFN.png",
                 region=config["regions"]["center"],
                 confidence=0.75,
             )
             closeGFN = pyautogui.locateCenterOnScreen(
-                "./screenshots/closeGFN.png",
+                "./screenshots/GFN/closeGFN.png",
                 confidence=0.75,
             )
             if closeGFN != None:
@@ -2985,7 +2985,7 @@ def switchToCharacter(index):
     sleep(1500, 1600)
     print("switching to {}".format(index))
     while pyautogui.locateCenterOnScreen(
-        "./screenshots/gameMenu.png",
+        "./screenshots/menus/gameMenu.png",
         confidence=0.7
     ) == None:
         pydirectinput.press("esc")
