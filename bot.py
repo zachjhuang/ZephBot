@@ -489,12 +489,11 @@ def enterChaos():
                     sleep(5000, 6000)
 
             toggleMenu("chaos")
-            if config["GFN"] == True and len(states["abilityScreenshots"]) < 8:
-                sleep(2000, 2400)
+            waitForMenuLoaded("content")
 
             noAura = pyautogui.locateOnScreen(
                 "./screenshots/noAuraOfResonance.png",
-                confidence=0.85
+                confidence=0.95
             )
             if noAura == None and config["performance"] == False:
                 states["floor3Mode"] = True
@@ -536,11 +535,11 @@ def enterChaos():
                 mouseMoveTo(x=x, y=y)
                 sleep(500, 600)
                 pydirectinput.click(button="left")
-                sleep(500, 600)
+                sleep(1000, 1100)
                 mouseMoveTo(x=920, y=575)
                 sleep(500, 600)
                 pydirectinput.click(button="left")
-                sleep(500, 600)
+                sleep(1000, 1100)
 
             for _ in range(2):
                 pydirectinput.click(x=1580, y=310, button="left") # right arrow
@@ -3088,8 +3087,7 @@ def switchToCharacter(index):
 
 def doGuildDonation():
     toggleMenu("guild")
-    while pyautogui.locateOnScreen("./screenshots/menus/guildMenu.png", confidence=0.75) == None:
-        sleep(200,300)
+    waitForMenuLoaded("guild")
 
     ok = pyautogui.locateCenterOnScreen(
         "./screenshots/ok.png", region=config["regions"]["center"], confidence=0.75
@@ -3374,12 +3372,13 @@ def doHesteraGardenUna():
     toggleMenu("defaultCombatPreset")
 
 def doSageTowerUna():
-    spamInteract(12000)
+    while pyautogui.locateOnScreen("./screenshots/sageTowerCompleted.png", region = (1700,220,100,150), confidence = 0.75) == None:
+        spamInteract(1000)
     mouseMoveTo(x=1560, y=540)
     sleep(500, 600)
     pydirectinput.click(x=1560, y=540, button=config["move"])
     sleep(500, 600)
-    spamInteract(5000)
+    spamInteract(3000)
 
 def doSouthKurzanUna():
     toggleMenu("unaTaskCombatPreset")
@@ -3458,8 +3457,9 @@ def toggleMenu(menuType):
 
 def bifrostGoTo(location):
     print("bifrost to: {}".format(location))
-    toggleMenu("bifrost")
-    sleep(1500, 1600)
+    if pyautogui.locateOnScreen("./screenshots/menus/bifrostMenu.png", confidence = 0.85) == None:
+        toggleMenu("bifrost")
+    waitForMenuLoaded("bifrost")
     bifrost = pyautogui.locateCenterOnScreen("./screenshots/bifrosts/" + location + "Bifrost.png", confidence=0.80)
     if bifrost == None:
         print(location + " bifrost not found, skipping")
@@ -3580,10 +3580,8 @@ def checkBlueCrystal():
 
 
 def acceptDailies():
-    sleep(5000, 6000)
     toggleMenu("unas")
-    while pyautogui.locateOnScreen("./screenshots/menus/unasMenu.png", confidence = 0.95) == None:
-        sleep(200, 300)
+    waitForMenuLoaded("unas")
     # switch to daily tab
     if pyautogui.locateOnScreen("./screenshots/dailyTabActive.png", confidence = 0.95) == None:
         mouseMoveTo(x=550, y=255)
@@ -3613,17 +3611,12 @@ def acceptDailies():
         toggleMenu("unas")
         return False
 
-    while True:
-        acceptUna = pyautogui.locateCenterOnScreen("./screenshots/acceptUna.png", confidence = 0.85)
-        if acceptUna != None:
-            x, y = acceptUna
-            mouseMoveTo(x=x, y=y)
-            sleep(100, 200)
-            pydirectinput.click(button="left")
-            sleep(1000, 1100)
-        else:
-            break
-
+    acceptButtonRegions = list(pyautogui.locateAllOnScreen("./screenshots/acceptUna.png", region = (1165, 380, 80, 330), confidence = 0.85))
+    for region in acceptButtonRegions:
+        mouseMoveTo(x=region.left, y=region.top)
+        sleep(100, 150)
+        pydirectinput.click(button="left")
+        sleep(100, 150)
 
     toggleMenu("unas")
     sleep(800, 900)
@@ -3666,8 +3659,7 @@ def doSailingWeekly(n):
         # open menu
         sleep(2000,2100)
         toggleMenu("unas")
-        while pyautogui.locateOnScreen("./screenshots/menus/unasMenu.png", confidence = 0.95) == None:
-            sleep(200, 300)
+        waitForMenuLoaded("unas")
         if i == 0:
             # select guild weekly
             mouseMoveTo(x=920, y=255)
@@ -3862,6 +3854,10 @@ def waitForCityLoaded():
             states["status"] = "inCity"
             break
         sleep(2000, 3000)
+
+def waitForMenuLoaded(menu):
+    while pyautogui.locateOnScreen("./screenshots/menus/" + menu + "Menu.png", confidence = 0.85) == None:
+        sleep(200, 300)
 
 # def cardEater():
 #     #consume cards
