@@ -425,259 +425,192 @@ def main():
 
 
 def enterChaos():
-    blackScreenStartTime = int(time.time_ns() / 1000000)
-    if config["shortcutEnterChaos"] == True:
-        # wait for last run black screen
+    if gameCrashCheck():
+        return
+    if offlineCheck():
+        closeGameByClickingDialogue()
+        return
+    sleep(1000, 1200)
+
+    # check if in chaos from disconenct->restart
+    inChaos = pyautogui.locateCenterOnScreen(
+        "./screenshots/inChaos.png",
+        confidence=0.75,
+        region=(247, 146, 222, 50),
+    )
+    if inChaos is not None:
+        print("still in the last chaos run, quitting")
+        quitChaos()
+        sleep(5000, 6000)
+        # incity check
         while True:
-            im = pyautogui.screenshot(region=(1652, 168, 240, 210))
-            r, g, b = im.getpixel((1772 - 1652, 272 - 168))
-            if r + g + b > 10:
-                break
-            sleep(200, 300)
-
-            currentTime = int(time.time_ns() / 1000000)
-            if currentTime - blackScreenStartTime > config["blackScreenTimeLimit"]:
-                pydirectinput.keyDown("alt")
-                sleep(350, 400)
-                pydirectinput.keyDown("f4")
-                sleep(350, 400)
-                pydirectinput.keyUp("alt")
-                sleep(350, 400)
-                pydirectinput.keyUp("f4")
-                sleep(350, 400)
-                sleep(10000, 15000)
-                return
-        sleep(600, 800)
-        while True:
-            if gameCrashCheck():
-                return
-            if offlineCheck():
-                closeGameByClickingDialogue()
-                return
-            sleep(1000, 1200)
-
-            # check if in chaos from disconenct->restart
-            inChaos = pyautogui.locateCenterOnScreen(
-                "./screenshots/inChaos.png",
+            inTown = pyautogui.locateCenterOnScreen(
+                "./screenshots/inTown.png",
                 confidence=0.75,
-                region=(247, 146, 222, 50),
+                region=(1870, 133, 25, 30),
             )
-            if inChaos is not None:
-                print("still in the last chaos run, quitting")
-                quitChaos()
-                sleep(5000, 6000)
-                # incity check
-                while True:
-                    inTown = pyautogui.locateCenterOnScreen(
-                        "./screenshots/inTown.png",
-                        confidence=0.75,
-                        region=(1870, 133, 25, 30),
-                    )
-                    if inTown is not None:
-                        print("city loaded")
-                        states["status"] = "inCity"
-                        break
-                    sleep(5000, 6000)
-
-            toggleMenu("chaos")
-            waitForMenuLoaded("content")
-            aura100 = pyautogui.locateOnScreen("./screenshots/aura100.png", region = (760, 345, 70, 30), confidence = 0.95)
-            aura50 = pyautogui.locateOnScreen("./screenshots/aura50.png", region = (760, 345, 70, 30), confidence = 0.95)
-            aura0 = pyautogui.locateOnScreen("./screenshots/aura0.png", region = (760, 345, 70, 30), confidence = 0.95)
-            if aura100 is not None and config["performance"] == False:
-                states["floor3Mode"] = True
-                # print("aor detected")
-                if (
-                    config["enableMultiCharacterMode"] == True
-                    and states["currentCharacter"] == config["mainCharacter"]
-                    and states["multiCharacterMode"] == False
-                ):
-                    states["multiCharacterMode"] = True
-                    states["doChaos"] = True
-                    states["doGuild"] = True
-                    states["doUnas"] = True
-                    for i in range(len(config["characters"])):
-                        states["multiCharacterModeState"].append(2)
-                    print(
-                        "aura of resonance detected, running full runs on characters: {}".format(
-                            states["multiCharacterModeState"]
-                        )
-                    )
-            elif aura50 is not None:
-                states["multiCharacterModeState"][states["currentCharacter"]] = 1
-            elif aura0 is not None and sum(states["multiCharacterModeState"]) != 0:
-                states["multiCharacterModeState"][states["currentCharacter"]] = 0
-                print("no remaining aor on character, still have other chaos to run")
-                return
-            
-
-            mouseMoveTo(x=886, y=346)
-            sleep(500, 600)
-            pydirectinput.click(button="left")
-            sleep(500, 600)
-            mouseMoveTo(x=886, y=346)
-            sleep(500, 600)
-            pydirectinput.click(button="left")
-            sleep(500, 600)
-
-            weeklyPurificationClaimAll = pyautogui.locateCenterOnScreen("./screenshots/weeklyPurificationClaimAll.png", confidence = 0.85)
-            if weeklyPurificationClaimAll is not None:
-                x, y = weeklyPurificationClaimAll
-                mouseMoveTo(x=x, y=y)
-                sleep(500, 600)
-                pydirectinput.click(button="left")
-                sleep(1500, 1600)
-                mouseMoveTo(x=920, y=575)
-                sleep(500, 600)
-                pydirectinput.click(button="left")
-                sleep(1500, 1600)
-
-            for _ in range(2):
-                pydirectinput.click(x=1580, y=310, button="left") # right arrow
-                sleep(500, 600)
-
-            # select chaos dungeon level based on current Character
-            _curr = config["characters"][states["currentCharacter"]]
-            punikaChaosTabLoc = [1020, 307]
-            svernChaosTabLoc = [1160, 307]
-            elgaciaChaosTabLoc = [1300, 307]
-            voldisChaosTabLoc = [1440, 307]
-            chaosTabPosition = {
-                # punika
-                1100: [punikaChaosTabLoc, [624, 400]],
-                1310: [punikaChaosTabLoc, [624, 455]],
-                1325: [punikaChaosTabLoc, [624, 505]],
-                1340: [punikaChaosTabLoc, [624, 555]],
-                1355: [punikaChaosTabLoc, [624, 605]],
-                1370: [punikaChaosTabLoc, [624, 660]],
-                1385: [punikaChaosTabLoc, [624, 715]],
-                1400: [punikaChaosTabLoc, [624, 770]],
-                # south vern
-                1415: [svernChaosTabLoc, [624, 400]],
-                1445: [svernChaosTabLoc, [624, 455]],
-                1475: [svernChaosTabLoc, [624, 505]],
-                1490: [svernChaosTabLoc, [624, 555]],
-                1520: [svernChaosTabLoc, [624, 605]],
-                1540: [svernChaosTabLoc, [624, 660]],
-                1560: [svernChaosTabLoc, [624, 715]],
-                # elgacia
-                1580: [elgaciaChaosTabLoc, [624, 400]],
-                1600: [elgaciaChaosTabLoc, [624, 455]],
-                # voldis
-                1610: [voldisChaosTabLoc, [624, 400]],
-                1630: [voldisChaosTabLoc, [624, 455]],
-            }
-            if states["multiCharacterMode"] or aura0 is None:
-                mouseMoveTo(
-                    x=chaosTabPosition[_curr["ilvl-aor"]][0][0],
-                    y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
-                )
-                sleep(800, 900)
-                pydirectinput.click(button="left")
-                sleep(500, 600)
-                pydirectinput.click(button="left")
-                sleep(500, 600)
-                mouseMoveTo(
-                    x=chaosTabPosition[_curr["ilvl-aor"]][1][0],
-                    y=chaosTabPosition[_curr["ilvl-aor"]][1][1],
-                )
-                sleep(800, 900)
-                pydirectinput.click(button="left")
-                sleep(500, 600)
-                pydirectinput.click(button="left",)
-                sleep(500, 600)
-            else:
-                mouseMoveTo(
-                    x=chaosTabPosition[_curr["ilvl-endless"]][0][0],
-                    y=chaosTabPosition[_curr["ilvl-endless"]][0][1],
-                )
-                sleep(800, 900)
-                pydirectinput.click(button="left")
-                sleep(500, 600)
-                pydirectinput.click(button="left")
-                sleep(500, 600)
-                mouseMoveTo(
-                    x=chaosTabPosition[_curr["ilvl-endless"]][1][0],
-                    y=chaosTabPosition[_curr["ilvl-endless"]][1][1],
-                )
-                sleep(800, 900)
-                pydirectinput.click(button="left")
-                sleep(500, 600)
-                pydirectinput.click(button="left")
-                sleep(500, 600)
-
-            enterButton = pyautogui.locateCenterOnScreen(
-                "./screenshots/enterButton.png",
-                confidence=0.75,
-                region=(1380, 760, 210, 60),
-            )
-            if enterButton is not None:
-                x, y = enterButton
-                mouseMoveTo(x=x, y=y)
-                sleep(800, 900)
-                pydirectinput.click(button="left")
-                sleep(100, 200)
-                pydirectinput.click(button="left")
+            if inTown is not None:
+                print("city loaded")
+                states["status"] = "inCity"
                 break
-            else:
-                mouseMoveTo(x=886, y=346)
-                sleep(800, 900)
-                pydirectinput.click(button="left")
-                sleep(200, 300)
-                pydirectinput.click(button="left")
-                sleep(1800, 1900)
+            sleep(5000, 6000)
 
+    toggleMenu("chaos")
+    waitForMenuLoaded("content")
+    aura100 = pyautogui.locateOnScreen("./screenshots/aura100.png", region = (760, 345, 70, 30), confidence = 0.95)
+    aura50 = pyautogui.locateOnScreen("./screenshots/aura50.png", region = (760, 345, 70, 30), confidence = 0.95)
+    aura0 = pyautogui.locateOnScreen("./screenshots/aura0.png", region = (760, 345, 70, 30), confidence = 0.95)
+    if aura100 is not None and config["performance"] == False:
+        states["floor3Mode"] = True
+        # print("aor detected")
+        if (
+            config["enableMultiCharacterMode"] == True
+            and states["currentCharacter"] == config["mainCharacter"]
+            and states["multiCharacterMode"] == False
+        ):
+            states["multiCharacterMode"] = True
+            states["doChaos"] = True
+            states["doGuild"] = True
+            states["doUnas"] = True
+            for i in range(len(config["characters"])):
+                states["multiCharacterModeState"].append(2)
+            print(
+                "aura of resonance detected, running full runs on characters: {}".format(
+                    states["multiCharacterModeState"]
+                )
+            )
+    elif aura50 is not None:
+        states["multiCharacterModeState"][states["currentCharacter"]] = 1
+    elif aura0 is not None and sum(states["multiCharacterModeState"]) != 0:
+        states["multiCharacterModeState"][states["currentCharacter"]] = 0
+        print("no remaining aor on character, still have other chaos to run")
+        return
     else:
-        while True:
-            if gameCrashCheck():
-                return
-            if offlineCheck():
-                closeGameByClickingDialogue()
-                return
-            enterHand = pyautogui.locateOnScreen(
-                "./screenshots/enterChaos.png", confidence=config["confidenceForGFN"]
-            )
-            if enterHand is not None:
-                print("entering chaos...")
-                pydirectinput.press(config["interact"])
-                break
-            sleep(200, 300)
-    sleep(500, 600)
-    while True:
-        if gameCrashCheck():
-            return
-        # if offlineCheck():
-        #     closeGameByClickingDialogue()
-        #     return
-        dc = pyautogui.locateOnScreen(
-            "./screenshots/dc.png",
-            region=config["regions"]["center"],
-            confidence=config["confidenceForGFN"],
-        )
-        enterServer = pyautogui.locateCenterOnScreen(
-            "./screenshots/enterServer.png", confidence=0.95, region=(885, 801, 160, 55)
-        )
-        if dc is not None or enterServer is not None:
-            closeGameByClickingDialogue()
-            return
+        return
 
-        acceptButton = pyautogui.locateCenterOnScreen(
-            "./screenshots/acceptButton.png",
-            confidence=0.75,
-            region=config["regions"]["center"],
+    mouseMoveTo(x=886, y=346)
+    sleep(500, 600)
+    pydirectinput.click(button="left")
+    sleep(500, 600)
+    pydirectinput.click(button="left")
+    sleep(500, 600)
+
+    weeklyPurificationClaimAll = pyautogui.locateCenterOnScreen("./screenshots/weeklyPurificationClaimAll.png", confidence = 0.85)
+    if weeklyPurificationClaimAll is not None:
+        x, y = weeklyPurificationClaimAll
+        mouseMoveTo(x=x, y=y)
+        sleep(500, 600)
+        pydirectinput.click(button="left")
+        sleep(1500, 1600)
+        mouseMoveTo(x=920, y=575)
+        sleep(500, 600)
+        pydirectinput.click(button="left")
+        sleep(1500, 1600)
+
+    for _ in range(2):
+        pydirectinput.click(x=1580, y=310, button="left") # right arrow
+        sleep(500, 600)
+
+    # select chaos dungeon level based on current Character
+    _curr = config["characters"][states["currentCharacter"]]
+    punikaChaosTabLoc = [1020, 307]
+    svernChaosTabLoc = [1160, 307]
+    elgaciaChaosTabLoc = [1300, 307]
+    voldisChaosTabLoc = [1440, 307]
+    chaosTabPosition = {
+        # punika
+        1100: [punikaChaosTabLoc, [624, 400]],
+        1310: [punikaChaosTabLoc, [624, 455]],
+        1325: [punikaChaosTabLoc, [624, 505]],
+        1340: [punikaChaosTabLoc, [624, 555]],
+        1355: [punikaChaosTabLoc, [624, 605]],
+        1370: [punikaChaosTabLoc, [624, 660]],
+        1385: [punikaChaosTabLoc, [624, 715]],
+        1400: [punikaChaosTabLoc, [624, 770]],
+        # south vern
+        1415: [svernChaosTabLoc, [624, 400]],
+        1445: [svernChaosTabLoc, [624, 455]],
+        1475: [svernChaosTabLoc, [624, 505]],
+        1490: [svernChaosTabLoc, [624, 555]],
+        1520: [svernChaosTabLoc, [624, 605]],
+        1540: [svernChaosTabLoc, [624, 660]],
+        1560: [svernChaosTabLoc, [624, 715]],
+        # elgacia
+        1580: [elgaciaChaosTabLoc, [624, 400]],
+        1600: [elgaciaChaosTabLoc, [624, 455]],
+        # voldis
+        1610: [voldisChaosTabLoc, [624, 400]],
+        1630: [voldisChaosTabLoc, [624, 455]],
+    }
+    if states["multiCharacterMode"] or aura0 is None:
+        mouseMoveTo(
+            x=chaosTabPosition[_curr["ilvl-aor"]][0][0],
+            y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
         )
-        if acceptButton is not None:
-            x, y = acceptButton
-            mouseMoveTo(x=x, y=y)
-            sleep(200, 300)
-            pydirectinput.click(x=x, y=y, button="left")
-            sleep(100, 200)
-            pydirectinput.click(x=x, y=y, button="left")
-            break
+        sleep(800, 900)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        mouseMoveTo(
+            x=chaosTabPosition[_curr["ilvl-aor"]][1][0],
+            y=chaosTabPosition[_curr["ilvl-aor"]][1][1],
+        )
+        sleep(800, 900)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        pydirectinput.click(button="left",)
+        sleep(500, 600)
+    else:
+        mouseMoveTo(
+            x=chaosTabPosition[_curr["ilvl-endless"]][0][0],
+            y=chaosTabPosition[_curr["ilvl-endless"]][0][1],
+        )
+        sleep(800, 900)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        mouseMoveTo(
+            x=chaosTabPosition[_curr["ilvl-endless"]][1][0],
+            y=chaosTabPosition[_curr["ilvl-endless"]][1][1],
+        )
+        sleep(800, 900)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+
+    enterButton = pyautogui.locateCenterOnScreen(
+        "./screenshots/enterButton.png",
+        confidence=0.75,
+        region=(1380, 760, 210, 60),
+    )
+    if enterButton is not None:
+        x, y = enterButton
+        mouseMoveTo(x=x, y=y)
+        sleep(200, 300)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        pydirectinput.click(button="left")
+
+    sleep(500, 600)
+
+    acceptButton = pyautogui.locateCenterOnScreen(
+        "./screenshots/acceptButton.png",
+        confidence=0.75,
+        region=config["regions"]["center"],
+    )
+    if acceptButton is not None:
+        x, y = acceptButton
+        mouseMoveTo(x=x, y=y)
+        sleep(200, 300)
+        pydirectinput.click(button="left")
+        sleep(500, 600)
+        pydirectinput.click(button="left")
         sleep(500, 600)
     states["status"] = "floor1"
     return
-
 
 def doFloor1():
     # check repair
