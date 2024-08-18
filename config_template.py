@@ -67,15 +67,16 @@ config = {
     "healthPot": "f1",  # important to put your regen potion on this button
     "friends": "u",
     # menus
-    "chaos": "alt q",
+    "content": "alt q",
     "bifrost": "alt w",
     "pet": "p",
     "guild": "alt u",
     "unas": "alt j",
     "map": "m",
     "defaultCombatPreset": "ctrl q",
-    "hesteraGardenCombatPreset": "ctrl r",
+    "unaTaskCombatPreset": "ctrl r",
     "hesteraGardenEmoteSlot": "8",
+    "southKurzanPoseSlot": "7",
 
 
 
