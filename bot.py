@@ -455,7 +455,7 @@ def enterChaos():
                 break
             sleep(5000, 6000)
 
-    toggleMenu("chaos")
+    toggleMenu("content")
     waitForMenuLoaded("content")
     aura100 = pyautogui.locateOnScreen("./screenshots/aura100.png", region = (760, 345, 70, 30), confidence = 0.95)
     aura50 = pyautogui.locateOnScreen("./screenshots/aura50.png", region = (760, 345, 70, 30), confidence = 0.95)
@@ -3603,8 +3603,14 @@ def waitForCityLoaded():
         sleep(2000, 3000)
 
 def waitForMenuLoaded(menu):
+    timeout = 0
     while pyautogui.locateOnScreen("./screenshots/menus/" + menu + "Menu.png", confidence = 0.85) is None:
         sleep(200, 300)
+        timeout += 1
+        if timeout == 50:
+            toggleMenu(menu)
+        if timeout == 100:
+            return
 
 def cleanInventory():
     # sleep(1000,1500)
