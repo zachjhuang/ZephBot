@@ -171,10 +171,10 @@ def main():
                     confidence=0.75,
                     region=(247, 146, 222, 50),
                 )
-                if inTown != None:
+                if inTown is not None:
                     print("city loaded")
                     break
-                if inChaos != None:
+                if inChaos is not None:
                     print("still in the last chaos run, quitting")
                     # temp = states["multiCharacterModeState"][states["currentCharacter"]]
                     # states["multiCharacterModeState"][states["currentCharacter"]] = 0
@@ -208,10 +208,10 @@ def main():
                 if config["auraRepair"]:
                     doAuraRepair(False)
                 sleep(1400, 1600)
-                if (
-                    states["cubes"]
-                ):
-                    doCubes()
+                # if (
+                #     states["cubes"]
+                # ):
+                #     doCubes()
 
                 # guild dono
                 if (
@@ -411,12 +411,12 @@ def main():
             restartedshot = pyautogui.screenshot()
             restartedshot.save(
                 "./debug/restarted_inChaos_"
-                + str(inChaos != None)
+                + str(inChaos is not None)
                 + "_"
                 + str(currentTime)
                 + ".png"
             )
-            if inChaos != None:
+            if inChaos is not None:
                 print("still in the last chaos run, quitting")
                 quitChaos()
             else:
@@ -462,7 +462,7 @@ def enterChaos():
                 confidence=0.75,
                 region=(247, 146, 222, 50),
             )
-            if inChaos != None:
+            if inChaos is not None:
                 print("still in the last chaos run, quitting")
                 quitChaos()
                 sleep(5000, 6000)
@@ -473,7 +473,7 @@ def enterChaos():
                         confidence=0.75,
                         region=(1870, 133, 25, 30),
                     )
-                    if inTown != None:
+                    if inTown is not None:
                         print("city loaded")
                         states["status"] = "inCity"
                         break
@@ -481,9 +481,10 @@ def enterChaos():
 
             toggleMenu("chaos")
             waitForMenuLoaded("content")
-            aura = pyautogui.locateOnScreen("./screenshots/aura.png", confidence = 0.85)
-            noAura = pyautogui.locateOnScreen("./screenshots/noAura.png", confidence=0.85)
-            if aura != None and noAura == None and config["performance"] == False:
+            aura100 = pyautogui.locateOnScreen("./screenshots/aura100.png", region = (760, 345, 70, 30), confidence = 0.95)
+            aura50 = pyautogui.locateOnScreen("./screenshots/aura50.png", region = (760, 345, 70, 30), confidence = 0.95)
+            aura0 = pyautogui.locateOnScreen("./screenshots/aura0.png", region = (760, 345, 70, 30), confidence = 0.95)
+            if aura100 is not None and config["performance"] == False:
                 states["floor3Mode"] = True
                 # print("aor detected")
                 if (
@@ -502,7 +503,9 @@ def enterChaos():
                             states["multiCharacterModeState"]
                         )
                     )
-            elif aura == None and noAura != None and sum(states["multiCharacterModeState"]) != 0:
+            elif aura50 is not None:
+                states["multiCharacterModeState"][states["currentCharacter"]] = 1
+            elif aura0 is not None and sum(states["multiCharacterModeState"]) != 0:
                 states["multiCharacterModeState"][states["currentCharacter"]] = 0
                 print("no remaining aor on character, still have other chaos to run")
                 return
@@ -518,16 +521,16 @@ def enterChaos():
             sleep(500, 600)
 
             weeklyPurificationClaimAll = pyautogui.locateCenterOnScreen("./screenshots/weeklyPurificationClaimAll.png", confidence = 0.85)
-            if weeklyPurificationClaimAll != None:
+            if weeklyPurificationClaimAll is not None:
                 x, y = weeklyPurificationClaimAll
                 mouseMoveTo(x=x, y=y)
                 sleep(500, 600)
                 pydirectinput.click(button="left")
-                sleep(1000, 1100)
+                sleep(1500, 1600)
                 mouseMoveTo(x=920, y=575)
                 sleep(500, 600)
                 pydirectinput.click(button="left")
-                sleep(1000, 1100)
+                sleep(1500, 1600)
 
             for _ in range(2):
                 pydirectinput.click(x=1580, y=310, button="left") # right arrow
@@ -564,7 +567,7 @@ def enterChaos():
                 1610: [voldisChaosTabLoc, [624, 400]],
                 1630: [voldisChaosTabLoc, [624, 455]],
             }
-            if states["multiCharacterMode"] or noAura == None:
+            if states["multiCharacterMode"] or aura0 is None:
                 mouseMoveTo(
                     x=chaosTabPosition[_curr["ilvl-aor"]][0][0],
                     y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
@@ -608,7 +611,7 @@ def enterChaos():
                 confidence=0.75,
                 region=(1380, 760, 210, 60),
             )
-            if enterButton != None:
+            if enterButton is not None:
                 x, y = enterButton
                 mouseMoveTo(x=x, y=y)
                 sleep(800, 900)
@@ -634,7 +637,7 @@ def enterChaos():
             enterHand = pyautogui.locateOnScreen(
                 "./screenshots/enterChaos.png", confidence=config["confidenceForGFN"]
             )
-            if enterHand != None:
+            if enterHand is not None:
                 print("entering chaos...")
                 pydirectinput.press(config["interact"])
                 break
@@ -654,7 +657,7 @@ def enterChaos():
         enterServer = pyautogui.locateCenterOnScreen(
             "./screenshots/enterServer.png", confidence=0.95, region=(885, 801, 160, 55)
         )
-        if dc != None or enterServer != None:
+        if dc is not None or enterServer is not None:
             closeGameByClickingDialogue()
             return
 
@@ -663,7 +666,7 @@ def enterChaos():
             confidence=0.75,
             region=config["regions"]["center"],
         )
-        if acceptButton != None:
+        if acceptButton is not None:
             x, y = acceptButton
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
@@ -688,7 +691,7 @@ def doFloor1():
     sleep(450, 500)
 
     # delayed start for better aoe abiltiy usage at floor1 beginning
-    if config["delayedStart"] != None and config["performance"] == False:
+    if config["delayedStart"] is not None and config["performance"] == False:
         sleep(config["delayedStart"] - 100, config["delayedStart"] + 100)
 
     if offlineCheck():
@@ -731,7 +734,6 @@ def doFloor1():
         return
     states["status"] = "floor2"
     return
-
 
 def doFloor2():
     states["bossBarLocated"] = False
@@ -840,7 +842,6 @@ def doFloor3(endless):
         )
     return
 
-
 def quitChaos():
     checkChaosFinish()
     # quit
@@ -859,7 +860,7 @@ def quitChaos():
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
         )
-        if leaveButton != None:
+        if leaveButton is not None:
             x, y = leaveButton
             mouseMoveTo(x=x, y=y)
             sleep(500, 600)
@@ -872,7 +873,7 @@ def quitChaos():
             confidence=0.75,
             region=config["regions"]["center"],
         )
-        if okButton != None:
+        if okButton is not None:
             break
         sleep(300, 400)
         """
@@ -882,7 +883,7 @@ def quitChaos():
             confidence=0.75,
             region=(1870, 133, 25, 30),
         )
-        if inTown != None:
+        if inTown is not None:
             print("city loaded")
             states["status"] = "inCity"
             return
@@ -899,7 +900,7 @@ def quitChaos():
             confidence=0.75,
             region=config["regions"]["center"],
         )
-        if okButton != None:
+        if okButton is not None:
             x, y = okButton
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
@@ -931,8 +932,6 @@ def quitChaos():
     sleep(5000, 7000)
     return
 
-
-# not using for now
 def restartChaos():
     printResult()
     sleep(1200, 1400)
@@ -945,7 +944,7 @@ def restartChaos():
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
         )
-        if selectLevelButton != None:
+        if selectLevelButton is not None:
             x, y = selectLevelButton
 
             mouseMoveTo(x=x, y=y)
@@ -962,7 +961,7 @@ def restartChaos():
             confidence=0.75,
             region=(1380, 760, 210, 60),
         )
-        if enterButton != None:
+        if enterButton is not None:
             x, y = enterButton
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
@@ -978,7 +977,7 @@ def restartChaos():
             confidence=0.75,
             region=config["regions"]["center"],
         )
-        if acceptButton != None:
+        if acceptButton is not None:
             x, y = acceptButton
             mouseMoveTo(x=x, y=y)
             sleep(200, 300)
@@ -990,7 +989,6 @@ def restartChaos():
     states["status"] = "floor1"
     sleep(2000, 3200)
     return
-
 
 def printResult():
     if int(states["clearCount"] + states["fullClearCount"]) == 0:
@@ -1025,12 +1023,6 @@ def printResult():
             states["maxTime"],
         )
     )
-    print(
-        "gold portal count: {}, purple portal count: {}".format(
-            states["goldPortalCount"], states["purplePortalCount"]
-        )
-    )
-
 
 def useAbilities():
     while True:
@@ -1276,7 +1268,7 @@ def performClassSpecialty(i, abilities):
             "./screenshots/classSpecialties/soulSnatch.png",
             region=config["regions"]["debuffs"],
             confidence=0.85,
-        ) != None:
+        ) is not None:
             checkCDandCast(abilities[0])
             sleep(300, 400)
             checkCDandCast(abilities[1])
@@ -1290,7 +1282,7 @@ def performClassSpecialty(i, abilities):
             region=config["regions"]["specialty"],
             confidence=0.85,
         )
-        if slayerSpecialty != None:
+        if slayerSpecialty is not None:
             pydirectinput.press(config["specialty1"])
             sleep(150, 160)
 
@@ -1300,7 +1292,7 @@ def performClassSpecialty(i, abilities):
             region=config["regions"]["specialty"],
             confidence=0.80,
         )
-        if threeOrbDeathTrance != None:
+        if threeOrbDeathTrance is not None:
             pydirectinput.press(config["specialty1"])
             sleep(150, 160)
 
@@ -1326,14 +1318,14 @@ def performClassSpecialty(i, abilities):
                 "./screenshots/classSpecialties/shotgunStance.png",
                 region=(930, 819, 58, 56),
                 confidence=0.75,
-            ) == None:
+            ) is None:
                 diedCheck()
                 pistolStance = pyautogui.locateOnScreen(
                     "./screenshots/classSpecialties/pistolStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
-                if pistolStance != None:
+                if pistolStance is not None:
                     pydirectinput.press(config["specialty1"])
                     sleep(150, 160)
 
@@ -1342,7 +1334,7 @@ def performClassSpecialty(i, abilities):
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
-                if sniperStance != None:
+                if sniperStance is not None:
                     pydirectinput.press(config["specialty2"])
                     sleep(150, 160)
         # swap to sniper
@@ -1351,14 +1343,14 @@ def performClassSpecialty(i, abilities):
                 "./screenshots/classSpecialties/sniperStance.png",
                 region=(930, 819, 58, 56),
                 confidence=0.75,
-            ) == None:
+            ) is None:
                 diedCheck()
                 pistolStance = pyautogui.locateOnScreen(
                     "./screenshots/classSpecialties/pistolStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
-                if pistolStance != None:
+                if pistolStance is not None:
                     pydirectinput.press(config["specialty2"])
                     sleep(150, 160)
 
@@ -1367,7 +1359,7 @@ def performClassSpecialty(i, abilities):
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
-                if shotgunStance != None:
+                if shotgunStance is not None:
                     pydirectinput.press(config["specialty1"])
                     sleep(150, 160)
         # swap to pistol
@@ -1376,14 +1368,14 @@ def performClassSpecialty(i, abilities):
                 "./screenshots/classSpecialties/pistolStance.png",
                 region=(930, 819, 58, 56),
                 confidence=0.75,
-            ) == None:
+            ) is None:
                 diedCheck()
                 shotgunStance = pyautogui.locateOnScreen(
                     "./screenshots/classSpecialties/shotgunStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
-                if shotgunStance != None:
+                if shotgunStance is not None:
                     pydirectinput.press(config["specialty2"])
                     sleep(150, 160)
 
@@ -1392,7 +1384,7 @@ def performClassSpecialty(i, abilities):
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
-                if sniperStance != None:
+                if sniperStance is not None:
                     pydirectinput.press(config["specialty1"])
                     sleep(150, 160)
 
@@ -1402,7 +1394,7 @@ def performClassSpecialty(i, abilities):
             region=config["regions"]["specialty"],
             confidence=0.85,
         )
-        if artistOrb != None:
+        if artistOrb is not None:
             mouseMoveTo(x=config["screenCenterX"], y=config["screenCenterY"])
             sleep(150, 160)
             pydirectinput.press(config["specialty2"])
@@ -1415,7 +1407,7 @@ def performClassSpecialty(i, abilities):
             region=config["regions"]["specialty"],
             confidence=0.95,
         )
-        if aeroSpecialty != None:
+        if aeroSpecialty is not None:
             sleep(150, 160)
             pydirectinput.press(config["specialty1"])
 
@@ -1425,7 +1417,7 @@ def performClassSpecialty(i, abilities):
             region=config["regions"]["specialty"],
             confidence=0.85,
         )
-        if scrapperSpecialty != None:
+        if scrapperSpecialty is not None:
             sleep(150, 160)
             pydirectinput.press("z")
 
@@ -1437,7 +1429,7 @@ def performClassSpecialty(i, abilities):
     #         region=(904, 900, 111, 35),
     #         confidence=0.9,
     #     )
-    #     if paladinSpecialty != None:
+    #     if paladinSpecialty is not None:
     #         pydirectinput.press("z")
     #         sleep(150, 160)
 
@@ -1450,7 +1442,7 @@ def performClassSpecialty(i, abilities):
         )
         rZ, gZ, bZ = pyautogui.pixel(920, 866)
         rX, gX, bX = pyautogui.pixel(1006, 875)
-        if rZ - gZ > 80 and courageBuffActive == None:
+        if rZ - gZ > 80 and courageBuffActive is None:
             # print("bard courage Z")
             pydirectinput.press("z")
             sleep(50, 60)
@@ -1461,7 +1453,7 @@ def performClassSpecialty(i, abilities):
             pydirectinput.press("z")
             sleep(50, 60)
             pydirectinput.press("z")
-        elif bX - gX > 70 and courageBuffActive != None:
+        elif bX - gX > 70 and courageBuffActive is not None:
             print("bard jiaxue X")
             mouseMoveTo(x=config["screenCenterX"], y=config["screenCenterY"])
             sleep(150, 160)
@@ -1576,7 +1568,7 @@ def checkPortal():
             confidence=0.9,
         )
         """
-        if portal != None:
+        if portal is not None:
             x, y = portal
             states["moveToX"] = x
             states["moveToY"] = y
@@ -1584,7 +1576,7 @@ def checkPortal():
                 "portal image x: {} y: {}".format(states["moveToX"], states["moveToY"])
             )
             return True
-        elif portalTop != None:
+        elif portalTop is not None:
             x, y = portalTop
             states["moveToX"] = x
             states["moveToY"] = y + 7
@@ -1594,7 +1586,7 @@ def checkPortal():
                 )
             )
             return True
-        elif portalBot != None:
+        elif portalBot is not None:
             x, y = portalBot
             states["moveToX"] = x
             states["moveToY"] = y - 7
@@ -1604,7 +1596,7 @@ def checkPortal():
                 )
             )
             return True
-        # elif portalLeft != None:
+        # elif portalLeft is not None:
         #     x, y = portalLeft
         #     states["moveToX"] = x + 3
         #     states["moveToY"] = y
@@ -1614,7 +1606,7 @@ def checkPortal():
         #         )
         #     )
         #     return True
-        # elif portalRight != None:
+        # elif portalRight is not None:
         #     x, y = portalRight
         #     states["moveToX"] = x - 3
         #     states["moveToY"] = y
@@ -1741,7 +1733,7 @@ def checkFloor2Boss():
     bossLocation = pyautogui.locateCenterOnScreen(
         "./screenshots/chaos/boss.png", confidence=0.65, region=config["regions"]["minimap"]
     )
-    if bossLocation != None:
+    if bossLocation is not None:
         left, top = bossLocation
         states["moveToX"] = left
         states["moveToY"] = top
@@ -1785,7 +1777,7 @@ def clickTower():
         confidence=0.6,
         region=config["regions"]["portal"],
     )
-    if riftCore1 != None:
+    if riftCore1 is not None:
         x, y = riftCore1
         if y > 650 or x < 400 or x > 1500:
             return
@@ -1803,7 +1795,7 @@ def clickTower():
         pydirectinput.press(config["meleeAttack"])
         sleep(100, 120)
         pydirectinput.press(config["meleeAttack"])
-    elif riftCore2 != None:
+    elif riftCore2 is not None:
         x, y = riftCore2
         if y > 650 or x < 400 or x > 1500:
             return
@@ -1839,21 +1831,21 @@ def checkFloor3Tower():
         region=config["regions"]["minimap"],
         confidence=0.7,
     )
-    if tower != None:
+    if tower is not None:
         x, y = tower
         states["moveToX"] = x
         states["moveToY"] = y
         print("tower image x: {} y: {}".format(states["moveToX"]-config["minimapCenterX"], 
                                                 states["moveToY"]-config["minimapCenterY"]))
         return True
-    elif towerTop != None:
+    elif towerTop is not None:
         x, y = towerTop
         states["moveToX"] = x
         states["moveToY"] = y + 7
         print("towerTop image x: {} y: {}".format(states["moveToX"]-config["minimapCenterX"], 
                                                   states["moveToY"]-config["minimapCenterY"]))
         return True
-    elif towerBot != None:
+    elif towerBot is not None:
         x, y = towerBot
         states["moveToX"] = x
         states["moveToY"] = y - 7
@@ -1908,7 +1900,7 @@ def checkChaosFinish():
     region=config["regions"]["leaveMenu"],
     )
     """
-    if clearOk != None:
+    if clearOk is not None:
         states["fullClearCount"] = states["fullClearCount"] + 1
         x, y = clearOk
         mouseMoveTo(x=x, y=y)
@@ -1920,7 +1912,7 @@ def checkChaosFinish():
         pydirectinput.click(x=x, y=y, button="left")
         sleep(200, 300)
         return True
-    # elif selectLevelButton != None:
+    # elif selectLevelButton is not None:
     #     # edge case clearok
     #     states["fullClearCount"] = states["fullClearCount"] + 1
     #     currentTime = int(time.time_ns() / 1000000)
@@ -2327,7 +2319,7 @@ def waitForLoading():
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
         )
-        if leaveButton != None:
+        if leaveButton is not None:
             return
         sleep(350, 400)
 
@@ -2384,7 +2376,7 @@ def diedCheck():  # get information about wait a few second to revive
                 confidence=0.7,
                 region=(917, 145, 630, 550),
             )
-            != None
+            is not None
         ):
             mouseMoveTo(x=1275, y=400)
             sleep(1600, 1800)
@@ -2401,27 +2393,27 @@ def diedCheck():  # get information about wait a few second to revive
                 return
     return
 
-def doCubes():
-    states["status"] = "cube"
-    states["currentCharacter"] = 9
-    states["instanceStartTime"] = int(time.time_ns() / 1000000)
-    saveAbilitiesScreenshots()
-    while True:
-        diedCheck()
-        healthCheck()
+# def doCubes():
+#     states["status"] = "cube"
+#     states["currentCharacter"] = 9
+#     states["instanceStartTime"] = int(time.time_ns() / 1000000)
+#     saveAbilitiesScreenshots()
+#     while True:
+#         diedCheck()
+#         healthCheck()
 
-        allAbilities = [*range(0, len(states["abilityScreenshots"]))]
+#         allAbilities = [*range(0, len(states["abilityScreenshots"]))]
 
-        for i in allAbilities:
-            if states["status"] == "floor3" and checkChaosFinish():
-                print("checkChaosFinish == True")
-                return
-            diedCheck()
-            healthCheck()
+#         for i in allAbilities:
+#             if states["status"] == "floor3" and checkChaosFinish():
+#                 print("checkChaosFinish == True")
+#                 return
+#             diedCheck()
+#             healthCheck()
             
-            performClassSpecialty(i, states["abilityScreenshots"])
-            # cast spells
-            checkCDandCast(states["abilityScreenshots"][i])
+#             performClassSpecialty(i, states["abilityScreenshots"])
+#             # cast spells
+#             checkCDandCast(states["abilityScreenshots"][i])
 
 
 def doAuraRepair(forced):
@@ -2489,7 +2481,7 @@ def healthCheck():
             confidence=0.7,
             region=config["regions"]["leaveMenu"],
         )
-        if leaveButton == None:
+        if leaveButton is None:
             return
         pydirectinput.press(config["healthPot"])
         states["healthPotCount"] = states["healthPotCount"] + 1
@@ -2509,11 +2501,11 @@ def clearQuest():
         confidence=0.95,
         region=config["regions"]["center"],
     )
-    if gameMenu != None:
+    if gameMenu is not None:
         print("game menu detected")
         pydirectinput.press("esc")
         sleep(1800, 1900)
-    if quest != None:
+    if quest is not None:
         print("clear quest")
         x, y = quest
         mouseMoveTo(x=x, y=y)
@@ -2522,7 +2514,7 @@ def clearQuest():
         sleep(1800, 1900)
         pydirectinput.press("esc")
         sleep(1800, 1900)
-    elif leveledup != None:
+    elif leveledup is not None:
         print("clear level")
         x, y = leveledup
         mouseMoveTo(x=x, y=y)
@@ -2615,7 +2607,7 @@ def gameCrashCheck():
             region=config["regions"]["center"],
             confidence=0.8,
         )
-        if sessionLimitReached != None:
+        if sessionLimitReached is not None:
             currentTime = int(time.time_ns() / 1000000)
             limitshot = pyautogui.screenshot()
             limitshot.save("./debug/sessionLimitReached" + str(currentTime) + ".png")
@@ -2631,7 +2623,7 @@ def gameCrashCheck():
             region=config["regions"]["center"],
             confidence=0.8,
         )
-        if inactiveGFN != None:
+        if inactiveGFN is not None:
             currentTime = int(time.time_ns() / 1000000)
             inactive = pyautogui.screenshot()
             inactive.save("./debug/inactive_" + str(currentTime) + ".png")
@@ -2680,7 +2672,7 @@ def offlineCheck():
             region=config["regions"]["center"],
             confidence=0.8,
         )
-        if sessionLimitReached != None:
+        if sessionLimitReached is not None:
             currentTime = int(time.time_ns() / 1000000)
             limitshot = pyautogui.screenshot()
             limitshot.save("./debug/sessionLimitReached" + str(currentTime) + ".png")
@@ -2696,7 +2688,7 @@ def offlineCheck():
             region=config["regions"]["center"],
             confidence=0.8,
         )
-        if updateMembership != None:
+        if updateMembership is not None:
             currentTime = int(time.time_ns() / 1000000)
             limitshot = pyautogui.screenshot()
             limitshot.save("./debug/updateMembership" + str(currentTime) + ".png")
@@ -2712,7 +2704,7 @@ def offlineCheck():
             region=config["regions"]["center"],
             confidence=0.9,
         )
-        if inactiveGFN != None:
+        if inactiveGFN is not None:
             currentTime = int(time.time_ns() / 1000000)
             inactive = pyautogui.screenshot()
             inactive.save("./debug/inactive_" + str(currentTime) + ".png")
@@ -2723,7 +2715,7 @@ def offlineCheck():
             print("game inactive...")
             states["gameCrashCount"] = states["gameCrashCount"] + 1
             return True
-    if dc != None or ok != None or enterServer != None:
+    if dc is not None or ok is not None or enterServer is not None:
         currentTime = int(time.time_ns() / 1000000)
         dc = pyautogui.screenshot()
         dc.save("./debug/dc_" + str(currentTime) + ".png")
@@ -2743,7 +2735,7 @@ def closeGameByClickingDialogue():
     #     "./screenshots/ok.png",
     #     region=config["regions"]["center"],
     # )
-    # if ok != None:
+    # if ok is not None:
     #     x, y = ok
     #     mouseMoveTo(x=x, y=y)
     #     sleep(300, 400)
@@ -2762,13 +2754,13 @@ def closeGameByClickingDialogue():
             confidence=config["confidenceForGFN"],
             region=(885, 801, 160, 55),
         )
-        if ok != None:
+        if ok is not None:
             x, y = ok
             mouseMoveTo(x=x, y=y)
             sleep(300, 400)
             pydirectinput.click(button="left")
             print("clicked ok")
-        elif enterServer != None:
+        elif enterServer is not None:
             break
         else:
             break
@@ -2795,7 +2787,7 @@ def restartGame():
                 "./screenshots/GFN/loaGFNplay.png",
                 confidence=0.8,
             )
-            if loaGFNplay != None:
+            if loaGFNplay is not None:
                 x, y = loaGFNplay
                 mouseMoveTo(x=x, y=y)
                 sleep(2200, 2300)
@@ -2803,7 +2795,7 @@ def restartGame():
                 print("clicked play restart on GFN")
                 sleep(40000, 42000)
                 break
-            if loaGFN != None:
+            if loaGFN is not None:
                 x, y = loaGFN
                 mouseMoveTo(x=x, y=y)
                 sleep(2200, 2300)
@@ -2820,7 +2812,7 @@ def restartGame():
                 "./screenshots/GFN/closeGFN.png",
                 confidence=0.75,
             )
-            if closeGFN != None:
+            if closeGFN is not None:
                 print("afk GFN")
                 x, y = closeGFN
                 mouseMoveTo(x=x, y=y)
@@ -2854,7 +2846,7 @@ def restartGame():
             confidence=0.75,
             region=(1870, 133, 25, 30),
         )
-        if stopGame != None:
+        if stopGame is not None:
             print("clicking stop game on steam")
             x, y = stopGame
             mouseMoveTo(x=x, y=y)
@@ -2864,38 +2856,38 @@ def restartGame():
             confirm = pyautogui.locateCenterOnScreen(
                 "./screenshots/steamConfirm.png", confidence=0.75
             )
-            if confirm == None:
+            if confirm is None:
                 continue
             x, y = confirm
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
             pydirectinput.click(button="left")
             sleep(10000, 12000)
-        elif confirm != None:
+        elif confirm is not None:
             print("confirming stop game")
             x, y = confirm
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
             pydirectinput.click(button="left")
             sleep(10000, 12000)
-        elif enterGame != None:
+        elif enterGame is not None:
             print("restarting Lost Ark game client...")
             x, y = enterGame
             mouseMoveTo(x=x, y=y)
             sleep(1200, 1300)
             pydirectinput.click(button="left")
             break
-        elif enterServer != None:
+        elif enterServer is not None:
             # new eacoffline interface
             break
-        elif inTown != None:
+        elif inTown is not None:
             return
             # # i think eventually GFN would restart?
             # loa = pyautogui.locateCenterOnScreen(
             #     "./screenshots/loa.png",
             #     confidence=0.8,
             # )
-            # if loa != None:
+            # if loa is not None:
             #     x, y = loa
             #     mouseMoveTo(x=x, y=y)
             #     sleep(1200, 1300)
@@ -2913,7 +2905,7 @@ def restartGame():
         enterGame = pyautogui.locateCenterOnScreen(
             "./screenshots/steamPlay.png", confidence=0.75
         )
-        if enterServer != None:
+        if enterServer is not None:
             print("clicking enterServer")
             sleep(1000, 1200)
             # click first server
@@ -2926,7 +2918,7 @@ def restartGame():
             sleep(1200, 1300)
             pydirectinput.click(button="left")
             break
-        elif enterGame != None:
+        elif enterGame is not None:
             print("clicking enterGame")
             x, y = enterGame
             mouseMoveTo(x=x, y=y)
@@ -2941,7 +2933,7 @@ def restartGame():
             confidence=0.75,
             region=(745, 854, 400, 80),
         )
-        if enterCharacter != None:
+        if enterCharacter is not None:
             sleep(1000, 1200)
             # 点第一页
             sleep(4000, 5000)
@@ -2987,7 +2979,7 @@ def switchToCharacter(index):
     while pyautogui.locateCenterOnScreen(
         "./screenshots/menus/gameMenu.png",
         confidence=0.7
-    ) == None:
+    ) is None:
         pydirectinput.press("esc")
         sleep(1800, 1900)
     print("game menu detected")
@@ -3038,7 +3030,7 @@ def switchToCharacter(index):
     if pyautogui.locateCenterOnScreen(
         "./screenshots/alreadyConnected.png",
         confidence=0.85
-    ) != None:
+    ) is not None:
         print("character already connected")
         pydirectinput.press("esc")
         sleep(500, 600)
@@ -3081,7 +3073,7 @@ def doGuildDonation():
         "./screenshots/ok.png", region=config["regions"]["center"], confidence=0.75
     )
 
-    if ok != None:
+    if ok is not None:
         x, y = ok
         mouseMoveTo(x=x, y=y)
         sleep(300, 400)
@@ -3114,7 +3106,7 @@ def doGuildDonation():
         region=(1255, 210, 250, 600),
     )
 
-    if supportResearch != None:
+    if supportResearch is not None:
         x, y = supportResearch
         print("supportResearch")
         mouseMoveTo(x=x, y=y)
@@ -3132,7 +3124,7 @@ def doGuildDonation():
             region=(735, 376, 450, 350),
         )
 
-        if canSupportResearch != None:
+        if canSupportResearch is not None:
             mouseMoveTo(x=848, y=520)
             sleep(500, 600)
             pydirectinput.click(button="left")
@@ -3278,7 +3270,7 @@ def doHesteraGardenUna():
     toggleMenu("defaultCombatPreset")
 
 def doSageTowerUna():
-    while pyautogui.locateOnScreen("./screenshots/sageTowerCompleted.png", region = (1700,220,100,150), confidence = 0.75) == None:
+    while pyautogui.locateOnScreen("./screenshots/sageTowerCompleted.png", region = (1700,220,100,150), confidence = 0.75) is None:
         spamInteract(1000)
     mouseMoveTo(x=1560, y=540)
     sleep(500, 600)
@@ -3340,7 +3332,7 @@ def claimCompletedQuest():
     sleep(500, 600)
 
     completeQuest = pyautogui.locateCenterOnScreen("./screenshots/completeQuest.png", confidence=0.85)
-    if completeQuest == None:
+    if completeQuest is None:
         return
     x, y = completeQuest
     mouseMoveTo(x=x, y=y)
@@ -3363,11 +3355,11 @@ def toggleMenu(menuType):
 
 def bifrostGoTo(location):
     print("bifrost to: {}".format(location))
-    if pyautogui.locateOnScreen("./screenshots/menus/bifrostMenu.png", confidence = 0.85) == None:
+    if pyautogui.locateOnScreen("./screenshots/menus/bifrostMenu.png", confidence = 0.85) is None:
         toggleMenu("bifrost")
     waitForMenuLoaded("bifrost")
     bifrost = pyautogui.locateCenterOnScreen("./screenshots/bifrosts/" + location + "Bifrost.png", confidence=0.80)
-    if bifrost == None:
+    if bifrost is None:
         print(location + " bifrost not found, skipping")
         toggleMenu("bifrost")
         return False
@@ -3394,7 +3386,7 @@ def bifrostGoTo(location):
                 confidence=0.75,
                 region=config["regions"]["center"],
             )
-            if okButton != None:
+            if okButton is not None:
                 x, y = okButton
                 mouseMoveTo(x=x, y=y)
                 sleep(2000, 2100)
@@ -3416,7 +3408,7 @@ def bifrostGoTo(location):
             confidence=0.75,
             region=(1870, 133, 25, 30),
         )
-        if inTown != None:
+        if inTown is not None:
             print("bifrost location loaded")
             break
         sleep(1400, 1600)
@@ -3479,7 +3471,7 @@ def checkBlueCrystal():
         region=config["regions"]["center"],
     )
 
-    if silver1k != None:
+    if silver1k is not None:
         return False
     else:
         return True
@@ -3489,13 +3481,13 @@ def acceptDailies():
     toggleMenu("unas")
     waitForMenuLoaded("unas")
     # switch to daily tab
-    if pyautogui.locateOnScreen("./screenshots/dailyTabActive.png", confidence = 0.95) == None:
+    if pyautogui.locateOnScreen("./screenshots/dailyTabActive.png", confidence = 0.95) is None:
         mouseMoveTo(x=550, y=255)
         sleep(100, 200)
         pydirectinput.click(button="left")
         sleep(500, 600)
     # toggle dropdown and swap to favorites
-    if pyautogui.locateOnScreen("./screenshots/addedToFavorites.png", confidence = 0.95) == None:
+    if pyautogui.locateOnScreen("./screenshots/addedToFavorites.png", confidence = 0.95) is None:
         mouseMoveTo(x=632, y=316)
         sleep(100, 200)
         pydirectinput.click(button="left")
@@ -3512,7 +3504,7 @@ def acceptDailies():
         sleep(100, 200)
         pydirectinput.click(button="left")
         sleep(500, 600)
-    if pyautogui.locateOnScreen("./screenshots/unasCompleted.png", confidence = 0.85) != None:
+    if pyautogui.locateOnScreen("./screenshots/unasCompleted.png", confidence = 0.85) is not None:
         print("character has already ran unas")
         toggleMenu("unas")
         return False
@@ -3602,7 +3594,7 @@ def doSailingWeekly(n):
             pydirectinput.click(button="left")
         sleep(200, 300)
         pydirectinput.keyUp("alt")
-        while pyautogui.locateOnScreen("./screenshots/sailingIdle.png", region=(1060, 840, 50, 40), confidence=0.9) == None:
+        while pyautogui.locateOnScreen("./screenshots/sailingIdle.png", region=(1060, 840, 50, 40), confidence=0.9) is None:
             sleep(1000,1100)
         claimCompletedQuest()
     mouseMoveTo(x=1050, y=900)
@@ -3615,7 +3607,7 @@ def doSailingWeekly(n):
             "./screenshots/ok.png",
             confidence=0.75,
         )
-    if okButton != None:
+    if okButton is not None:
         x, y = okButton
         mouseMoveTo(x=x, y=y)
         sleep(200, 300)
@@ -3671,14 +3663,14 @@ def waitForCityLoaded():
             confidence=0.75,
             region=(1870, 133, 25, 30),
         )
-        if inTown != None:
+        if inTown is not None:
             print("city loaded")
             states["status"] = "inCity"
             break
         sleep(2000, 3000)
 
 def waitForMenuLoaded(menu):
-    while pyautogui.locateOnScreen("./screenshots/menus/" + menu + "Menu.png", confidence = 0.85) == None:
+    while pyautogui.locateOnScreen("./screenshots/menus/" + menu + "Menu.png", confidence = 0.85) is None:
         sleep(200, 300)
 
 def cleanInventory():
