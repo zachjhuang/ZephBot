@@ -485,8 +485,6 @@ def enterChaos():
         states["multiCharacterModeState"][states["currentCharacter"]] = 0
         print("no remaining aor on character, still have other chaos to run")
         return
-    else:
-        return
 
     mouseMoveTo(x=886, y=346)
     sleep(500, 600)
