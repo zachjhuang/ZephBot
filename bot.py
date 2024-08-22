@@ -3201,8 +3201,10 @@ def doHesteraGardenUna():
     toggleMenu("defaultCombatPreset")
 
 def doSageTowerUna():
-    while findImageRegion("./screenshots/sageTowerCompleted.png", region = (1700,220,100,150), confidence = 0.75) is None:
+    for _ in range(10):
         spamInteract(1000)
+        if findImageRegion("./screenshots/sageTowerCompleted.png", region = (1700,220,100,150), confidence = 0.65) is not None:
+            break
     mouseMoveTo(x=1560, y=540)
     sleep(500, 600)
     pydirectinput.click(x=1560, y=540, button=config["move"])
