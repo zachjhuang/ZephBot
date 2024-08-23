@@ -3675,16 +3675,16 @@ def set_resolution(width: int, height: int):
         
         win32api.ChangeDisplaySettings(devmode, 0)
 
-def findImageRegion(image_path, confidence=1.0, region=None):
+def findImageRegion(image_path, confidence=1.0, region=None, grayscale=False):
     try:
-        location = pyautogui.locateOnScreen(image_path, confidence=confidence, region=region)
+        location = pyautogui.locateOnScreen(image_path, confidence=confidence, region=region, grayscale=grayscale)
         return location
     except pyautogui.ImageNotFoundException:
         return None
 
-def findImageCenter(image_path, confidence=1.0, region=None):
+def findImageCenter(image_path, confidence=1.0, region=None, grayscale=False):
     try:
-        location = pyautogui.locateCenterOnScreen(image_path, confidence=confidence, region=region)
+        location = pyautogui.locateCenterOnScreen(image_path, confidence=confidence, region=region, grayscale=grayscale)
         return location
     except pyautogui.ImageNotFoundException:
         return None
