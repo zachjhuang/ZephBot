@@ -61,7 +61,7 @@ def main():
     parser.add_argument("--chaos", action="store_true", help="Enables 2x chaos on entire roster")
     parser.add_argument("--unas", action="store_true", help="Enables unas on entire roster")
     parser.add_argument("--guild", action="store_true", help="Enables guild donation/support on entire roster")
-    parser.add_argument("--endless", action="store_true", help="Enables infinite chaos on main character")
+    parser.add_argument("--endless", type=int, nargs='?', default=None, const=config["mainCharacter"], help="Enables infinite chaos on main character")
     parser.add_argument("--sailing", action="store_true", help="Enables sailing weekly on entire roster")
     parser.add_argument("--cubes", action="store_true", help="testing cubes")
     args = parser.parse_args()
@@ -69,7 +69,8 @@ def main():
     states["doChaos"] = args.chaos
     states["doUnas"] = args.unas
     states["doGuild"] = args.guild
-    states["doEndless"] = args.endless
+    states["doEndless"] = False if args.endless is None else True 
+    states["endlessCharacter"] = args.endless
     states["doSailing"] = args.sailing
     states["cubes"] = args.cubes
 
@@ -267,6 +268,8 @@ def main():
                     continue
                 
                 if sum(states["multiCharacterModeState"]) == 0:
+                    if states["doEndless"] == False:
+                        break
                     states["multiCharacterMode"] = False
                     states["multiCharacterModeState"] = []
                     sleep(3400, 3600)
@@ -274,7 +277,7 @@ def main():
                     #     print("go invis again")
                     #     # goInvisible()
                     #     sleep(3400, 3600)
-                    switchToCharacter(config["mainCharacter"])
+                    switchToCharacter(states["endlessCharacter"])
                     continue
                 states["multiCharacterModeState"][states["currentCharacter"]] = 0
                 nextIndex = (states["currentCharacter"] + 1) % len(
@@ -2927,7 +2930,7 @@ def switchToCharacter(index):
     # sleep(1500, 1600)
     # pyautogui.scroll(5)  # fix character switch if you have more then 9 characters
     # sleep(1500, 1600)
-    mouseMoveTo(x=1267, y=412)
+    mouseMoveTo(x=1270, y=430)
     sleep(500, 600)
     pydirectinput.click(button="left")
     sleep(500, 600)
