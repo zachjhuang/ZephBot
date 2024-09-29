@@ -53,8 +53,6 @@ def main():
     # set_resolution(1920, 1080)
     keyboard.add_hotkey('ctrl+page down', abortScript)
 
-    print("Endless Chaos starting in seconds...")
-    print("Remember to turn on Auto-disassemble")
 
     # Instantiate the parser
     parser = argparse.ArgumentParser(description="Optional app description")
@@ -64,6 +62,7 @@ def main():
     parser.add_argument("--endless", type=int, nargs='?', default=None, const=config["mainCharacter"], help="Enables infinite chaos on main character")
     parser.add_argument("--sailing", action="store_true", help="Enables sailing weekly on entire roster")
     parser.add_argument("--cubes", action="store_true", help="testing cubes")
+    parser.add_argument("--delay", type=int, help="Delay start of program in seconds")
     args = parser.parse_args()
 
     states["doChaos"] = args.chaos
@@ -73,6 +72,15 @@ def main():
     states["endlessCharacter"] = args.endless
     states["doSailing"] = args.sailing
     states["cubes"] = args.cubes
+    states["delayStart"] = False if args.delay is None else True 
+    states["delayDuration"] = args.delay
+
+    if args.delay is not None:
+        print("sleeping for " + str(args.delay) + " seconds")
+        sleep(args.delay*1000,(args.delay+1)*1000)
+
+    print("Endless Chaos starting in seconds...")
+    print("Remember to turn on Auto-disassemble")
 
     if states["doChaos"]:
         print("doing 2x chaos")
@@ -114,18 +122,6 @@ def main():
     pydirectinput.click(button=meleeClick)
     sleep(300, 400)
 
-    # suspend
-    pydirectinput.keyDown('ctrl')
-    sleep(10, 30)
-    pydirectinput.keyDown('shift')
-    sleep(10, 30)
-    pydirectinput.press('multiply')
-    sleep(10, 30)
-    pydirectinput.keyUp('shift')
-    sleep(10, 30)
-    pydirectinput.keyUp('ctrl')
-    sleep(10, 30)
-
     # stay invis in friends list
     if config["invisible"] == True:
         goInvisible()
@@ -142,9 +138,6 @@ def main():
         if states["status"] == "inCity":
             sleep(1000, 1200)
             
-            if not ranOnce:
-                ranOnce = True
-                switchToCharacter(config["mainCharacter"])
 
             if offlineCheck():
                 closeGameByClickingDialogue()
@@ -152,6 +145,9 @@ def main():
             if gameCrashCheck():
                 states["status"] = "restart"
                 continue
+            if not ranOnce:
+                ranOnce = True
+                switchToCharacter(config["mainCharacter"])
 
             # wait until loaded
             while True:
