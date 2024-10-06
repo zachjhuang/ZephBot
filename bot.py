@@ -267,7 +267,7 @@ def main():
                     if states["doEndless"] == False:
                         break
                     states["multiCharacterMode"] = False
-                    states["multiCharacterModeState"] = []
+                    # states["multiCharacterModeState"] = []
                     sleep(3400, 3600)
                     # if date.today().weekday() == 2:
                     #     print("go invis again")
@@ -431,6 +431,12 @@ def enterChaos():
         return
     sleep(1000, 1200)
 
+    _curr = config["characters"][states["currentCharacter"]]
+    if _curr["chaos_ilvl"] is None:
+        states["multiCharacterModeState"][states["currentCharacter"]] = 0
+        print("skipping chaos on character")
+        return
+
     # check if in chaos from disconenct->restart
     inChaos = findImageCenter(
         "./screenshots/inChaos.png",
@@ -464,7 +470,7 @@ def enterChaos():
         # print("aor detected")
         if (
             config["enableMultiCharacterMode"] == True
-            and states["currentCharacter"] == config["mainCharacter"]
+            and states["currentCharacter"] == states["endlessCharacter"]
             and states["multiCharacterMode"] == False
         ):
             states["multiCharacterMode"] = True
@@ -509,7 +515,6 @@ def enterChaos():
         sleep(500, 600)
 
     # select chaos dungeon level based on current Character
-    _curr = config["characters"][states["currentCharacter"]]
     punikaChaosTabLoc = [1020, 307]
     svernChaosTabLoc = [1160, 307]
     elgaciaChaosTabLoc = [1300, 307]
@@ -541,8 +546,8 @@ def enterChaos():
     }
     if states["multiCharacterMode"] or aura0 is None:
         mouseMoveTo(
-            x=chaosTabPosition[_curr["ilvl-aor"]][0][0],
-            y=chaosTabPosition[_curr["ilvl-aor"]][0][1],
+            x=chaosTabPosition[_curr["chaos_ilvl"]][0][0],
+            y=chaosTabPosition[_curr["chaos_ilvl"]][0][1],
         )
         sleep(800, 900)
         pydirectinput.click(button="left")
@@ -550,8 +555,8 @@ def enterChaos():
         pydirectinput.click(button="left")
         sleep(500, 600)
         mouseMoveTo(
-            x=chaosTabPosition[_curr["ilvl-aor"]][1][0],
-            y=chaosTabPosition[_curr["ilvl-aor"]][1][1],
+            x=chaosTabPosition[_curr["chaos_ilvl"]][1][0],
+            y=chaosTabPosition[_curr["chaos_ilvl"]][1][1],
         )
         sleep(800, 900)
         pydirectinput.click(button="left")
@@ -560,8 +565,8 @@ def enterChaos():
         sleep(500, 600)
     else:
         mouseMoveTo(
-            x=chaosTabPosition[_curr["ilvl-endless"]][0][0],
-            y=chaosTabPosition[_curr["ilvl-endless"]][0][1],
+            x=chaosTabPosition[_curr["chaos_ilvl"]][0][0],
+            y=chaosTabPosition[_curr["chaos_ilvl"]][0][1],
         )
         sleep(800, 900)
         pydirectinput.click(button="left")
@@ -569,8 +574,8 @@ def enterChaos():
         pydirectinput.click(button="left")
         sleep(500, 600)
         mouseMoveTo(
-            x=chaosTabPosition[_curr["ilvl-endless"]][1][0],
-            y=chaosTabPosition[_curr["ilvl-endless"]][1][1],
+            x=chaosTabPosition[_curr["chaos_ilvl"]][1][0],
+            y=chaosTabPosition[_curr["chaos_ilvl"]][1][1],
         )
         sleep(800, 900)
         pydirectinput.click(button="left")
