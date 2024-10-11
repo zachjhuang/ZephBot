@@ -132,5 +132,11 @@ dmypy.json
 debug/
 abilities.py
 characters.py
+characters2.py
 config.py
 .vscode/
+
+# configs
+configs/skills.py
+configs/roster.py
+config/config.py

@@ -1,11 +1,10 @@
-from taskbot import TaskBot
+from .taskbot import TaskBot
 
-from menuNav import toggleMenu, waitForMenuLoaded
+from .menuNav import toggleMenu, waitForMenuLoaded
 
-from utilities import Position
-from utilities import randSleep
-from utilities import mouseMoveTo, leftClickAtPosition, findAndClickImage, checkImageOnScreen
-from utilities import findImageCenter
+from .utilities import Position
+from .utilities import randSleep
+from .utilities import leftClickAtPosition, findAndClickImage, checkImageOnScreen
 
 import pydirectinput
 
@@ -19,8 +18,8 @@ DONATE_SILVER_POS = Position(760, 542)
 RESEARCH_CONFIRM_POS = Position(920, 705)
 
 class GuildBot(TaskBot):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, roster):
+        super().__init__(roster)
         self.remainingTasks: list[int] = [
             1 if char["guildDonation"] else 0 for char in self.roster
         ]

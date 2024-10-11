@@ -1,13 +1,13 @@
-from taskbot import TaskBot
-from config import config
+from .taskbot import TaskBot
+from configs.config import config
 
-from menuNav import restartCheck
-from menuNav import toggleMenu, waitForMenuLoaded, waitForOverworldLoaded
+from .menuNav import restartCheck
+from .menuNav import toggleMenu, waitForMenuLoaded, waitForOverworldLoaded
 
-from utilities import Position
-from utilities import mouseMoveTo, leftClickAtPosition
-from utilities import checkImageOnScreen, findImageCenter, findAndClickImage
-from utilities import randSleep
+from .utilities import Position
+from .utilities import mouseMoveTo, leftClickAtPosition
+from .utilities import checkImageOnScreen, findImageCenter, findAndClickImage
+from .utilities import randSleep
 
 import pydirectinput
 import pyautogui
@@ -16,8 +16,8 @@ SCREEN_CENTER_REGION = (685, 280, 600, 420)
 
 
 class UnaBot(TaskBot):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, roster):
+        super().__init__(roster)
         self.remainingTasks: list[int] = [
             len(char["unas"].split()) if char["unas"] is not None else 0
             for char in self.roster
@@ -31,9 +31,7 @@ class UnaBot(TaskBot):
             return
         randSleep(1000, 2000)
         print("accepting dailies")
-        if not acceptDailies():
-            self.remainingTasks[self.curr] = 0
-            return
+        acceptDailies()
         restartCheck()
         unas = self.roster[self.curr]["unas"]
         if "lopang" in unas:
@@ -80,10 +78,9 @@ class UnaBot(TaskBot):
         print("unas completed")
 
 
-def acceptDailies() -> bool:
+def acceptDailies() -> None:
     """
     Open una menu and accept all favorited dailies.
-    Return false if 3 favorited dailies are completed and true otherwise.
     """
     toggleMenu("unas")
     waitForMenuLoaded("unas")
@@ -132,7 +129,6 @@ def acceptDailies() -> bool:
 
     toggleMenu("unas")
     randSleep(800, 900)
-    return True
 
 
 def doLopang() -> None:

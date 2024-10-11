@@ -1,8 +1,5 @@
-from characters import characters as roster
-
-
 class TaskBot:
-    def __init__(self):
+    def __init__(self, roster):
         self.curr: int = 0
         self.roster: list[dict] = roster
         self.remainingTasks: list[int] = []

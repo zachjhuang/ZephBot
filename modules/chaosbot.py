@@ -1,20 +1,19 @@
-from taskbot import TaskBot
-from minimap import Minimap
-from abilities import abilities as skills
-from config import config
+from .taskbot import TaskBot
+from .minimap import Minimap
+from configs.skills import skills
+from configs.config import config
 
-from menuNav import restartCheck
-from menuNav import toggleMenu, waitForMenuLoaded, waitForOverworldLoaded
+from .menuNav import restartCheck
+from .menuNav import toggleMenu, waitForMenuLoaded, quitChaos
 
-from utilities import Position, resetException, timeoutException
-from utilities import mouseMoveTo, moveMouseToPosition, leftClickAtPosition
-from utilities import (
+from .utilities import Position, resetException, timeoutException
+from .utilities import randSleep
+from .utilities import mouseMoveTo, leftClickAtPosition
+from .utilities import (
     checkImageOnScreen,
     findImageCenter,
-    findImageCenterPos,
     findAndClickImage,
 )
-from utilities import randSleep
 
 import time
 from datetime import datetime
@@ -74,8 +73,8 @@ CHAOS_TAB_POSITION = {
 
 
 class ChaosBot(TaskBot):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, roster):
+        super().__init__(roster)
         self.remainingTasks = [
             2 if char["chaosItemLevel"] is not None else 0 for char in self.roster
         ]
@@ -92,57 +91,14 @@ class ChaosBot(TaskBot):
         self.deathCount: int = 0
         self.timeoutCount: int = 0
 
-    def enterChaos(self, ilvl: int) -> bool:
-        """
-        Enters specified chaos dungeon level.
-        """
-        toggleMenu("content")
-        waitForMenuLoaded("content")
-
-        # remainingAura = checkAuraOfResonance()
-        # self.remainingTasks[self.curr] = remainingAura / 50
-        # if remainingAura == 0:
-        #     toggleMenu("content")
-        #     return False
-
-        elementPos = findImageCenterPos(
-            "./screenshots/menus/chaosDungeonContentMenuElement.png", confidence=0.9
-        )
-        if elementPos is not None:
-            elementPos.shift(300, 30)
-            leftClickAtPosition(elementPos)  # shortcut button
-        else:
-            print("chaos dungeon not found in content list, unable to enter chaos")
-            return False
-        randSleep(500, 600)
-        isCorrectChaosDungeon = checkImageOnScreen(
-            f"./screenshots/chaos/ilvls/{ilvl}.png",
-            region=(1255, 380, 80, 50),
-            confidence=0.90,
-        )
-        if not isCorrectChaosDungeon:
-            print("not correct")
-            selectChaosDungeon(ilvl)
-
-        findAndClickImage("weeklyPurificationClaimAll", confidence=0.95)
-        randSleep(500, 600)
-        leftClickAtPosition(Position(920, 575))  # accept button
-        randSleep(500, 600)
-
-        findAndClickImage("enterButton", region=(1380, 760, 210, 60), confidence=0.75)
-        randSleep(500, 600)
-        findAndClickImage("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
-        return True
-
     def doTasks(self) -> None:
-        if self.doneOnCurrentChar():
-            return
-
-        if not self.enterChaos(self.roster[self.curr]["chaosItemLevel"]):
+        if self.remainingTasks[self.curr] == 0:
             return
         
         toggleMenu("defaultCombatPreset")
 
+        enterChaos(self.roster[self.curr]["chaosItemLevel"])
+        
         while self.remainingTasks[self.curr] > 0:
             try:
                 self.runStartTime = int(time.time())
@@ -193,6 +149,7 @@ class ChaosBot(TaskBot):
         awakeningSkill = [
             skill for skill in characterSkills if skill["skillType"] == "awakening"
         ][0]
+        awakeningUsed = False
         while True:
             self.diedCheck()
             self.healthCheck()
@@ -200,6 +157,10 @@ class ChaosBot(TaskBot):
             self.timeoutCheck()
 
             x, y, moveDuration = minimap.getGameCoordsOfMinimapTarget()
+
+            if floor == 1 and not awakeningUsed:
+                awakeningUsed = True
+                castAbility(x, y, awakeningSkill)
 
             # check for accident
             if floor == 1 and minimap.checkElite():
@@ -264,7 +225,8 @@ class ChaosBot(TaskBot):
                         ):
                             x, y, moveDuration = minimap.getGameCoordsOfMinimapTarget()
                             moveInDirection(x, y, int(moveDuration / 3))
-                            if minimap.checkBoss():
+                            if minimap.checkBoss() and not awakeningUsed:
+                                awakeningUsed = True
                                 castAbility(x, y, awakeningSkill)
                     case 3:
                         if (
@@ -292,8 +254,6 @@ class ChaosBot(TaskBot):
         """
         Press potion if under HP threshold.
         """
-        if config["useHealthPot"] == False:
-            return
         x = int(690 + 180 * config["healthPotAtPercent"])
         r1, g, b = pyautogui.pixel(x, 855)
         r2, g, b = pyautogui.pixel(x - 2, 855)
@@ -321,7 +281,7 @@ class ChaosBot(TaskBot):
                 confidence=0.7,
                 region=(917, 145, 630, 550),
             )
-            while resReady:
+            if resReady:
                 mouseMoveTo(x=1275, y=400)
                 randSleep(1600, 1800)
                 pydirectinput.click(button="left")
@@ -538,6 +498,47 @@ def checkAuraOfResonance() -> int:
     return 0
 
 
+def enterChaos(ilvl: int) -> None:
+        """
+        Enters specified chaos dungeon level.
+        """
+        toggleMenu("content")
+        waitForMenuLoaded("content")
+
+        # remainingAura = checkAuraOfResonance()
+        # self.remainingTasks[self.curr] = remainingAura / 50
+        # if remainingAura == 0:
+        #     toggleMenu("content")
+        #     return False
+
+        elementPos = findImageCenter(
+            "./screenshots/menus/chaosDungeonContentMenuElement.png", confidence=0.9
+        )
+        if elementPos is not None:
+            x, y = elementPos
+            leftClickAtPosition(Position(x + 300, y + 30))  # shortcut button
+        else:
+            leftClickAtPosition(Position(786, 315)) # edge case different UI
+        randSleep(800, 900)
+        isCorrectChaosDungeon = checkImageOnScreen(
+            f"./screenshots/chaos/ilvls/{ilvl}.png",
+            region=(1255, 380, 80, 50),
+            confidence=0.95,
+        )
+        if not isCorrectChaosDungeon:
+            print("not correct")
+            selectChaosDungeon(ilvl)
+
+        findAndClickImage("weeklyPurificationClaimAll", confidence=0.95)
+        randSleep(500, 600)
+        leftClickAtPosition(Position(920, 575))  # accept button
+        randSleep(500, 600)
+
+        findAndClickImage("enterButton", region=(1380, 760, 210, 60), confidence=0.75)
+        randSleep(800, 900)
+        findAndClickImage("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
+        randSleep(800, 900)
+
 def selectChaosDungeon(ilvl: int) -> None:
     """
     With chaos dungeon menu open, select chaos dungeon level corresponding to item level.
@@ -552,15 +553,10 @@ def selectChaosDungeon(ilvl: int) -> None:
         pydirectinput.click(button="left")
         randSleep(200, 250)
 
-    moveMouseToPosition(CHAOS_TAB_POSITION[ilvl]["tabPos"])
-    randSleep(200, 250)
-    pydirectinput.click(button="left")
-    randSleep(200, 250)
-
-    moveMouseToPosition(CHAOS_TAB_POSITION[ilvl]["levelPos"])
-    randSleep(200, 250)
-    pydirectinput.click(button="left")
-    randSleep(200, 250)
+    leftClickAtPosition(CHAOS_TAB_POSITION[ilvl]["tabPos"])
+    randSleep(1000, 1100)
+    leftClickAtPosition(CHAOS_TAB_POSITION[ilvl]["levelPos"])
+    randSleep(1000, 1100)
 
 
 def waitForChaosFloorLoading() -> None:
@@ -588,8 +584,7 @@ def waitForChaosFloorLoading() -> None:
             "./screenshots/chaos/leave.png",
             grayscale=True,
             confidence=0.7,
-            region=config["regions"]["leaveMenu"],
-        )
+            region=CHAOS_LEAVE_MENU_REGION)
         if leaveButton:
             return
         randSleep(100, 150)
@@ -695,22 +690,9 @@ def reenterChaos() -> None:
     )
     randSleep(500,600)
     findAndClickImage("enterButton", region=(1380, 760, 210, 60), confidence=0.75)
-    randSleep(500,600)
+    randSleep(800,900)
     findAndClickImage("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
     randSleep(2000, 3200)
-    return
-
-
-def quitChaos() -> None:
-    """
-    Quit chaos dungeon after finishing a run.
-    """
-    print("quitting chaos")
-    findAndClickImage("chaos/leave", region=CHAOS_LEAVE_MENU_REGION, confidence=0.7)
-    randSleep(800, 900)
-    findAndClickImage("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
-    randSleep(5000, 7000)
-    waitForOverworldLoaded()
     return
 
 

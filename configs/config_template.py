@@ -35,7 +35,7 @@
     Register the bifrost in the exact middle of the POI closest to the South Vern/Punika/Shushire port,
     depending on the level specified (currently only level 3 near Shushire supported)
 """
-from characters import characters
+from roster import characters
 
 config = {
     "mainCharacter": 0,  # must be in number 0 to 5 (0 is the first character)

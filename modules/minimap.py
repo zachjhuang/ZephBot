@@ -1,8 +1,10 @@
 import math
 import pyautogui
 
-from utilities import findImageCenter, checkImageOnScreen
-from config import config
+from .utilities import findImageCenter, checkImageOnScreen
+from configs.config import config
+
+from typing import Callable
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -10,7 +12,6 @@ SCREEN_CENTER_Y = 540
 MINIMAP_REGION = (1655, 170, 240, 200)
 MINIMAP_CENTER_X = 1772
 MINIMAP_CENTER_Y = 272
-from typing import Callable
 
 MOB_RGB_RANGE_GFN = lambda r, g, b: 180 < r < 215 and 17 < g < 35 and 17 < b < 55
 MOG_RGB_RANGE = lambda r, g, b: 180 < r < 215 and 17 < g < 35 and 17 < b < 55
@@ -54,7 +55,7 @@ class Minimap:
                 left, top, _w, _h = MINIMAP_REGION
                 self.targetX = left + entry[0] - MINIMAP_CENTER_X
                 self.targetY = top + entry[1] - MINIMAP_CENTER_Y
-                print(f"{name} pixel at x:{self.targetX} y:{self.targetY}")
+                # print(f"{name} pixel at x:{self.targetX} y:{self.targetY}")
                 return True
         self.targetX = 0
         self.targetY = 0
