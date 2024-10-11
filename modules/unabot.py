@@ -64,10 +64,22 @@ class UnaBot(TaskBot):
                 doHesteraGardenUna()
                 self.remainingTasks[self.curr] -= 1
 
+        if "writersLife" in unas:
+            restartCheck()
+            if bifrostGoTo("writersLife"):
+                doWritersLifeUna()
+                self.remainingTasks[self.curr] -= 1
+
         if "sageTower" in unas:
             restartCheck()
             if bifrostGoTo("sageTower"):
                 doSageTowerUna()
+                self.remainingTasks[self.curr] -= 1
+
+        if "ghostStory" in unas:
+            restartCheck()
+            if bifrostGoTo("ghostStory"):
+                doGhostStoryUna()
                 self.remainingTasks[self.curr] -= 1
 
         if "southKurzan" in unas:
@@ -75,6 +87,7 @@ class UnaBot(TaskBot):
             if bifrostGoTo("southKurzan"):
                 doSouthKurzanUna()
                 self.remainingTasks[self.curr] -= 1
+
         print("unas completed")
 
 
