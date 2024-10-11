@@ -46,7 +46,7 @@ class UnaBot(TaskBot):
                 doMokomokoUna()
                 self.remainingTasks[self.curr] -= 1
 
-        if "bleakNight" in unas:
+        if "bleakNightFog" in unas:
             restartCheck()
             if bifrostGoTo("bleakNightFog"):
                 doBleakNightFogUna()
