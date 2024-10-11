@@ -129,11 +129,12 @@ class BotManager:
                 bot.remainingTasks[index] = max(
                     0, bot.remainingTasks[index] - checkUnasCompleted()
                 )
-
-        if self.isCharacterDone(index):
+        
+        if self.allBotsFinished():
+            return
+        elif self.isCharacterDone(index):
             print("character already done, switching to next")
             self.switchToCharacter((index + 1) % len(roster))
-
         elif checkImageOnScreen("./screenshots/alreadyConnected.png", confidence=0.85):
             print("character already connected")
             pydirectinput.press("esc")
