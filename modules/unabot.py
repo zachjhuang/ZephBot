@@ -135,10 +135,8 @@ def acceptDailies() -> None:
         )
     )
     for region in acceptButtonRegions:
-        mouseMoveTo(x=region.left, y=region.top)
-        randSleep(100, 150)
-        pydirectinput.click(button="left")
-        randSleep(100, 150)
+        leftClickAtPosition(Position(region.left, region.top))
+        randSleep(400, 500)
 
     toggleMenu("unas")
     randSleep(800, 900)
@@ -191,7 +189,7 @@ def doWritersLifeUna() -> None:
     pydirectinput.click(x=1100, y=750, button=config["move"])
     randSleep(1500, 1600)
     pydirectinput.press(config["writersLifeEmoteSlot"])
-    randSleep(5000, 5100)
+    randSleep(9000, 9100)
     pydirectinput.click(x=800, y=600, button=config["move"])
     randSleep(1500, 1600)
     spamInteract(10000)
