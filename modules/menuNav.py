@@ -114,7 +114,7 @@ def restartGame() -> None:
             #     region=SCREEN_CENTER_REGION,
             #     confidence=0.75,
             # )
-            closeGFN = checkImageOnScreen(
+            closeGFN = findImageCenter(
                 "./screenshots/GFN/closeGFN.png",
                 confidence=0.75,
             )
@@ -182,12 +182,12 @@ def restartGame() -> None:
         randSleep(1200, 1300)
     randSleep(5200, 6300)
     while True:
-        enterServer = checkImageOnScreen(
+        enterServer = findImageCenter(
             "./screenshots/enterServer.png",
             confidence=0.9,
             region=(885, 801, 160, 55),
         )
-        enterGame = checkImageOnScreen("./screenshots/steamPlay.png", confidence=0.75)
+        enterGame = findImageCenter("./screenshots/steamPlay.png", confidence=0.75)
         if enterServer:
             print("clicking enterServer")
             randSleep(1000, 1200)
@@ -211,7 +211,7 @@ def restartGame() -> None:
             continue
     randSleep(3200, 4300)
     while True:
-        enterCharacter = checkImageOnScreen(
+        enterCharacter = findImageCenter(
             "./screenshots/enterCharacter.png",
             confidence=0.75,
             region=(745, 854, 400, 80),
