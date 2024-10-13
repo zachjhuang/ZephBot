@@ -49,7 +49,7 @@ def moveMouseToPosition(position: Position) -> None:
 def leftClickAtPosition(position: Position) -> None:
     """Move mouse to position and left click."""
     moveMouseToPosition(position=position)
-    randSleep(100, 150)
+    randSleep(200, 250)
     pydirectinput.click(x=position.x, y=position.y, button="left")
 
 
