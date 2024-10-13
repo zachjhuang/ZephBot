@@ -63,6 +63,7 @@ class BotManager:
         return True
 
     def run(self) -> None:
+        restartCheck()
         self.switchToCharacter(0)
 
         if config["auraRepair"] == False:
