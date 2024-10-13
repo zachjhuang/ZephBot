@@ -109,8 +109,7 @@ class ChaosBot(TaskBot):
                 self.updateAndPrintMetrics(finishTime - self.runStartTime)
             except timeoutException:
                 quitChaos()
-                self.doTasks()
-                pass
+                enterChaos(self.roster[self.curr]["chaosItemLevel"])
             self.remainingTasks[self.curr] -= 1
             if self.remainingTasks[self.curr] > 0:
                 reenterChaos()
@@ -195,7 +194,7 @@ class ChaosBot(TaskBot):
                 self.diedCheck()
                 self.healthCheck()
 
-                if minimap.checkPortal() and (floor == 1 or floor == 2):
+                if (floor == 1 or floor == 2) and minimap.checkPortal():
                     pydirectinput.click(
                         x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y, button=config["move"]
                     )
