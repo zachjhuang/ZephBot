@@ -17,7 +17,7 @@ class implementations.
 'unas' is a string of up to three different task names,
 separated by spaces.
 Possible tasks include
-    - 'lopang' (Shushire, Arthetine, Vern, silver)
+    - 'lopang' (Shushire-Arthetine-Vern, silver)
     - 'mokomoko' (How to Succeed at Length, leapstones)
     - 'bleakNightFog' (Bleak Night Fog, leapstones)
     - 'hesteraGarden (Examine the Brilliant Spring, leapstones)
