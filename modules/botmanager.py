@@ -98,6 +98,10 @@ class BotManager:
         self.curr = index
         self.updateCurrentChar(index)
         randSleep(500, 600)
+        print("----------------------------")
+        for bot in self.runningBotList:
+            print(f"{bot.__class__.__name__}: {bot.remainingTasks}")
+        print("----------------------------")
         print("switching to {}".format(index))
         while not checkImageOnScreen(
             "./screenshots/menus/gameMenu.png", confidence=0.7
