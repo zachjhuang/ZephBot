@@ -18,10 +18,13 @@ SCREEN_CENTER_REGION = (685, 280, 600, 420)
 class UnaBot(TaskBot):
     def __init__(self, roster):
         super().__init__(roster)
-        self.remainingTasks: list[int] = [
-            len(char["unas"].split()) if char["unas"] is not None else 0
-            for char in self.roster
-        ]
+        for char in self.roster:
+            if char["unas"] is None:
+                self.remainingTasks.append(0)
+            elif char["unas"] == "lopang":
+                self.remainingTasks.append(3)
+            else:
+                self.remainingTasks.append(len(char["unas"].split()))
 
     def doTasks(self) -> None:
         """
