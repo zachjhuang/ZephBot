@@ -19,6 +19,9 @@ MOG_RGB_RANGE = lambda r, g, b: 180 < r < 215 and 17 < g < 35 and 17 < b < 55
 ELITE_RGB_RANGE_GFN = lambda r, g, b: 184 < r < 215 and 124 < g < 147 and 59 < b < 78
 ELITE_RGB_RANGE = lambda r, g, b: 189 < r < 215 and 124 < g < 150 and 29 < b < 70
 
+BUFF_RGB_RANGE_GFN = lambda r, g, b: 210 < r < 255 and 170 < g < 190 and 30 < b < 60
+BUFF_RGB_RANGE = lambda r, g, b: 189 < r < 215 and 124 < g < 150 and 29 < b < 70
+
 PORTAL_RGB_RANGE_GFN = lambda r, g, b: (
     (75 < r < 105 and 140 < g < 170 and 240 < b < 256)
     or (120 < r < 130 and 210 < g < 240 and 240 < b < 256)
@@ -99,6 +102,17 @@ class Minimap:
             return self.findClosestMinimapPixel("elite", ELITE_RGB_RANGE_GFN)
         else:
             return self.findClosestMinimapPixel("elite", ELITE_RGB_RANGE)
+        
+    def checkBuff(self) -> bool:
+        """
+        Check minimap for closest yello pixel of mob icon.
+        Return true if found and update minimap target coordinates.
+        Return false otherwise.
+        """
+        if config["GFN"]:
+            return self.findClosestMinimapPixel("buff", BUFF_RGB_RANGE_GFN)
+        else:
+            return self.findClosestMinimapPixel("buff", BUFF_RGB_RANGE)
 
     def checkPortal(self) -> bool:
         """
@@ -111,7 +125,7 @@ class Minimap:
         if config["performance"] == False:
             for portalPart in ["portal", "portalTop", "portalBot"]:
                 portalCoords = findImageCenter(
-                    "./screenshots/chaos/" + portalPart + ".png",
+                    f"./screenshots/chaos/{portalPart}.png",
                     region=MINIMAP_REGION,
                     confidence=0.7,
                 )
@@ -157,8 +171,6 @@ class Minimap:
             region=(406, 159, 1000, 200),
         )
         if bossbar:
-            self.targetX = 0
-            self.targetY = 0
             return True
         return False
 
@@ -172,7 +184,7 @@ class Minimap:
         """
         for towerPart in ["tower", "towerTop", "towerBot"]:
             towerCoords = findImageCenter(
-                "./screenshots/chaos/" + towerPart + ".png",
+                f"./screenshots/chaos/{towerPart}.png",
                 region=MINIMAP_REGION,
                 confidence=0.7,
             )
@@ -183,6 +195,19 @@ class Minimap:
                 print(f"{towerPart} at x: {self.targetX} y: {self.targetY}")
                 return True
         return False
+    
+    def checkJump(self) -> bool:
+        jumpIcon = findImageCenter(
+            "./screenshots/chaos/jumpIcon.png",
+                region=MINIMAP_REGION,
+                confidence=0.75,
+        )
+        if jumpIcon is not None:
+            x, y = jumpIcon
+            self.targetX = x - MINIMAP_CENTER_X - 4
+            self.targetY = y - MINIMAP_CENTER_Y + 4
+            print(f"jump icon at x: {self.targetX} y: {self.targetY}")
+            return True
 
 
 def spiralSearch(rows, cols, rStart, cStart) -> list[list]:
