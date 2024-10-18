@@ -16,7 +16,7 @@ SCREEN_CENTER_REGION = (685, 280, 600, 420)
 
 
 class UnaBot(TaskBot):
-    def __init__(self, roster):
+    def __init__(self, roster) -> None:
         super().__init__(roster)
         for char in self.roster:
             if char["unas"] is None:
@@ -40,8 +40,7 @@ class UnaBot(TaskBot):
         if "lopang" in unas:
             restartCheck()
             if bifrostGoTo("lopangIsland"):
-                doLopang()
-                self.remainingTasks[self.curr] -= 3
+                self.remainingTasks[self.curr] -= doLopang()
 
         if "mokomoko" in unas:
             restartCheck()
@@ -145,14 +144,16 @@ def acceptDailies() -> None:
     randSleep(800, 900)
 
 
-def doLopang() -> None:
+def doLopang() -> int:
     """Does 3 lopang dailies (Shushire -> Arthetine -> Vern)."""
     walkLopang()
+    completed = 0
     for lopangLocation in ["Shushire", "Arthetine", "Vern"]:
         randSleep(1500, 1600)
-        bifrostGoTo("lopang" + lopangLocation)
-        restartCheck()
-        spamInteract(6000)
+        if bifrostGoTo("lopang" + lopangLocation):
+            spamInteract(6000)
+            completed += 1
+    return completed
 
 
 def doBleakNightFogUna() -> None:
