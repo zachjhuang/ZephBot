@@ -5,6 +5,7 @@ from .chaosbot import ChaosBot
 from .unabot import UnaBot
 from .guildbot import GuildBot
 from .taskbot import TaskBot
+from .kurzanfrontbot import KurzanFrontBot
 
 import pydirectinput
 import math
@@ -41,19 +42,17 @@ CHARACTER_SELECT_POS = [
 
 
 class BotManager:
-    def __init__(self, doChaos: bool, doUnas: bool, doGuild: bool) -> None:
+    def __init__(self, doChaos: bool, doKurzanFront: bool, doUnas: bool, doGuild: bool) -> None:
         self.curr = 0
 
-        self.doChaos = doChaos
-        self.doUnas = doUnas
-        self.doGuild = doGuild
-
         self.runningBotList: list[TaskBot] = []
-        if self.doChaos:
+        if doChaos:
             self.runningBotList.append(ChaosBot(roster))
-        if self.doUnas:
+        if doKurzanFront:
+            self.runningBotList.append(KurzanFrontBot(roster))
+        if doUnas:
             self.runningBotList.append(UnaBot(roster))
-        if self.doGuild:
+        if doGuild:
             self.runningBotList.append(GuildBot(roster))
 
     def allBotsFinished(self) -> bool:
@@ -76,7 +75,9 @@ class BotManager:
             if config["auraRepair"] == False:
                 doCityRepair()
 
-            self.runCharTasks()
+            for bot in self.runningBotList:
+                bot.doTasks()
+
             restartCheck()
             nextIndex = (self.curr + 1) % len(roster)
             print(f"character {self.curr} is done, switching to: {nextIndex}")
@@ -89,9 +90,9 @@ class BotManager:
     def isCharacterDone(self, char: int) -> None:
         return sum([bot.remainingTasks[char] for bot in self.runningBotList]) == 0
 
-    def runCharTasks(self) -> None:
-        for bot in self.runningBotList:
-            bot.doTasks()
+    # def runCharTasks(self) -> None:
+    #     for bot in self.runningBotList:
+    #         bot.doTasks()
 
     def switchToCharacter(self, index: int) -> None:
         """Opens ESC menu and switches to character designated by index."""
@@ -109,6 +110,7 @@ class BotManager:
             pydirectinput.press("esc")
             randSleep(1000, 1100)
         print("game menu detected")
+        randSleep(800, 900)
         leftClickAtPosition(Position(540, 700))
         randSleep(800, 900)
 
@@ -129,6 +131,10 @@ class BotManager:
             if isinstance(bot, ChaosBot):
                 bot.remainingTasks[index] = max(
                     0, bot.remainingTasks[index] - checkChaosCompleted()
+                )
+            if isinstance(bot, KurzanFrontBot):
+                bot.remainingTasks[index] = max(
+                    0, bot.remainingTasks[index] - checkKurzanFrontCompleted()
                 )
             if isinstance(bot, UnaBot):
                 bot.remainingTasks[index] = max(
@@ -255,4 +261,27 @@ def checkChaosCompleted() -> int:
             print("both chaos runs completed")
             return 2
     print("unable to detect chaos")
+    return 0
+
+def checkKurzanFrontCompleted() -> int:
+    kurzanFrontIcon = findImageCenter(
+        "./screenshots/kurzanFrontIcon.png",
+        region=CHARACTER_STATUS_ICON_REGION,
+        confidence=0.65,
+    )
+    if kurzanFrontIcon is not None:
+        x, y = kurzanFrontIcon
+        if checkImageOnScreen(
+            "./screenshots/100.png", region=(x + 180, y - 10, 25, 21), confidence=0.75
+        ):
+            print("kurzan front not completed")
+            return 0
+        if checkImageOnScreen(
+            "./screenshots/0.png", region=(x + 180, y - 10, 25, 21), confidence=0.75
+        ):
+            print("kurzan front completed")
+            return 1
+        print("cant detect aura")
+    else: 
+        print("unable to detect kurzan front icon")
     return 0
