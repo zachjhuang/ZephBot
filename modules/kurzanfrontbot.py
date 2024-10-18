@@ -1,30 +1,28 @@
+import statistics
+import time
+
+import pyautogui
+import pydirectinput
+
+from configs.config import config
 from modules.chaosbot import (
     ChaosBot,
     castAbility,
-    moveInDirection,
     doAuraRepair,
+    moveInDirection,
     waitForChaosFloorLoading,
 )
+from modules.menuNav import quitChaos, restartCheck, toggleMenu, waitForMenuLoaded
 from modules.minimap import Minimap
-from configs.skills import skills
-from configs.config import config
-
-from modules.menuNav import restartCheck
-from modules.menuNav import toggleMenu, waitForMenuLoaded, quitChaos
-
-from modules.utilities import Position, resetException, timeoutException
-from modules.utilities import randSleep
-from modules.utilities import mouseMoveTo, leftClickAtPosition
 from modules.utilities import (
+    Position,
     checkImageOnScreen,
-    findImageCenter,
     findAndClickImage,
+    findImageCenter,
+    leftClickAtPosition,
+    mouseMoveTo,
+    randSleep,
 )
-
-import time
-import pydirectinput
-import pyautogui
-import statistics
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -54,7 +52,7 @@ class KurzanFrontBot(ChaosBot):
         self.targetYs = [540]
 
     def doTasks(self) -> None:
-        if self.remainingTasks[self.curr] == 0:
+        if self.doneOnCurrentChar():
             return
 
         toggleMenu("defaultCombatPreset")
@@ -73,7 +71,7 @@ class KurzanFrontBot(ChaosBot):
         self.useSkills()
         finishTime = int(time.time())
         self.updateAndPrintMetrics(finishTime - self.runStartTime)
-
+        self.remainingTasks[self.curr] = 0
         quitChaos()
 
     def useSkills(self) -> None:
@@ -120,7 +118,7 @@ class KurzanFrontBot(ChaosBot):
                     jumped = True
 
                 if minimap.checkBuff() or minimap.checkBoss() or minimap.checkElite():
-                    print(f"x: {x}, y: {y}")
+                    # print(f"x: {x}, y: {y}")
                     self.targetXs.append(x)
                     self.targetYs.append(y)
                     x, y, moveDuration = minimap.getGameCoordsOfMinimapTarget()
@@ -128,14 +126,9 @@ class KurzanFrontBot(ChaosBot):
                 else:
                     meanX = int(statistics.mean(self.targetXs))
                     meanY = int(statistics.mean(self.targetYs))
-                    print(f"mean x: {meanX}")
-                    print(f"mean y: {meanY}")
-                    moveInDirection(
-                        int(statistics.mean(self.targetXs)),
-                        int(statistics.mean(self.targetYs)),
-                        int(moveDuration / 3),
-                    )
-
+                    # print(f"mean x: {meanX}")
+                    # print(f"mean y: {meanY}")
+                    moveInDirection(meanX, meanY, int(moveDuration / 3))
                 self.performClassSpecialty(
                     self.roster[self.curr]["class"], i, normalSkills
                 )
@@ -145,8 +138,7 @@ class KurzanFrontBot(ChaosBot):
 def checkProgressForJump():
     im = pyautogui.screenshot()
     r, _g, _b = im.getpixel((89, 292))
-    if r > 130:
-        return True
+    return r > 130
 
 
 def enterKurzanFront(ilvl: int) -> None:

@@ -1,25 +1,26 @@
-from modules.taskbot import TaskBot
-from modules.minimap import Minimap
-from configs.skills import skills
-from configs.config import config
-
-from modules.menuNav import restartCheck
-from modules.menuNav import toggleMenu, waitForMenuLoaded, quitChaos
-
-from modules.utilities import Position, resetException, timeoutException
-from modules.utilities import randSleep
-from modules.utilities import mouseMoveTo, leftClickAtPosition
-from modules.utilities import (
-    checkImageOnScreen,
-    findImageCenter,
-    findAndClickImage,
-)
-
+import random
 import time
 from datetime import datetime
-import random
-import pydirectinput
+
 import pyautogui
+import pydirectinput
+
+from configs.config import config
+from configs.skills import skills
+from modules.menuNav import quitChaos, restartCheck, toggleMenu, waitForMenuLoaded
+from modules.minimap import Minimap
+from modules.taskbot import TaskBot
+from modules.utilities import (
+    Position,
+    checkImageOnScreen,
+    findAndClickImage,
+    findImageCenter,
+    leftClickAtPosition,
+    mouseMoveTo,
+    randSleep,
+    resetException,
+    timeoutException,
+)
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -76,7 +77,12 @@ class ChaosBot(TaskBot):
     def __init__(self, roster):
         super().__init__(roster)
         self.remainingTasks = [
-            2 if char["chaosItemLevel"] is not None and char["chaosItemLevel"] <= 1610 else 0 for char in self.roster
+            (
+                2
+                if char["chaosItemLevel"] is not None and char["chaosItemLevel"] <= 1610
+                else 0
+            )
+            for char in self.roster
         ]
         self.skills: dict[list[dict]] = skills
         self.runStartTime: int = 0
@@ -91,13 +97,13 @@ class ChaosBot(TaskBot):
         self.timeoutCount: int = 0
 
     def doTasks(self) -> None:
-        if self.remainingTasks[self.curr] == 0:
+        if self.doneOnCurrentChar():
             return
-        
+
         toggleMenu("defaultCombatPreset")
 
         enterChaos(self.roster[self.curr]["chaosItemLevel"])
-        
+
         while self.remainingTasks[self.curr] > 0:
             try:
                 self.runStartTime = int(time.time())
@@ -497,45 +503,46 @@ def checkAuraOfResonance() -> int:
 
 
 def enterChaos(ilvl: int) -> None:
-        """
-        Enters specified chaos dungeon level.
-        """
-        toggleMenu("content")
-        waitForMenuLoaded("content")
+    """
+    Enters specified chaos dungeon level.
+    """
+    toggleMenu("content")
+    waitForMenuLoaded("content")
 
-        # remainingAura = checkAuraOfResonance()
-        # self.remainingTasks[self.curr] = remainingAura / 50
-        # if remainingAura == 0:
-        #     toggleMenu("content")
-        #     return False
+    # remainingAura = checkAuraOfResonance()
+    # self.remainingTasks[self.curr] = remainingAura / 50
+    # if remainingAura == 0:
+    #     toggleMenu("content")
+    #     return False
 
-        elementPos = findImageCenter(
-            "./screenshots/menus/chaosDungeonContentMenuElement.png", confidence=0.9
-        )
-        if elementPos is not None:
-            x, y = elementPos
-            leftClickAtPosition(Position(x + 300, y + 30))  # shortcut button
-        else:
-            leftClickAtPosition(Position(786, 315)) # edge case different UI
-        randSleep(800, 900)
-        isCorrectChaosDungeon = checkImageOnScreen(
-            f"./screenshots/chaos/ilvls/{ilvl}.png",
-            region=(1255, 380, 80, 50),
-            confidence=0.95,
-        )
-        if not isCorrectChaosDungeon:
-            print("not correct")
-            selectChaosDungeon(ilvl)
+    elementPos = findImageCenter(
+        "./screenshots/menus/chaosDungeonContentMenuElement.png", confidence=0.9
+    )
+    if elementPos is not None:
+        x, y = elementPos
+        leftClickAtPosition(Position(x + 300, y + 30))  # shortcut button
+    else:
+        leftClickAtPosition(Position(786, 315))  # edge case different UI
+    randSleep(800, 900)
+    isCorrectChaosDungeon = checkImageOnScreen(
+        f"./screenshots/chaos/ilvls/{ilvl}.png",
+        region=(1255, 380, 80, 50),
+        confidence=0.95,
+    )
+    if not isCorrectChaosDungeon:
+        print("not correct")
+        selectChaosDungeon(ilvl)
 
-        findAndClickImage("weeklyPurificationClaimAll", confidence=0.95)
-        randSleep(500, 600)
-        leftClickAtPosition(Position(920, 575))  # accept button
-        randSleep(500, 600)
+    findAndClickImage("weeklyPurificationClaimAll", confidence=0.95)
+    randSleep(500, 600)
+    leftClickAtPosition(Position(920, 575))  # accept button
+    randSleep(500, 600)
 
-        findAndClickImage("enterButton", region=(1380, 760, 210, 60), confidence=0.75)
-        randSleep(800, 900)
-        findAndClickImage("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
-        randSleep(800, 900)
+    findAndClickImage("enterButton", region=(1380, 760, 210, 60), confidence=0.75)
+    randSleep(800, 900)
+    findAndClickImage("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
+    randSleep(800, 900)
+
 
 def selectChaosDungeon(ilvl: int) -> None:
     """
@@ -582,7 +589,8 @@ def waitForChaosFloorLoading() -> None:
             "./screenshots/chaos/leave.png",
             grayscale=True,
             confidence=0.7,
-            region=CHAOS_LEAVE_MENU_REGION)
+            region=CHAOS_LEAVE_MENU_REGION,
+        )
         if leaveButton:
             return
         randSleep(100, 150)
@@ -686,9 +694,9 @@ def reenterChaos() -> None:
     findAndClickImage(
         "chaos/selectLevel", region=CHAOS_LEAVE_MENU_REGION, confidence=0.7
     )
-    randSleep(500,600)
+    randSleep(500, 600)
     findAndClickImage("enterButton", region=(1380, 760, 210, 60), confidence=0.75)
-    randSleep(800,900)
+    randSleep(800, 900)
     findAndClickImage("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
     randSleep(2000, 3200)
     return

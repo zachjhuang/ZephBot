@@ -1,18 +1,23 @@
-from modules.botmanager import BotManager
-
-import pydirectinput
-import time
 import argparse
-import keyboard
 import os
 import platform
-import pywintypes, win32con, win32api
+import time
 
-from modules.utilities import Position, restartException, resetException
-from modules.utilities import leftClickAtPosition
-from modules.utilities import randSleep
+import keyboard
+import pydirectinput
+import pywintypes
+import win32api
+import win32con
 
+from modules.botmanager import BotManager
 from modules.menuNav import restartGame, waitForOverworldLoaded
+from modules.utilities import (
+    Position,
+    leftClickAtPosition,
+    randSleep,
+    resetException,
+    restartException,
+)
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -37,7 +42,9 @@ def main():
         "--chaos", action="store_true", help="Enables 2x chaos on entire roster"
     )
     parser.add_argument(
-        "--kurzanfront", action="store_true", help="Enables Kurzan Front on entire roster"
+        "--kurzanfront",
+        action="store_true",
+        help="Enables Kurzan Front on entire roster",
     )
     parser.add_argument(
         "--unas", action="store_true", help="Enables unas on entire roster"
@@ -61,11 +68,11 @@ def main():
     leftClickAtPosition(SCREEN_CENTER_POS)
 
     botManager = BotManager(
-        doChaos=args.chaos, 
-        doKurzanFront=args.kurzanfront, 
-        doUnas=args.unas, 
-        doGuild=args.guild
-        )
+        doChaos=args.chaos,
+        doKurzanFront=args.kurzanfront,
+        doUnas=args.unas,
+        doGuild=args.guild,
+    )
 
     # stay invis in friends list
     # if config["invisible"] == True:

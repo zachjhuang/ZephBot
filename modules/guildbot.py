@@ -1,12 +1,14 @@
-from modules.taskbot import TaskBot
+import pydirectinput
 
 from modules.menuNav import toggleMenu, waitForMenuLoaded
-
-from modules.utilities import Position
-from modules.utilities import randSleep
-from modules.utilities import leftClickAtPosition, findAndClickImage, checkImageOnScreen
-
-import pydirectinput
+from modules.taskbot import TaskBot
+from modules.utilities import (
+    Position,
+    checkImageOnScreen,
+    findAndClickImage,
+    leftClickAtPosition,
+    randSleep,
+)
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
 SUPPORT_RESEARCH_REGION = (1164, 455, 106, 20)
@@ -17,8 +19,9 @@ DONATE_SILVER_POS = Position(760, 542)
 
 RESEARCH_CONFIRM_POS = Position(920, 705)
 
+
 class GuildBot(TaskBot):
-    def __init__(self, roster):
+    def __init__(self, roster) -> None:
         super().__init__(roster)
         self.remainingTasks: list[int] = [
             1 if char["guildDonation"] else 0 for char in self.roster
@@ -43,13 +46,27 @@ class GuildBot(TaskBot):
         pydirectinput.press("esc")
         randSleep(500, 600)
 
-        findAndClickImage("supportResearch", region=SUPPORT_RESEARCH_REGION, confidence=0.75)
+        findAndClickImage(
+            "supportResearch", region=SUPPORT_RESEARCH_REGION, confidence=0.75
+        )
         randSleep(500, 600)
-        if checkImageOnScreen("./screenshots/canSupportResearch.png", region=CAN_SUPPORT_RESEARCH_REGION, confidence=0.75):
-            findAndClickImage("canSupportResearch", region=CAN_SUPPORT_RESEARCH_REGION, confidence=0.75)
+        if checkImageOnScreen(
+            "./screenshots/canSupportResearch.png",
+            region=CAN_SUPPORT_RESEARCH_REGION,
+            confidence=0.75,
+        ):
+            findAndClickImage(
+                "canSupportResearch",
+                region=CAN_SUPPORT_RESEARCH_REGION,
+                confidence=0.75,
+            )
             randSleep(500, 600)
             leftClickAtPosition(RESEARCH_CONFIRM_POS)
-        elif checkImageOnScreen("./screenshots/alreadySupportedResearch.png", region=CAN_SUPPORT_RESEARCH_REGION, confidence=0.75):
+        elif checkImageOnScreen(
+            "./screenshots/alreadySupportedResearch.png",
+            region=CAN_SUPPORT_RESEARCH_REGION,
+            confidence=0.75,
+        ):
             pydirectinput.press("esc")
         randSleep(500, 600)
         toggleMenu("guild")

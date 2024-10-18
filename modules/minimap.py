@@ -1,10 +1,10 @@
 import math
+from typing import Callable
+
 import pyautogui
 
-from modules.utilities import findImageCenter, checkImageOnScreen
 from configs.config import config
-
-from typing import Callable
+from modules.utilities import checkImageOnScreen, findImageCenter
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -33,7 +33,7 @@ PORTAL_RGB_RANGE = lambda r, g, b: (
 
 
 class Minimap:
-    def __init__(self):
+    def __init__(self) -> None:
         self.targetX = 0
         self.targetY = 0
 
@@ -102,7 +102,7 @@ class Minimap:
             return self.findClosestMinimapPixel("elite", ELITE_RGB_RANGE_GFN)
         else:
             return self.findClosestMinimapPixel("elite", ELITE_RGB_RANGE)
-        
+
     def checkBuff(self) -> bool:
         """
         Check minimap for closest yello pixel of mob icon.
@@ -195,12 +195,12 @@ class Minimap:
                 print(f"{towerPart} at x: {self.targetX} y: {self.targetY}")
                 return True
         return False
-    
+
     def checkJump(self) -> bool:
         jumpIcon = findImageCenter(
             "./screenshots/chaos/jumpIcon.png",
-                region=MINIMAP_REGION,
-                confidence=0.75,
+            region=MINIMAP_REGION,
+            confidence=0.75,
         )
         if jumpIcon is not None:
             x, y = jumpIcon

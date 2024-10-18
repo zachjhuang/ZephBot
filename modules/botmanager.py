@@ -1,21 +1,23 @@
-from configs.config import config
-from configs.roster import roster
-
-from modules.chaosbot import ChaosBot
-from modules.unabot import UnaBot
-from modules.guildbot import GuildBot
-from modules.taskbot import TaskBot
-from modules.kurzanfrontbot import KurzanFrontBot
-
-import pydirectinput
 import math
 
-from modules.utilities import Position
-from modules.utilities import mouseMoveTo, leftClickAtPosition
-from modules.utilities import checkImageOnScreen, findImageCenter
-from modules.utilities import randSleep
+import pydirectinput
 
+from configs.config import config
+from configs.roster import roster
+from modules.chaosbot import ChaosBot
+from modules.guildbot import GuildBot
+from modules.kurzanfrontbot import KurzanFrontBot
 from modules.menuNav import restartCheck, waitForOverworldLoaded
+from modules.taskbot import TaskBot
+from modules.unabot import UnaBot
+from modules.utilities import (
+    Position,
+    checkImageOnScreen,
+    findImageCenter,
+    leftClickAtPosition,
+    mouseMoveTo,
+    randSleep,
+)
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -42,7 +44,9 @@ CHARACTER_SELECT_POS = [
 
 
 class BotManager:
-    def __init__(self, doChaos: bool, doKurzanFront: bool, doUnas: bool, doGuild: bool) -> None:
+    def __init__(
+        self, doChaos: bool, doKurzanFront: bool, doUnas: bool, doGuild: bool
+    ) -> None:
         self.curr = 0
 
         self.runningBotList: list[TaskBot] = []
@@ -140,7 +144,7 @@ class BotManager:
                 bot.remainingTasks[index] = max(
                     0, bot.remainingTasks[index] - checkUnasCompleted()
                 )
-        
+
         if self.allBotsFinished():
             return
         elif self.isCharacterDone(index):
@@ -263,6 +267,7 @@ def checkChaosCompleted() -> int:
     print("unable to detect chaos")
     return 0
 
+
 def checkKurzanFrontCompleted() -> int:
     kurzanFrontIcon = findImageCenter(
         "./screenshots/kurzanFrontIcon.png",
@@ -282,6 +287,6 @@ def checkKurzanFrontCompleted() -> int:
             print("kurzan front completed")
             return 1
         print("cant detect aura")
-    else: 
+    else:
         print("unable to detect kurzan front icon")
     return 0
