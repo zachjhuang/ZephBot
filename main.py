@@ -37,6 +37,9 @@ def main():
         "--chaos", action="store_true", help="Enables 2x chaos on entire roster"
     )
     parser.add_argument(
+        "--kurzanfront", action="store_true", help="Enables Kurzan Front on entire roster"
+    )
+    parser.add_argument(
         "--unas", action="store_true", help="Enables unas on entire roster"
     )
     parser.add_argument(
@@ -57,7 +60,12 @@ def main():
 
     leftClickAtPosition(SCREEN_CENTER_POS)
 
-    botManager = BotManager(args.chaos, args.unas, args.guild)
+    botManager = BotManager(
+        doChaos=args.chaos, 
+        doKurzanFront=args.kurzanfront, 
+        doUnas=args.unas, 
+        doGuild=args.guild
+        )
 
     # stay invis in friends list
     # if config["invisible"] == True:
