@@ -1,7 +1,5 @@
 # Endless-Chaos
 
-### No longer under maintenance, thank you for the support throughout the year, good luck have fun.
-
 A Lost Ark chaos dungeon(PvE) farming bot.\
 Based on the repo by any-other-guy and the fork by kotooh. \
 Fully automatic mob/elite/boss detecting and clearing, based on image recognition.\
@@ -9,6 +7,7 @@ Recommended to use with GeForce Now.
 
 What it does:
 * Daily x2 T3 chaos dungeon.
+* Daily Kurzan Front (still experimental)
 * Daily unas (lopang, select leapstone and shard unas)
 * Daily guild checkin, donation, and research support
 * Auto game restart on EAC offline or crash for Steam players
@@ -59,12 +58,15 @@ IMPORTANT: \
 Use skills_template.py in /configs to set up a skills.py with skill keybinds and details \
 Examples and comments are given in the template.
 
-### 2c. Configure keybinds
+### 2c. Configure keybinds and other options
+IMPORTANT: \
+Use config_template.py in /configs to set up a config.py with menu keybinds, emote slots, etc. \
+Examples and comments are given in the template.
 
 ### 3. Start running script:
 Open terminal in folder and enter
 ```
-python3 main.py --chaos --unas --guild
+python3 main.py --chaos --kurzanfront --unas --guild
 ```
 
 \
