@@ -1,13 +1,13 @@
-from .taskbot import TaskBot
+from modules.taskbot import TaskBot
 from configs.config import config
 
-from .menuNav import restartCheck
-from .menuNav import toggleMenu, waitForMenuLoaded, waitForOverworldLoaded
+from modules.menuNav import restartCheck
+from modules.menuNav import toggleMenu, waitForMenuLoaded, waitForOverworldLoaded
 
-from .utilities import Position
-from .utilities import mouseMoveTo, leftClickAtPosition
-from .utilities import checkImageOnScreen, findImageCenter, findAndClickImage
-from .utilities import randSleep
+from modules.utilities import Position
+from modules.utilities import mouseMoveTo, leftClickAtPosition
+from modules.utilities import checkImageOnScreen, findImageCenter, findAndClickImage
+from modules.utilities import randSleep
 
 import pydirectinput
 import pyautogui

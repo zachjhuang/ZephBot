@@ -1,7 +1,7 @@
 import math
 import pyautogui
 
-from .utilities import findImageCenter, checkImageOnScreen
+from modules.utilities import findImageCenter, checkImageOnScreen
 from configs.config import config
 
 from typing import Callable

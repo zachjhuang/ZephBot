@@ -1,15 +1,15 @@
-from .taskbot import TaskBot
-from .minimap import Minimap
+from modules.taskbot import TaskBot
+from modules.minimap import Minimap
 from configs.skills import skills
 from configs.config import config
 
-from .menuNav import restartCheck
-from .menuNav import toggleMenu, waitForMenuLoaded, quitChaos
+from modules.menuNav import restartCheck
+from modules.menuNav import toggleMenu, waitForMenuLoaded, quitChaos
 
-from .utilities import Position, resetException, timeoutException
-from .utilities import randSleep
-from .utilities import mouseMoveTo, leftClickAtPosition
-from .utilities import (
+from modules.utilities import Position, resetException, timeoutException
+from modules.utilities import randSleep
+from modules.utilities import mouseMoveTo, leftClickAtPosition
+from modules.utilities import (
     checkImageOnScreen,
     findImageCenter,
     findAndClickImage,

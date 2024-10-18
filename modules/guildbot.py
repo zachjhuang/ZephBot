@@ -1,10 +1,10 @@
-from .taskbot import TaskBot
+from modules.taskbot import TaskBot
 
-from .menuNav import toggleMenu, waitForMenuLoaded
+from modules.menuNav import toggleMenu, waitForMenuLoaded
 
-from .utilities import Position
-from .utilities import randSleep
-from .utilities import leftClickAtPosition, findAndClickImage, checkImageOnScreen
+from modules.utilities import Position
+from modules.utilities import randSleep
+from modules.utilities import leftClickAtPosition, findAndClickImage, checkImageOnScreen
 
 import pydirectinput
 

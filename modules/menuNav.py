@@ -1,9 +1,9 @@
 from configs.config import config
 
-from .utilities import restartException
-from .utilities import randSleep
-from .utilities import mouseMoveTo
-from .utilities import checkImageOnScreen, findImageCenter, findAndClickImage
+from modules.utilities import restartException
+from modules.utilities import randSleep
+from modules.utilities import mouseMoveTo
+from modules.utilities import checkImageOnScreen, findImageCenter, findAndClickImage
 
 import os
 import time

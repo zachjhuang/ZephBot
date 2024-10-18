@@ -1,21 +1,21 @@
 from configs.config import config
 from configs.roster import roster
 
-from .chaosbot import ChaosBot
-from .unabot import UnaBot
-from .guildbot import GuildBot
-from .taskbot import TaskBot
-from .kurzanfrontbot import KurzanFrontBot
+from modules.chaosbot import ChaosBot
+from modules.unabot import UnaBot
+from modules.guildbot import GuildBot
+from modules.taskbot import TaskBot
+from modules.kurzanfrontbot import KurzanFrontBot
 
 import pydirectinput
 import math
 
-from .utilities import Position
-from .utilities import mouseMoveTo, leftClickAtPosition
-from .utilities import checkImageOnScreen, findImageCenter
-from .utilities import randSleep
+from modules.utilities import Position
+from modules.utilities import mouseMoveTo, leftClickAtPosition
+from modules.utilities import checkImageOnScreen, findImageCenter
+from modules.utilities import randSleep
 
-from .menuNav import restartCheck, waitForOverworldLoaded
+from modules.menuNav import restartCheck, waitForOverworldLoaded
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
