@@ -293,7 +293,7 @@ def quitChaos() -> None:
     Quit chaos dungeon after finishing a run.
     """
     print("quitting chaos")
-    findAndClickImage("chaos/leave", region=CHAOS_LEAVE_MENU_REGION, confidence=0.7)
+    findAndClickImage("chaos/exit", region=CHAOS_LEAVE_MENU_REGION, confidence=0.7)
     randSleep(800, 900)
     findAndClickImage("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
     randSleep(5000, 7000)
