@@ -76,16 +76,15 @@ class ChaosBot(TaskBot):
     def __init__(self, roster):
         super().__init__(roster)
         self.remainingTasks = [
-            2 if char["chaosItemLevel"] is not None else 0 for char in self.roster
+            2 if char["chaosItemLevel"] is not None and char["chaosItemLevel"] <= 1610 else 0 for char in self.roster
         ]
         self.skills: dict[list[dict]] = skills
-
         self.runStartTime: int = 0
 
-        self.completedChaosCount: int = 0
-        self.totalChaosTime: int = 0
-        self.fastestChaosClear: int = 500000
-        self.slowestChaosClear: int = 0
+        self.completedCount: int = 0
+        self.totalTime: int = 0
+        self.fastestClear: int = 500000
+        self.slowestClear: int = 0
 
         self.healthPotCount: int = 0
         self.deathCount: int = 0
@@ -469,18 +468,18 @@ class ChaosBot(TaskBot):
         """
         print("-------------------------------------")
         print(f"run completed in {int}s")
-        self.completedChaosCount += 1
-        self.totalChaosTime += int
-        self.fastestChaosClear = min(int, self.fastestChaosClear)
-        self.slowestChaosClear = max(int, self.slowestChaosClear)
+        self.completedCount += 1
+        self.totalTime += int
+        self.fastestClear = min(int, self.fastestClear)
+        self.slowestClear = max(int, self.slowestClear)
         print("-------------------------------------")
         print(f"total timeouts: {self.timeoutCount}")
         print(f"total deaths: {self.deathCount}")
         print(f"total low hp: {self.healthPotCount}")
         print("-------------------------------------")
-        averageTime = self.totalChaosTime / self.completedChaosCount
+        averageTime = self.totalTime / self.completedCount
         print(
-            f"average: {averageTime}, fastest: {self.fastestChaosClear}, slowest: {self.slowestChaosClear}"
+            f"average: {averageTime}, fastest: {self.fastestClear}, slowest: {self.slowestClear}"
         )
         print("-------------------------------------")
 
