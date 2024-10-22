@@ -15,19 +15,19 @@ class Position:
         self.y += dy
 
 
-class restartException(Exception):
+class RestartException(Exception):
     pass
 
 
-class resetException(Exception):
+class ResetException(Exception):
     pass
 
 
-class timeoutException(Exception):
+class TimeoutException(Exception):
     pass
 
 
-def randSleep(min, max) -> None:
+def random_sleep(min, max) -> None:
     """Sleeps for a random amount of time (in ms) in the given range."""
     sleepTime = random.randint(min, max) / 1000.0
     if sleepTime < 0:
@@ -35,36 +35,36 @@ def randSleep(min, max) -> None:
     time.sleep(sleepTime)
 
 
-def mouseMoveTo(**kwargs):
+def mouse_move_to(**kwargs):
     x = kwargs["x"]
     y = kwargs["y"]
     pydirectinput.moveTo(x=x, y=y)
     pydirectinput.moveTo(x=x, y=y)
 
 
-def moveMouseToPosition(position: Position) -> None:
+def mouse_move_to_position(position: Position) -> None:
     """Move mouse to position."""
     pydirectinput.moveTo(x=position.x, y=position.y)
 
 
-def leftClickAtPosition(position: Position) -> None:
+def left_click_at_position(position: Position) -> None:
     """Move mouse to position and left click."""
-    moveMouseToPosition(position=position)
-    randSleep(200, 250)
+    mouse_move_to_position(position=position)
+    random_sleep(200, 250)
     pydirectinput.click(x=position.x, y=position.y, button="left")
 
 
-def checkImageOnScreen(
+def check_image_on_screen(
     image_path: str,
     confidence: float = 1.0,
     region: None | tuple = None,
     grayscale: bool = False,
 ) -> bool:
     """Return True if image found on screen, otherwise return False."""
-    return findImageCenter(image_path, confidence, region, grayscale) is not None
+    return find_image_center(image_path, confidence, region, grayscale) is not None
 
 
-def findImageCenter(
+def find_image_center(
     image_path: str,
     confidence: float = 1.0,
     region: None | tuple = None,
@@ -80,7 +80,7 @@ def findImageCenter(
         return None
 
 
-def findImageCenterPos(
+def find_image_center_position(
     image_path: str,
     confidence: float = 1.0,
     region: None | tuple = None,
@@ -99,12 +99,12 @@ def findImageCenterPos(
         return None
 
 
-def findAndClickImage(
+def find_and_click_image(
     name: str, region: None | tuple = None, confidence: float = 0.8
 ) -> None:
     """If image found on screen, click on center of image."""
-    imagePosition = findImageCenterPos(
+    imagePosition = find_image_center_position(
         f"./screenshots/{name}.png", region=region, confidence=confidence
     )
     if imagePosition is not None:
-        leftClickAtPosition(imagePosition)
+        left_click_at_position(imagePosition)

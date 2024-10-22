@@ -1,13 +1,13 @@
 import pydirectinput
 
-from modules.menuNav import toggleMenu, waitForMenuLoaded
-from modules.taskbot import TaskBot
+from modules.menu_nav import toggle_menu, wait_for_menu_load
+from modules.task_bot import TaskBot
 from modules.utilities import (
     Position,
-    checkImageOnScreen,
-    findAndClickImage,
-    leftClickAtPosition,
-    randSleep,
+    check_image_on_screen,
+    find_and_click_image,
+    left_click_at_position,
+    random_sleep,
 )
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
@@ -23,51 +23,51 @@ RESEARCH_CONFIRM_POS = Position(920, 705)
 class GuildBot(TaskBot):
     def __init__(self, roster) -> None:
         super().__init__(roster)
-        self.remainingTasks: list[int] = [
+        self.remaining_tasks: list[int] = [
             1 if char["guildDonation"] else 0 for char in self.roster
         ]
 
-    def doTasks(self) -> None:
+    def do_tasks(self) -> None:
         """
         Opens guild menu and does check-in, donation, and available research.
         """
-        if self.doneOnCurrentChar():
+        if self.done_on_curr_char():
             return
-        toggleMenu("guild")
-        waitForMenuLoaded("guild")
+        toggle_menu("guild")
+        wait_for_menu_load("guild")
 
-        randSleep(500, 600)
-        findAndClickImage("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
-        randSleep(500, 600)
-        leftClickAtPosition(DONATE_MENU_POS)
-        randSleep(500, 600)
-        leftClickAtPosition(DONATE_SILVER_POS)
+        random_sleep(500, 600)
+        find_and_click_image("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
+        random_sleep(500, 600)
+        left_click_at_position(DONATE_MENU_POS)
+        random_sleep(500, 600)
+        left_click_at_position(DONATE_SILVER_POS)
 
         pydirectinput.press("esc")
-        randSleep(500, 600)
+        random_sleep(500, 600)
 
-        findAndClickImage(
+        find_and_click_image(
             "supportResearch", region=SUPPORT_RESEARCH_REGION, confidence=0.75
         )
-        randSleep(500, 600)
-        if checkImageOnScreen(
+        random_sleep(500, 600)
+        if check_image_on_screen(
             "./screenshots/canSupportResearch.png",
             region=CAN_SUPPORT_RESEARCH_REGION,
             confidence=0.75,
         ):
-            findAndClickImage(
+            find_and_click_image(
                 "canSupportResearch",
                 region=CAN_SUPPORT_RESEARCH_REGION,
                 confidence=0.75,
             )
-            randSleep(500, 600)
-            leftClickAtPosition(RESEARCH_CONFIRM_POS)
-        elif checkImageOnScreen(
+            random_sleep(500, 600)
+            left_click_at_position(RESEARCH_CONFIRM_POS)
+        elif check_image_on_screen(
             "./screenshots/alreadySupportedResearch.png",
             region=CAN_SUPPORT_RESEARCH_REGION,
             confidence=0.75,
         ):
             pydirectinput.press("esc")
-        randSleep(500, 600)
-        toggleMenu("guild")
-        self.remainingTasks[self.curr] = 0
+        random_sleep(500, 600)
+        toggle_menu("guild")
+        self.remaining_tasks[self.curr] = 0

@@ -2,21 +2,21 @@ import pyautogui
 import pydirectinput
 
 from configs.config import config
-from modules.menuNav import (
-    restartCheck,
-    toggleMenu,
-    waitForMenuLoaded,
-    waitForOverworldLoaded,
+from modules.menu_nav import (
+    restart_check,
+    toggle_menu,
+    wait_for_menu_load,
+    wait_overworld_load,
 )
-from modules.taskbot import TaskBot
+from modules.task_bot import TaskBot
 from modules.utilities import (
     Position,
-    checkImageOnScreen,
-    findAndClickImage,
-    findImageCenter,
-    leftClickAtPosition,
-    mouseMoveTo,
-    randSleep,
+    check_image_on_screen,
+    find_and_click_image,
+    find_image_center,
+    left_click_at_position,
+    mouse_move_to,
+    random_sleep,
 )
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
@@ -27,311 +27,311 @@ class UnaBot(TaskBot):
         super().__init__(roster)
         for char in self.roster:
             if char["unas"] is None:
-                self.remainingTasks.append(0)
+                self.remaining_tasks.append(0)
             elif char["unas"] == "lopang":
-                self.remainingTasks.append(3)
+                self.remaining_tasks.append(3)
             else:
-                self.remainingTasks.append(len(char["unas"].split()))
+                self.remaining_tasks.append(len(char["unas"].split()))
 
-    def doTasks(self) -> None:
+    def do_tasks(self) -> None:
         """
         Accepts favorited daily unas and completes according to roster configuration.
         """
-        if self.doneOnCurrentChar():
+        if self.done_on_curr_char():
             return
-        randSleep(1000, 2000)
+        random_sleep(1000, 2000)
         print("accepting dailies")
-        acceptDailies()
-        restartCheck()
+        accept_dailies()
+        restart_check()
         unas = self.roster[self.curr]["unas"]
         if "lopang" in unas:
-            restartCheck()
-            if bifrostGoTo("lopangIsland"):
-                self.remainingTasks[self.curr] -= doLopang()
+            restart_check()
+            if go_to_bifrost("lopangIsland"):
+                self.remaining_tasks[self.curr] -= doLopang()
 
         if "mokomoko" in unas:
-            restartCheck()
-            if bifrostGoTo("mokomoko"):
-                doMokomokoUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("mokomoko"):
+                do_mokokmoko()
+                self.remaining_tasks[self.curr] -= 1
 
         if "bleakNightFog" in unas:
-            restartCheck()
-            if bifrostGoTo("bleakNightFog"):
-                doBleakNightFogUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("bleakNightFog"):
+                do_bleak_night_fog()
+                self.remaining_tasks[self.curr] -= 1
 
         if "prehilia" in unas:
-            restartCheck()
-            if bifrostGoTo("prehilia"):
-                doPrehiliaUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("prehilia"):
+                do_prehilia()
+                self.remaining_tasks[self.curr] -= 1
 
         if "hesteraGarden" in unas:
-            restartCheck()
-            if bifrostGoTo("hesteraGarden"):
-                doHesteraGardenUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("hesteraGarden"):
+                do_hestera_garden()
+                self.remaining_tasks[self.curr] -= 1
 
         if "writersLife" in unas:
-            restartCheck()
-            if bifrostGoTo("writersLife"):
-                doWritersLifeUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("writersLife"):
+                do_writers_life()
+                self.remaining_tasks[self.curr] -= 1
 
         if "sageTower" in unas:
-            restartCheck()
-            if bifrostGoTo("sageTower"):
-                doSageTowerUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("sageTower"):
+                do_sage_tower()
+                self.remaining_tasks[self.curr] -= 1
 
         if "ghostStory" in unas:
-            restartCheck()
-            if bifrostGoTo("ghostStory"):
-                doGhostStoryUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("ghostStory"):
+                do_ghost_story()
+                self.remaining_tasks[self.curr] -= 1
 
         if "southKurzan" in unas:
-            restartCheck()
-            if bifrostGoTo("southKurzan"):
-                doSouthKurzanUna()
-                self.remainingTasks[self.curr] -= 1
+            restart_check()
+            if go_to_bifrost("southKurzan"):
+                do_south_kurzan()
+                self.remaining_tasks[self.curr] -= 1
 
         print("unas completed")
 
 
-def acceptDailies() -> None:
+def accept_dailies() -> None:
     """
     Open una menu and accept all favorited dailies.
     """
-    toggleMenu("unas")
-    waitForMenuLoaded("unas")
+    toggle_menu("unas")
+    wait_for_menu_load("unas")
     # switch to daily tab
-    if not checkImageOnScreen("./screenshots/dailyTabActive.png", confidence=0.95):
-        mouseMoveTo(x=550, y=255)
-        randSleep(100, 200)
+    if not check_image_on_screen("./screenshots/dailyTabActive.png", confidence=0.95):
+        mouse_move_to(x=550, y=255)
+        random_sleep(100, 200)
         pydirectinput.click(button="left")
-        randSleep(500, 600)
+        random_sleep(500, 600)
     # toggle dropdown and swap to favorites
-    if not checkImageOnScreen("./screenshots/addedToFavorites.png", confidence=0.95):
-        mouseMoveTo(x=632, y=316)
-        randSleep(100, 200)
+    if not check_image_on_screen("./screenshots/addedToFavorites.png", confidence=0.95):
+        mouse_move_to(x=632, y=316)
+        random_sleep(100, 200)
         pydirectinput.click(button="left")
-        randSleep(1000, 1100)
-        mouseMoveTo(x=634, y=337)
-        randSleep(100, 200)
+        random_sleep(1000, 1100)
+        mouse_move_to(x=634, y=337)
+        random_sleep(100, 200)
         pydirectinput.click(button="left")
-        randSleep(500, 600)
+        random_sleep(500, 600)
         pydirectinput.click(button="left")
-        randSleep(500, 600)
+        random_sleep(500, 600)
         pydirectinput.click(button="left")
-        randSleep(500, 600)
-        mouseMoveTo(x=548, y=404)
-        randSleep(100, 200)
+        random_sleep(500, 600)
+        mouse_move_to(x=548, y=404)
+        random_sleep(100, 200)
         pydirectinput.click(button="left")
-        randSleep(500, 600)
+        random_sleep(500, 600)
     # if 3x completed unas detected, skip and return false
-    randSleep(500, 600)
+    random_sleep(500, 600)
     # if checkImageOnScreen("./screenshots/unasCompleted.png", confidence=0.75):
     #     print("character has already ran unas")
     #     toggleMenu("unas")
     #     return False
 
     # click all accept buttons
-    acceptButtonRegions = list(
+    accept_buttons = list(
         pyautogui.locateAllOnScreen(
             "./screenshots/acceptUna.png", region=(1165, 380, 80, 330), confidence=0.85
         )
     )
-    for region in acceptButtonRegions:
-        leftClickAtPosition(Position(region.left, region.top))
-        randSleep(400, 500)
+    for region in accept_buttons:
+        left_click_at_position(Position(region.left, region.top))
+        random_sleep(400, 500)
 
-    toggleMenu("unas")
-    randSleep(800, 900)
+    toggle_menu("unas")
+    random_sleep(800, 900)
 
 
 def doLopang() -> int:
     """Does 3 lopang dailies (Shushire -> Arthetine -> Vern)."""
-    walkLopang()
+    walk_lopang()
     completed = 0
     for lopangLocation in ["Shushire", "Arthetine", "Vern"]:
-        randSleep(1500, 1600)
-        if bifrostGoTo("lopang" + lopangLocation):
-            spamInteract(6000)
+        random_sleep(1500, 1600)
+        if go_to_bifrost("lopang" + lopangLocation):
+            spam_interact(6000)
             completed += 1
     return completed
 
 
-def doBleakNightFogUna() -> None:
+def do_bleak_night_fog() -> None:
     pydirectinput.press("f5")
-    randSleep(800, 900)
+    random_sleep(800, 900)
     pydirectinput.press("f6")
-    randSleep(1800, 1900)
-    claimCompletedQuest()
+    random_sleep(1800, 1900)
+    claim_completed_quest()
 
 
-def doPrehiliaUna() -> None:
-    toggleMenu("unaTaskCombatPreset")
+def do_prehilia() -> None:
+    toggle_menu("unaTaskCombatPreset")
 
     pydirectinput.press(config["prehiliaEmoteSlot"])
-    spamInteract(8000)
+    spam_interact(8000)
 
-    toggleMenu("defaultCombatPreset")
+    toggle_menu("defaultCombatPreset")
 
 
-def doHesteraGardenUna() -> None:
-    toggleMenu("unaTaskCombatPreset")
+def do_hestera_garden() -> None:
+    toggle_menu("unaTaskCombatPreset")
 
     pydirectinput.press(config["hesteraGardenEmoteSlot"])
-    randSleep(140000, 141000)
-    claimCompletedQuest()
-    randSleep(300, 400)
+    random_sleep(140000, 141000)
+    claim_completed_quest()
+    random_sleep(300, 400)
 
-    toggleMenu("defaultCombatPreset")
+    toggle_menu("defaultCombatPreset")
 
 
-def doWritersLifeUna() -> None:
-    randSleep(5000, 5100)
-    toggleMenu("unaTaskCombatPreset")
-    spamInteract(4000)
+def do_writers_life() -> None:
+    random_sleep(5000, 5100)
+    toggle_menu("unaTaskCombatPreset")
+    spam_interact(4000)
     pydirectinput.click(x=1100, y=750, button=config["move"])
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
     pydirectinput.click(x=1100, y=750, button=config["move"])
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
     pydirectinput.press(config["writersLifeEmoteSlot"])
-    randSleep(9000, 9100)
+    random_sleep(9000, 9100)
     pydirectinput.click(x=800, y=600, button=config["move"])
-    randSleep(1500, 1600)
-    spamInteract(10000)
+    random_sleep(1500, 1600)
+    spam_interact(10000)
     pydirectinput.click(x=880, y=250, button=config["move"])
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
     pydirectinput.click(x=880, y=250, button=config["move"])
-    randSleep(1500, 1600)
-    spamInteract(4000)
-    randSleep(300, 400)
-    toggleMenu("defaultCombatPreset")
+    random_sleep(1500, 1600)
+    spam_interact(4000)
+    random_sleep(300, 400)
+    toggle_menu("defaultCombatPreset")
 
 
-def doSageTowerUna() -> None:
+def do_sage_tower() -> None:
     for _ in range(10):
-        spamInteract(1000)
-        if checkImageOnScreen(
+        spam_interact(1000)
+        if check_image_on_screen(
             "./screenshots/sageTowerCompleted.png",
             region=(1700, 220, 100, 150),
             confidence=0.65,
         ):
             break
-    mouseMoveTo(x=1560, y=540)
-    randSleep(500, 600)
+    mouse_move_to(x=1560, y=540)
+    random_sleep(500, 600)
     pydirectinput.click(x=1560, y=540, button=config["move"])
-    randSleep(500, 600)
-    spamInteract(3000)
+    random_sleep(500, 600)
+    spam_interact(3000)
 
 
-def doGhostStoryUna() -> None:
+def do_ghost_story() -> None:
     for _ in range(15):
-        spamInteract(1000)
-        if checkImageOnScreen(
+        spam_interact(1000)
+        if check_image_on_screen(
             "./screenshots/ghostStoryF5.png",
             region=(1575, 440, 80, 450),
             confidence=0.85,
         ):
             break
     pydirectinput.press("f5")
-    randSleep(200, 300)
+    random_sleep(200, 300)
     pydirectinput.press("f6")
-    randSleep(200, 300)
-    claimCompletedQuest()
-    randSleep(300, 400)
+    random_sleep(200, 300)
+    claim_completed_quest()
+    random_sleep(300, 400)
 
 
-def doSouthKurzanUna() -> None:
-    toggleMenu("unaTaskCombatPreset")
+def do_south_kurzan() -> None:
+    toggle_menu("unaTaskCombatPreset")
 
     pydirectinput.press(config["southKurzanPoseSlot"])
-    randSleep(14000, 14100)
+    random_sleep(14000, 14100)
 
-    toggleMenu("defaultCombatPreset")
+    toggle_menu("defaultCombatPreset")
 
-    mouseMoveTo(x=650, y=180)
-    randSleep(500, 600)
+    mouse_move_to(x=650, y=180)
+    random_sleep(500, 600)
     pydirectinput.click(x=650, y=180, button="left")
-    randSleep(2500, 2600)
+    random_sleep(2500, 2600)
     pydirectinput.click(x=650, y=180, button="left")
-    randSleep(2500, 2600)
-    spamInteract(4000)
+    random_sleep(2500, 2600)
+    spam_interact(4000)
 
 
-def doMokomokoUna() -> None:
-    spamInteract(4000)
-    mouseMoveTo(x=416, y=766)
-    randSleep(500, 600)
+def do_mokokmoko() -> None:
+    spam_interact(4000)
+    mouse_move_to(x=416, y=766)
+    random_sleep(500, 600)
     pydirectinput.click(x=416, y=766, button="left")
-    randSleep(5500, 5600)
+    random_sleep(5500, 5600)
 
-    mouseMoveTo(x=960, y=770)
-    randSleep(500, 600)
+    mouse_move_to(x=960, y=770)
+    random_sleep(500, 600)
     pydirectinput.click(x=960, y=770, button=config["move"])
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
     pydirectinput.press(config["interact"])
-    randSleep(5500, 5600)
+    random_sleep(5500, 5600)
 
-    mouseMoveTo(x=1360, y=900)
-    randSleep(500, 600)
+    mouse_move_to(x=1360, y=900)
+    random_sleep(500, 600)
     pydirectinput.click(x=1360, y=900, button=config["move"])
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
     pydirectinput.press(config["interact"])
-    randSleep(5500, 5600)
+    random_sleep(5500, 5600)
 
-    mouseMoveTo(x=960, y=330)
-    randSleep(1500, 1600)
+    mouse_move_to(x=960, y=330)
+    random_sleep(1500, 1600)
     pydirectinput.click(x=980, y=280, button=config["move"])
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
     pydirectinput.click(x=980, y=280, button=config["move"])
-    randSleep(1500, 1600)
-    spamInteract(4000)
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
+    spam_interact(4000)
+    random_sleep(1500, 1600)
 
 
-def walkLopang() -> None:
+def walk_lopang() -> None:
     """Interacts with and walks to all 3 lopang terminals."""
-    randSleep(1000, 2000)
+    random_sleep(1000, 2000)
     print("walking lopang")
     # right terminal
-    spamInteract(2000)
+    spam_interact(2000)
     # walk to middle terminal
-    walkTo(315, 473, 1500)
-    walkTo(407, 679, 1300)
-    walkTo(584, 258, 1000)
-    walkTo(1043, 240, 1200)
-    walkTo(1339, 246, 1300)
-    walkTo(1223, 406, 800)
-    walkTo(1223, 406, 800)
-    walkTo(1263, 404, 1300)
+    walk_to(315, 473, 1500)
+    walk_to(407, 679, 1300)
+    walk_to(584, 258, 1000)
+    walk_to(1043, 240, 1200)
+    walk_to(1339, 246, 1300)
+    walk_to(1223, 406, 800)
+    walk_to(1223, 406, 800)
+    walk_to(1263, 404, 1300)
     # middle terminal
-    spamInteract(500)
+    spam_interact(500)
     # walk to left terminal
-    walkTo(496, 750, 1200)
-    walkTo(496, 750, 1200)
-    walkTo(496, 750, 1200)
-    walkTo(753, 687, 800)
-    walkTo(753, 687, 800)
-    walkTo(674, 264, 800)
-    walkTo(573, 301, 1200)
-    walkTo(820, 240, 1300)
+    walk_to(496, 750, 1200)
+    walk_to(496, 750, 1200)
+    walk_to(496, 750, 1200)
+    walk_to(753, 687, 800)
+    walk_to(753, 687, 800)
+    walk_to(674, 264, 800)
+    walk_to(573, 301, 1200)
+    walk_to(820, 240, 1300)
     # left terminal
-    spamInteract(500)
-    randSleep(1000, 2000)
+    spam_interact(500)
+    random_sleep(1000, 2000)
 
 
-def claimCompletedQuest() -> None:
-    leftClickAtPosition(Position(x=1700, y=430))
-    randSleep(1000, 1100)
-    findAndClickImage("completeQuest", confidence=0.85)
+def claim_completed_quest() -> None:
+    left_click_at_position(Position(x=1700, y=430))
+    random_sleep(1000, 1100)
+    find_and_click_image("completeQuest", confidence=0.85)
 
 
-def bifrostGoTo(location: str) -> bool:
+def go_to_bifrost(location: str) -> bool:
     """
     Attempts to bifrost to location.
 
@@ -340,75 +340,77 @@ def bifrostGoTo(location: str) -> bool:
     Return true if bifrost to location is successful.
     """
     print(f"bifrost to: {location}")
-    if not checkImageOnScreen("./screenshots/menus/bifrostMenu.png", confidence=0.85):
-        toggleMenu("bifrost")
-    waitForMenuLoaded("bifrost")
-    bifrost = findImageCenter(
+    if not check_image_on_screen(
+        "./screenshots/menus/bifrostMenu.png", confidence=0.85
+    ):
+        toggle_menu("bifrost")
+    wait_for_menu_load("bifrost")
+    bifrost = find_image_center(
         f"./screenshots/bifrosts/{location}Bifrost.png", confidence=0.80
     )
     if bifrost is None:
         print(f"{location} bifrost not found, skipping")
-        toggleMenu("bifrost")
+        toggle_menu("bifrost")
         return False
     x, y = bifrost
-    mouseMoveTo(x=(x + 280), y=(y - 25))
-    randSleep(300, 400)
+    mouse_move_to(x=(x + 280), y=(y - 25))
+    random_sleep(300, 400)
     pydirectinput.click(button="left")
-    randSleep(500, 600)
+    random_sleep(500, 600)
     pydirectinput.click(button="left")
-    randSleep(1500, 1600)
+    random_sleep(1500, 1600)
 
     # return false if bifrost on cooldown
-    if checkBifrostOnCooldown():
+    if check_bifrost_on_cooldown():
         pydirectinput.press("esc")
-        randSleep(1500, 1600)
+        random_sleep(1500, 1600)
         pydirectinput.press("esc")
-        randSleep(1500, 1600)
+        random_sleep(1500, 1600)
         return False
     else:
         while True:
-            okButton = findImageCenter(
+            ok_button = find_image_center(
                 "./screenshots/ok.png",
                 confidence=0.75,
                 region=SCREEN_CENTER_REGION,
             )
-            if okButton is not None:
-                x, y = okButton
-                mouseMoveTo(x=x, y=y)
-                randSleep(2000, 2100)
+            if ok_button is not None:
+                x, y = ok_button
+                mouse_move_to(x=x, y=y)
+                random_sleep(2000, 2100)
                 pydirectinput.click(x=x, y=y, button="left")
-                randSleep(2000, 2100)
+                random_sleep(2000, 2100)
                 break
-            randSleep(300, 400)
-    randSleep(10000, 12000)
+            random_sleep(300, 400)
+    random_sleep(10000, 12000)
 
     # wait until loaded
-    waitForOverworldLoaded()
+    wait_overworld_load()
     return True
 
 
-def checkBifrostOnCooldown() -> bool:
+def check_bifrost_on_cooldown() -> bool:
     """Return false if bifrost move confirmation costs silver."""
-    silver1k = findImageCenter(
+    silver_1k = find_image_center(
         "./screenshots/silver1k.png",
         confidence=0.75,
         region=SCREEN_CENTER_REGION,
     )
-    return silver1k is None
+    return silver_1k is None
 
 
-def walkTo(x: int, y: int, ms: int) -> None:
+def walk_to(x: int, y: int, ms: int) -> None:
     """Move to specified pixel coordinate with millisecond delay."""
-    mouseMoveTo(x=x, y=y)
-    randSleep(100, 100)
+    mouse_move_to(x=x, y=y)
+    random_sleep(100, 100)
     pydirectinput.click(x=x, y=y, button=config["move"])
-    randSleep(ms, ms)
+    random_sleep(ms, ms)
 
 
-def spamInteract(msDuration: int) -> None:
+def spam_interact(msDuration: int) -> None:
     """Presses interact key for approximately the given duration in milliseconds."""
-    timeCount = msDuration / 100
-    while timeCount != 0:
+    count = msDuration / 100
+    while count != 0:
         pydirectinput.press(config["interact"])
-        randSleep(90, 120)
-        timeCount = timeCount - 1
+        random_sleep(90, 120)
+        count = count - 1
