@@ -48,7 +48,7 @@ config = {
     "hesteraGardenEmoteSlot": "8", # /sit, /kneel, /drinktea
     "southKurzanPoseSlot": "7", # /PicturePose6
     "prehiliaEmoteSlot": "9", # /cute, /joy, /greet
-    "writersLifeEmoteSlot": "9", # /cute, /wave, /greet
+    "writersLifeEmoteSlot": "9", # /cute, /wave, /polite
 
     "invisible": False,
     "healthPotAtPercent": 0.20,
