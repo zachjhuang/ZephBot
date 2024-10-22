@@ -250,13 +250,6 @@ class Minimap:
             self.targets.append((x, y))
             print(f"boss x: {x} y: {y}")
             return True
-        bossbar = check_image_on_screen(
-            "./screenshots/chaos/bossBar.png",
-            region=(406, 159, 1000, 200),
-            confidence=0.8,
-        )
-        if bossbar:
-            return True
         return False
 
     def check_rift_core(self) -> bool:
