@@ -1,10 +1,11 @@
 import math
+from collections import deque
 from typing import Callable
 
 import pyautogui
 
 from configs.config import config
-from modules.utilities import checkImageOnScreen, findImageCenter
+from modules.utilities import check_image_on_screen, find_image_center
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -15,11 +16,39 @@ MINIMAP_CENTER_Y = 272
 
 
 class Minimap:
-    def __init__(self) -> None:
-        self.targetX = 0
-        self.targetY = 0
+    """
+    Class for locating icons on the minimap and
+    translating them to in game coordinates.
 
-    def findClosestMinimapPixel(
+    Attributes:
+        targets (list[tuple[int, int]]): (x, y) coordinates of determined targets, relative to center of minimap. Ordered from least to most recently acquired targets.
+
+        valid_coords (list[tuple[int, int]]): All (x, y) coordinates that are valid, relative to center of minimap.
+    """
+
+    def __init__(self) -> None:
+        """
+        Initializes Minimap object with `targets` and `valid_coords` set to an empty list.
+        """
+        self.targets: list[tuple[int, int]] = []
+        self.valid_coords: list[tuple[int, int]] = []
+
+    def update_valid_coords(self) -> None:
+        """
+        Searches minimap for valid (i.e. accessible) areas.
+
+        Updates `valid_coords` attribute.
+        """
+        minimap = pyautogui.screenshot(region=MINIMAP_REGION)
+        width, height = minimap.size
+        self.valid_coords = []
+        for x in range(width):
+            for y in range(height):
+                r, g, b = minimap.getpixel((x, y))
+                if VALID_AREA_RGB_RANGE(r, g, b):
+                    self.valid_coords.append((x - width / 2, y - height / 2))
+
+    def find_closest_pixel(
         self, name: str, inColorRange: Callable[[int, int, int], bool]
     ) -> bool:
         """
@@ -73,147 +102,192 @@ class Minimap:
 
     def get_game_coords(self, target_found: bool = False, pathfind: bool = False) -> tuple[int, int, int]:
         """
-        Translates relative minimap coordinates of target into game coordinates.
+        Translates coordinates of most recently acquired target from relative minimap coordinates into valid, ingame coordinates.
 
-        Returns the x and y values of where to click, as well as the duration (magnitude).
+        Args:
+            target_found: If `True`, calculate where to click based on the most recently acquired target's location. \\
+                Otherwise, calculate based on an average of all previously acquired targets.
+
+        Returns:
+            The `x` and `y` values of where to click in the game, as well as the `duration` (magnitude).
         """
-        magnitude = math.sqrt(self.targetX * self.targetX + self.targetY * self.targetY)
+        if len(self.targets) == 0:
+            return SCREEN_CENTER_X, SCREEN_CENTER_Y, 100
+
+        if target_found:
+            target = self.targets[-1]
+        else:
+            target = average_coordinate(self.targets)
+
+        if not pathfind or distanceBetweenCoordinates(target, (0, 0)) < 15:
+            coord = target
+        else:
+            self.update_valid_coords()
+            coord = closest_connected_coordinate(
+                self.valid_coords, self.get_closest_valid_coord(target)
+            )
+            print(f"closest valid coord at {coord}")
+        magnitude = math.sqrt(coord[0] ** 2 + coord[1] ** 2)
         magnitude = max(magnitude, 1)
 
-        unit_x = self.targetX / magnitude
-        unit_y = self.targetY / magnitude
+        unit_x = coord[0] / magnitude
+        unit_y = coord[1] / magnitude
 
-        x = int(unit_x * 360)
+        x = int(unit_x * 320)
         y = int(unit_y * 240)  # y axis not orthogonal to camera axis unlike minimap
 
         return x + SCREEN_CENTER_X, y + SCREEN_CENTER_Y, int(magnitude * 50)
 
-    def checkMob(self) -> bool:
+    def get_closest_valid_coord(self, target: tuple[int, int]) -> list[tuple]:
+        """
+        Given a target, return the valid coordinate closest to the target.
+        """
+        sorted_valid_coords = sorted(
+            self.valid_coords,
+            key=lambda validCoord: distanceBetweenCoordinates(validCoord, target),
+        )
+        if len(sorted_valid_coords) == 0:
+            return 0, 0
+        else:
+            return sorted_valid_coords[0]
+
+    def check_mob(self) -> bool:
         """
         Check minimap for closest orange pixel of elite icon.
-        Return true if found and update minimap target coordinates.
-        Return false otherwise.
-        """
-        if config["GFN"]:
-            return self.findClosestMinimapPixel("mob", MOB_RGB_RANGE_GFN)
-        else:
-            return self.findClosestMinimapPixel("mob", MOG_RGB_RANGE)
 
-    def checkElite(self) -> bool:
+        Updates `targets` attribute with coordinates if found.
+
+        Returns:
+            `True` if found, `False` otherwise.
+        """
+        return self.find_closest_pixel("mob", MOG_RGB_RANGE)
+
+    def check_elite(self) -> bool:
         """
         Check minimap for closest red pixel of mob icon.
-        Return true if found and update minimap target coordinates.
-        Return false otherwise.
-        """
-        if config["GFN"]:
-            return self.findClosestMinimapPixel("elite", ELITE_RGB_RANGE_GFN)
-        else:
-            return self.findClosestMinimapPixel("elite", ELITE_RGB_RANGE)
 
-    def checkBuff(self) -> bool:
-        """
-        Check minimap for closest yello pixel of mob icon.
-        Return true if found and update minimap target coordinates.
-        Return false otherwise.
-        """
-        if config["GFN"]:
-            return self.findClosestMinimapPixel("buff", BUFF_RGB_RANGE_GFN)
-        else:
-            return self.findClosestMinimapPixel("buff", BUFF_RGB_RANGE)
+        Updates `targets` attribute with coordinates if found.
 
-    def checkPortal(self) -> bool:
+        Returns:
+            `True` if found, `False` otherwise.
         """
-        Check minimap for portal icon and blue portal pixels.
+        return self.find_closest_pixel("elite", ELITE_RGB_RANGE)
 
-        Return true if found and update minimap target coordinates.
+    def check_buff(self) -> bool:
+        """
+        Check minimap for closest yellow pixel of Kurzan Front elemental buff icon.
 
-        Return false otherwise.
+        Updates `targets` attribute with coordinates if found.
+
+        Returns:
+            `True` if found, `False` otherwise.
+        """
+        return self.find_closest_pixel("buff", BUFF_RGB_RANGE)
+
+    def check_portal(self) -> bool:
+        """
+        Check minimap for portal icon and closest blue portal pixels.
+
+        Updates `targets` attribute with coordinates if found.
+
+        Returns:
+            `True` if found, `False` otherwise.
         """
         if config["performance"] == False:
-            for portalPart in ["portal", "portalTop", "portalBot"]:
-                portalCoords = findImageCenter(
-                    f"./screenshots/chaos/{portalPart}.png",
+            for portal_part in ["portal", "portalTop", "portalBot"]:
+                portal_coords = find_image_center(
+                    f"./screenshots/chaos/{portal_part}.png",
                     region=MINIMAP_REGION,
                     confidence=0.7,
                 )
-                match portalPart:
+                match portal_part:
                     case "portal":
                         offset = 0
                     case "portalTop":
                         offset = 7
                     case "portalBot":
                         offset = -7
-
-                if portalCoords is not None:
-                    x, y = portalCoords
-                    self.targetX = x - MINIMAP_CENTER_X
-                    self.targetY = y - MINIMAP_CENTER_Y + offset
-                    print(f"{portalPart} image x: {self.targetX} y: {self.targetY}")
+                if portal_coords is not None:
+                    x, y = portal_coords
+                    x = x - MINIMAP_CENTER_X
+                    y = y - MINIMAP_CENTER_Y + offset
+                    self.targets.append((x, y))
+                    print(f"{portal_part} image x: {x} y: {y}")
                     return True
-        if config["GFN"]:
-            return self.findClosestMinimapPixel("portal", PORTAL_RGB_RANGE_GFN)
-        else:
-            return self.findClosestMinimapPixel("portal", PORTAL_RGB_RANGE)
+        return self.find_closest_pixel("portal", PORTAL_RGB_RANGE)
 
-    def checkBoss(self) -> bool:
+    def check_boss(self) -> bool:
         """
-        Check minimap for boss icon and screen for boss health bar
+        Check minimap for boss icon.
 
-        Return true if found and update minimap target coordinates.
+        Updates `targets` attribute with coordinates if found.
 
-        Return false otherwise.
+        Returns:
+            `True` if found, `False` otherwise.
         """
-        bossLocation = findImageCenter(
-            "./screenshots/chaos/boss.png", confidence=0.65, region=MINIMAP_REGION
+        boss_location = find_image_center(
+            "./screenshots/chaos/boss.png", region=MINIMAP_REGION, confidence=0.65
         )
-        if bossLocation is not None:
-            x, y = bossLocation
-            self.targetX = x - MINIMAP_CENTER_X
-            self.targetY = y - MINIMAP_CENTER_Y
-            print(f"boss x: {self.targetX} y: {self.targetY}")
+        if boss_location is not None:
+            x, y = boss_location
+            x = x - MINIMAP_CENTER_X
+            y = y - MINIMAP_CENTER_Y
+            self.targets.append((x, y))
+            print(f"boss x: {x} y: {y}")
             return True
-        bossbar = checkImageOnScreen(
+        bossbar = check_image_on_screen(
             "./screenshots/chaos/bossBar.png",
-            confidence=0.8,
             region=(406, 159, 1000, 200),
+            confidence=0.8,
         )
         if bossbar:
             return True
         return False
 
-    def checkRiftCore(self) -> bool:
+    def check_rift_core(self) -> bool:
         """
         Check minimap for rift core icon.
 
-        Return true if found and update minimap target coordinates.
+        Updates `targets` attribute with coordinates if found.
 
-        Return false otherwise.
+        Returns:
+            `True` if found, `False` otherwise.
         """
-        for towerPart in ["tower", "towerTop", "towerBot"]:
-            towerCoords = findImageCenter(
-                f"./screenshots/chaos/{towerPart}.png",
+        for tower_part in ["tower", "towerTop", "towerBot"]:
+            tower_coords = find_image_center(
+                f"./screenshots/chaos/{tower_part}.png",
                 region=MINIMAP_REGION,
                 confidence=0.7,
             )
-            if towerCoords is not None:
-                x, y = towerCoords
-                self.targetX = x - MINIMAP_CENTER_X
-                self.targetY = y - MINIMAP_CENTER_Y
-                print(f"{towerPart} at x: {self.targetX} y: {self.targetY}")
+            if tower_coords is not None:
+                x, y = tower_coords
+                x = x - MINIMAP_CENTER_X
+                y = y - MINIMAP_CENTER_Y
+                self.targets.append((x, y))
+                print(f"{tower_part} at x: {x} y: {y}")
                 return True
         return False
 
     def checkJump(self) -> bool:
-        jumpIcon = findImageCenter(
-            "./screenshots/chaos/jumpIcon.png",
+        """
+        Check minimap for jump pad icon.
+
+        Updates `targets` attribute with coordinates if found.
+
+        Returns:
+            `True` if found, `False` otherwise.
+        """
+        jumpIcon = find_image_center(
+            "./screenshots/chaos/jumpIcon2.png",
             region=MINIMAP_REGION,
-            confidence=0.75,
+            confidence=0.90,
         )
         if jumpIcon is not None:
             x, y = jumpIcon
-            self.targetX = x - MINIMAP_CENTER_X - 4
-            self.targetY = y - MINIMAP_CENTER_Y + 4
-            print(f"jump icon at x: {self.targetX} y: {self.targetY}")
+            x = x - MINIMAP_CENTER_X - 7
+            y = y - MINIMAP_CENTER_Y + 7
+            self.targets.append((x, y))
+            print(f"jump icon at x: {x} y: {y}")
             return True
         return False
 
