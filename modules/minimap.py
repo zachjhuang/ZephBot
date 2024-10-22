@@ -12,6 +12,8 @@ SCREEN_CENTER_Y = 540
 
 MINIMAP_REGION = (1653, 172, 240, 200)
 MINIMAP_CENTER_X = 1773
+MINIMAP_REGION = (1653, 172, 240, 200)
+MINIMAP_CENTER_X = 1773
 MINIMAP_CENTER_Y = 272
 
 
@@ -52,6 +54,17 @@ class Minimap:
         self, name: str, inColorRange: Callable[[int, int, int], bool]
     ) -> bool:
         """
+        Check minimap for closest pixel that satisfies the color range lambda given.
+
+        Range lambda should take `r`, `g`, and `b` values and return True if each value is
+        within a certain threshold.
+
+        Updates `targets` attribute if found.
+
+        This function is intended for internal use only.
+
+        Returns:
+            `True` if found, `False` otherwise.
         Check minimap for closest pixel that satisfies the color range lambda given.
 
         Range lambda should take `r`, `g`, and `b` values and return True if each value is
@@ -289,6 +302,110 @@ class Minimap:
             self.targets.append((x, y))
             print(f"jump icon at x: {x} y: {y}")
             return True
+        return False
+
+
+def distanceBetweenCoordinates(coord1: tuple[int, int], coord2: tuple[int, int]) -> int:
+    """
+    Calculates the distance between two coordinates.
+    """
+    target_dist = math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
+    return int(target_dist)
+
+
+def average_coordinate(coords: list[tuple[int, int]]) -> tuple[int, int]:
+    """
+    Calculate the average coordinate from a list of coordinates.
+    """
+    xs = [coord[0] for coord in coords]
+    ys = [coord[1] for coord in coords]
+    meanX = int(sum(xs) / len(xs))
+    meanY = int(sum(ys) / len(ys))
+    return meanX, meanY
+
+
+def get_adjacent_coordinates(coord: tuple[int, int]):
+    """
+    Return a list of adjacent coordinates (4-directional).
+    """
+    x, y = coord
+    return [(x + dx, y + dy) for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
+
+
+def closest_connected_coordinate(
+    valid_coords: list[tuple[int, int]], target: tuple[int, int]
+) -> tuple[int, int]:
+    """
+    Find the coordinate closest to the origin that is connected to the target.
+    """
+
+    queue = deque([target])
+    visited = []
+    closest_coord = None
+    min_distance = float("inf")
+
+    while queue:
+        current = queue.popleft()
+
+        if current in visited:
+            continue
+
+        visited.append(current)
+
+        if current in valid_coords:
+            distance = distanceBetweenCoordinates(current, (0, 0))
+            if distance < min_distance:
+                min_distance = distance
+                closest_coord = current
+
+        for neighbor in get_adjacent_coordinates(current):
+            if neighbor not in visited and neighbor in valid_coords:
+                queue.append(neighbor)
+
+    return closest_coord
+
+
+def MOG_RGB_RANGE(r: int, g: int, b: int) -> bool:
+    if config["GFN"]:
+        return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
+    else:
+        return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
+
+
+def ELITE_RGB_RANGE(r: int, g: int, b: int) -> bool:
+    if config["GFN"]:
+        return 184 < r < 215 and 124 < g < 147 and 59 < b < 78
+    else:
+        return 189 < r < 215 and 124 < g < 150 and 29 < b < 70
+
+def BOSS_RGB_RANGE(r: int, g: int, b: int) -> bool:
+    if config["GFN"]:
+        return 100 < r < 170 and g < 35 and b < 35
+    else:
+        return 100 < r < 170 and g < 35 and b < 35
+
+def BUFF_RGB_RANGE(r: int, g: int, b: int) -> bool:
+    if config["GFN"]:
+        return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
+    else:
+        return 200 < r < 255 and 170 < g < 200 and 30 < b < 70
+
+
+def VALID_AREA_RGB_RANGE(r: int, g: int, b: int) -> bool:
+    return (130 < r < 165 and 140 < g < 160 and 125 < b < 150) or (
+        140 < r < 150 and 130 < g < 140 and 115 < b < 125
+    )
+
+
+def PORTAL_RGB_RANGE(r: int, g: int, b: int) -> bool:
+    if config["GFN"]:
+        return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
+            120 < r < 130 and 210 < g < 240 and 240 < b < 256
+        )
+    else:
+        return (75 < r < 85 and 140 < g < 150 and 250 < b < 256) or (
+            120 < r < 130 and 210 < g < 220 and 250 < b < 256
+        )
         return False
 
 
