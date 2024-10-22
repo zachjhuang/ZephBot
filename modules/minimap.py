@@ -47,7 +47,7 @@ class Minimap:
         for x in range(width):
             for y in range(height):
                 r, g, b = minimap.getpixel((x, y))
-                if VALID_AREA_RGB_RANGE(r, g, b):
+                if valid_area_rgb_range(r, g, b):
                     self.valid_coords.append((x - width / 2, y - height / 2))
 
     def find_closest_pixel(
@@ -113,7 +113,9 @@ class Minimap:
         # self.targetY = 0
         # return False
 
-    def get_game_coords(self, target_found: bool = False, pathfind: bool = False) -> tuple[int, int, int]:
+    def get_game_coords(
+        self, target_found: bool = False, pathfind: bool = False
+    ) -> tuple[int, int, int]:
         """
         Translates coordinates of most recently acquired target from relative minimap coordinates into valid, ingame coordinates.
 
@@ -132,7 +134,7 @@ class Minimap:
         else:
             target = average_coordinate(self.targets)
 
-        if not pathfind or distanceBetweenCoordinates(target, (0, 0)) < 15:
+        if not pathfind or distance_between_coords(target, (0, 0)) < 15:
             coord = target
         else:
             self.update_valid_coords()
@@ -157,7 +159,7 @@ class Minimap:
         """
         sorted_valid_coords = sorted(
             self.valid_coords,
-            key=lambda validCoord: distanceBetweenCoordinates(validCoord, target),
+            key=lambda validCoord: distance_between_coords(validCoord, target),
         )
         if len(sorted_valid_coords) == 0:
             return 0, 0
@@ -173,7 +175,7 @@ class Minimap:
         Returns:
             `True` if found, `False` otherwise.
         """
-        return self.find_closest_pixel("mob", MOG_RGB_RANGE)
+        return self.find_closest_pixel("mob", mob_rgb_range)
 
     def check_elite(self) -> bool:
         """
@@ -184,7 +186,7 @@ class Minimap:
         Returns:
             `True` if found, `False` otherwise.
         """
-        return self.find_closest_pixel("elite", ELITE_RGB_RANGE)
+        return self.find_closest_pixel("elite", elite_rgb_range)
 
     def check_buff(self) -> bool:
         """
@@ -195,7 +197,7 @@ class Minimap:
         Returns:
             `True` if found, `False` otherwise.
         """
-        return self.find_closest_pixel("buff", BUFF_RGB_RANGE)
+        return self.find_closest_pixel("buff", buff_rgb_range)
 
     def check_portal(self) -> bool:
         """
@@ -227,7 +229,7 @@ class Minimap:
                     self.targets.append((x, y))
                     print(f"{portal_part} image x: {x} y: {y}")
                     return True
-        return self.find_closest_pixel("portal", PORTAL_RGB_RANGE)
+        return self.find_closest_pixel("portal", portal_rgb_range)
 
     def check_boss(self) -> bool:
         """
@@ -281,7 +283,7 @@ class Minimap:
                 return True
         return False
 
-    def checkJump(self) -> bool:
+    def check_jump(self) -> bool:
         """
         Check minimap for jump pad icon.
 
@@ -305,7 +307,7 @@ class Minimap:
         return False
 
 
-def distanceBetweenCoordinates(coord1: tuple[int, int], coord2: tuple[int, int]) -> int:
+def distance_between_coords(coord1: tuple[int, int], coord2: tuple[int, int]) -> int:
     """
     Calculates the distance between two coordinates.
     """
@@ -353,7 +355,7 @@ def closest_connected_coordinate(
         visited.append(current)
 
         if current in valid_coords:
-            distance = distanceBetweenCoordinates(current, (0, 0))
+            distance = distance_between_coords(current, (0, 0))
             if distance < min_distance:
                 min_distance = distance
                 closest_coord = current
@@ -365,143 +367,41 @@ def closest_connected_coordinate(
     return closest_coord
 
 
-def MOG_RGB_RANGE(r: int, g: int, b: int) -> bool:
+def mob_rgb_range(r: int, g: int, b: int) -> bool:
     if config["GFN"]:
         return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
     else:
         return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
 
 
-def ELITE_RGB_RANGE(r: int, g: int, b: int) -> bool:
+def elite_rgb_range(r: int, g: int, b: int) -> bool:
     if config["GFN"]:
         return 184 < r < 215 and 124 < g < 147 and 59 < b < 78
     else:
         return 189 < r < 215 and 124 < g < 150 and 29 < b < 70
 
-def BOSS_RGB_RANGE(r: int, g: int, b: int) -> bool:
+
+def boss_rgb_range(r: int, g: int, b: int) -> bool:
     if config["GFN"]:
         return 100 < r < 170 and g < 35 and b < 35
     else:
         return 100 < r < 170 and g < 35 and b < 35
 
-def BUFF_RGB_RANGE(r: int, g: int, b: int) -> bool:
+
+def buff_rgb_range(r: int, g: int, b: int) -> bool:
     if config["GFN"]:
         return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
     else:
         return 200 < r < 255 and 170 < g < 200 and 30 < b < 70
 
 
-def VALID_AREA_RGB_RANGE(r: int, g: int, b: int) -> bool:
+def valid_area_rgb_range(r: int, g: int, b: int) -> bool:
     return (130 < r < 165 and 140 < g < 160 and 125 < b < 150) or (
         140 < r < 150 and 130 < g < 140 and 115 < b < 125
     )
 
 
-def PORTAL_RGB_RANGE(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
-        return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
-            120 < r < 130 and 210 < g < 240 and 240 < b < 256
-        )
-    else:
-        return (75 < r < 85 and 140 < g < 150 and 250 < b < 256) or (
-            120 < r < 130 and 210 < g < 220 and 250 < b < 256
-        )
-        return False
-
-
-def distanceBetweenCoordinates(coord1: tuple[int, int], coord2: tuple[int, int]) -> int:
-    """
-    Calculates the distance between two coordinates.
-    """
-    target_dist = math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
-    return int(target_dist)
-
-
-def average_coordinate(coords: list[tuple[int, int]]) -> tuple[int, int]:
-    """
-    Calculate the average coordinate from a list of coordinates.
-    """
-    xs = [coord[0] for coord in coords]
-    ys = [coord[1] for coord in coords]
-    meanX = int(sum(xs) / len(xs))
-    meanY = int(sum(ys) / len(ys))
-    return meanX, meanY
-
-
-def get_adjacent_coordinates(coord: tuple[int, int]):
-    """
-    Return a list of adjacent coordinates (4-directional).
-    """
-    x, y = coord
-    return [(x + dx, y + dy) for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
-
-
-def closest_connected_coordinate(
-    valid_coords: list[tuple[int, int]], target: tuple[int, int]
-) -> tuple[int, int]:
-    """
-    Find the coordinate closest to the origin that is connected to the target.
-    """
-
-    queue = deque([target])
-    visited = []
-    closest_coord = None
-    min_distance = float("inf")
-
-    while queue:
-        current = queue.popleft()
-
-        if current in visited:
-            continue
-
-        visited.append(current)
-
-        if current in valid_coords:
-            distance = distanceBetweenCoordinates(current, (0, 0))
-            if distance < min_distance:
-                min_distance = distance
-                closest_coord = current
-
-        for neighbor in get_adjacent_coordinates(current):
-            if neighbor not in visited and neighbor in valid_coords:
-                queue.append(neighbor)
-
-    return closest_coord
-
-
-def MOG_RGB_RANGE(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
-        return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
-    else:
-        return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
-
-
-def ELITE_RGB_RANGE(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
-        return 184 < r < 215 and 124 < g < 147 and 59 < b < 78
-    else:
-        return 189 < r < 215 and 124 < g < 150 and 29 < b < 70
-
-def BOSS_RGB_RANGE(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
-        return 100 < r < 170 and g < 35 and b < 35
-    else:
-        return 100 < r < 170 and g < 35 and b < 35
-
-def BUFF_RGB_RANGE(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
-        return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
-    else:
-        return 200 < r < 255 and 170 < g < 200 and 30 < b < 70
-
-
-def VALID_AREA_RGB_RANGE(r: int, g: int, b: int) -> bool:
-    return (130 < r < 165 and 140 < g < 160 and 125 < b < 150) or (
-        140 < r < 150 and 130 < g < 140 and 115 < b < 125
-    )
-
-
-def PORTAL_RGB_RANGE(r: int, g: int, b: int) -> bool:
+def portal_rgb_range(r: int, g: int, b: int) -> bool:
     if config["GFN"]:
         return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
             120 < r < 130 and 210 < g < 240 and 240 < b < 256
