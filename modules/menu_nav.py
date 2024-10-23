@@ -83,155 +83,140 @@ def restart_check() -> None:
         raise RestartException
 
 
-def restart_game() -> None:
-    print("restart game")
-    # gameCrashCheck()
-    random_sleep(5000, 7000)
+def boot_gfn_session() -> None:
+    """
+    Boots Lost Ark from the Geforce Now main page.
+    """
     while True:
-        if config["GFN"] == True:
-            random_sleep(10000, 12000)
-            loa_gfn = find_image_center(
-                "./screenshots/GFN/loaGFN.png",
-                confidence=0.8,
-            )
-            loa_gfn_play = find_image_center(
-                "./screenshots/GFN/loaGFNplay.png",
-                confidence=0.8,
-            )
-            if loa_gfn_play is not None:
-                x, y = loa_gfn_play
+        match find_image_center(
+            "./screenshots/GFN/loaGFNplay.png",
+            confidence=0.8,
+        ):
+            case x, y:
                 mouse_move_to(x=x, y=y)
                 random_sleep(2200, 2300)
                 pydirectinput.click(button="left")
                 print("clicked play restart on GFN")
                 random_sleep(40000, 42000)
                 break
-            if loa_gfn is not None:
-                x, y = loa_gfn
+        match find_image_center(
+            "./screenshots/GFN/loaGFN.png",
+            confidence=0.8,
+        ):
+            case x, y:
                 mouse_move_to(x=x, y=y)
                 random_sleep(2200, 2300)
                 pydirectinput.click(button="left")
                 print("clicked image restart on GFN")
                 random_sleep(40000, 42000)
                 break
-            # afkGFN = findImageCenter(
-            #     "./screenshots/GFN/afkGFN.png",
-            #     region=SCREEN_CENTER_REGION,
-            #     confidence=0.75,
-            # )
-            close_gfn = find_image_center(
-                "./screenshots/GFN/closeGFN.png",
-                confidence=0.75,
-            )
-            if close_gfn:
+        match find_image_center(
+            "./screenshots/GFN/closeGFN.png",
+            confidence=0.75,
+        ):
+            case x, y:
                 print("afk GFN")
-                x, y = close_gfn
                 mouse_move_to(x=x, y=y)
                 random_sleep(1300, 1400)
                 pydirectinput.click(button="left")
                 random_sleep(1300, 1400)
-                continue
-        else:
-            os.system("start steam://launch/1599340/dialog")
-            random_sleep(60000, 60000)
-        enter_game = find_image_center("./screenshots/steamPlay.png", confidence=0.75)
-        random_sleep(500, 600)
-        stop_game = find_image_center("./screenshots/steamStop.png", confidence=0.75)
-        random_sleep(500, 600)
-        confirm = find_image_center("./screenshots/steamConfirm.png", confidence=0.75)
-        random_sleep(500, 600)
-        enter_server = check_image_on_screen(
-            "./screenshots/enterServer.png",
-            confidence=0.9,
-            region=(885, 801, 160, 55),
-        )
-        random_sleep(500, 600)
-        channel_dropdown_arrow = check_image_on_screen(
+        random_sleep(1000, 1100)
+
+
+def boot_steam_session() -> None:
+    """
+    Boots Lost Ark from the Steam Library page.
+
+    WARNING: HAS NOT BEEN UPDATED
+    """
+    while True:
+        os.system("start steam://launch/1599340/dialog")
+        random_sleep(60000, 60000)
+        match find_image_center("./screenshots/steamStop.png", confidence=0.75):
+            case x, y:
+                print("clicking stop game on steam")
+                mouse_move_to(x=x, y=y)
+                random_sleep(1200, 1300)
+                pydirectinput.click(button="left")
+                random_sleep(500, 600)
+        match find_image_center("./screenshots/steamConfirm.png", confidence=0.75):
+            case x, y:
+                print("confirming stop game")
+                mouse_move_to(x=x, y=y)
+                random_sleep(1200, 1300)
+                pydirectinput.click(button="left")
+                random_sleep(10000, 12000)
+        match find_image_center("./screenshots/steamPlay.png", confidence=0.75):
+            case x, y:
+                print("restarting Lost Ark game client...")
+                mouse_move_to(x=x, y=y)
+                random_sleep(1200, 1300)
+                pydirectinput.click(button="left")
+                break
+
+
+def enter_server() -> None:
+    """
+    Selects first server and clicks enter.
+    """
+    while True:
+        if check_image_on_screen(
             "./screenshots/channelDropdownArrow.png",
             confidence=0.75,
             region=(1870, 133, 25, 30),
-        )
-        if stop_game is not None:
-            print("clicking stop game on steam")
-            x, y = stop_game
-            mouse_move_to(x=x, y=y)
-            random_sleep(1200, 1300)
-            pydirectinput.click(button="left")
-            random_sleep(500, 600)
-            confirm = find_image_center(
-                "./screenshots/steamConfirm.png", confidence=0.75
-            )
-            if confirm is None:
-                continue
-            x, y = confirm
-            mouse_move_to(x=x, y=y)
-            random_sleep(1200, 1300)
-            pydirectinput.click(button="left")
-            random_sleep(10000, 12000)
-        elif confirm is not None:
-            print("confirming stop game")
-            x, y = confirm
-            mouse_move_to(x=x, y=y)
-            random_sleep(1200, 1300)
-            pydirectinput.click(button="left")
-            random_sleep(10000, 12000)
-        elif enter_game is not None:
-            print("restarting Lost Ark game client...")
-            x, y = enter_game
-            mouse_move_to(x=x, y=y)
-            random_sleep(1200, 1300)
-            pydirectinput.click(button="left")
+        ):
             break
-        elif enter_server:
-            break
-        elif channel_dropdown_arrow:
-            return
-        random_sleep(1200, 1300)
-    random_sleep(5200, 6300)
-    while True:
-        enter_server = find_image_center(
+
+        match find_image_center(
             "./screenshots/enterServer.png",
             confidence=0.9,
             region=(885, 801, 160, 55),
-        )
-        enter_game = find_image_center("./screenshots/steamPlay.png", confidence=0.75)
-        if enter_server:
-            print("clicking enterServer")
-            random_sleep(1000, 1200)
-            # click first server
-            mouse_move_to(x=855, y=582)
-            random_sleep(1200, 1300)
-            pydirectinput.click(button="left")
-            random_sleep(1000, 1200)
-            x, y = enter_server
-            mouse_move_to(x=x, y=y)
-            random_sleep(1200, 1300)
-            pydirectinput.click(button="left")
-            break
-        elif enter_game:
-            print("clicking enterGame")
-            x, y = enter_game
-            mouse_move_to(x=x, y=y)
-            random_sleep(200, 300)
-            pydirectinput.click(button="left")
-            random_sleep(4200, 5300)
-            continue
-    random_sleep(3200, 4300)
+        ):
+            case x, y:
+                print("selecting first server")
+                random_sleep(1000, 1200)
+                mouse_move_to(x=855, y=582)
+                random_sleep(1200, 1300)
+                pydirectinput.click(button="left")
+                print("entering server")
+                random_sleep(1000, 1200)
+                mouse_move_to(x=x, y=y)
+                random_sleep(1200, 1300)
+                pydirectinput.click(button="left")
+                break
+        random_sleep(1000, 1100)
+
+
+def enter_character() -> None:
+    """
+    Enters the game on the most recently logged character.
+    """
     while True:
-        enter_character = find_image_center(
+        match find_image_center(
             "./screenshots/enterCharacter.png",
             confidence=0.75,
             region=(745, 854, 400, 80),
-        )
-        if enter_character:
-            print("clicking enterCharacter")
-            x, y = enter_character
-            mouse_move_to(x=x, y=y)
-            random_sleep(200, 300)
-            pydirectinput.click(button="left")
-            break
+        ):
+            case x, y:
+                print("clicking enterCharacter")
+                mouse_move_to(x=x, y=y)
+                random_sleep(200, 300)
+                pydirectinput.click(button="left")
+                break
         random_sleep(2200, 3300)
-    # states["gameRestartCount"] = states["gameRestartCount"] + 1
+
+
+def restart_game() -> None:
+    print("restart game")
+    # gameCrashCheck()
+    random_sleep(5000, 7000)
+    if config["GFN"]:
+        boot_gfn_session()
+    else:
+        boot_steam_session()
+    enter_server()
+    random_sleep(5200, 6300)
+    enter_character()
     mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
     random_sleep(22200, 23300)
 
@@ -255,9 +240,9 @@ def toggle_menu(menuType: str) -> None:
 
 def wait_for_menu_load(menu: str) -> None:
     """
-    random_sleeps until menu is detected on screen.
+    Sleeps until menu is detected on screen.
 
-    Attempts to open menu again after ~10 seconds. (NOT WORKING)
+    ~Attempts to open menu again after ~10 seconds.~ (deprecated)
 
     Times out after ~20 seconds.
     """
@@ -274,23 +259,23 @@ def wait_for_menu_load(menu: str) -> None:
 
 
 def wait_overworld_load() -> None:
-    """random_sleeps until channel dropdown arrow is on screen. Changes status to 'overworld'."""
+    """
+    Sleeps until channel dropdown arrow is on screen.
+    """
     while True:
         restart_check()
-        channelDropdownArrow = check_image_on_screen(
+        if check_image_on_screen(
             "./screenshots/channelDropdownArrow.png",
             region=(1870, 133, 25, 30),
             confidence=0.75,
-        )
-        if channelDropdownArrow:
+        ):
             print("overworld loaded")
             break
         random_sleep(1000, 1100)
 
-        inChaos = check_image_on_screen(
+        if check_image_on_screen(
             "./screenshots/inChaos.png", region=(247, 146, 222, 50), confidence=0.75
-        )
-        if inChaos:
+        ):
             print("still in the last chaos run, quitting")
             quit_chaos()
             random_sleep(4000, 6000)
