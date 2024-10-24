@@ -15,11 +15,7 @@ from modules.utilities import (
     random_sleep,
 )
 
-SCREEN_CENTER_X = 960
-SCREEN_CENTER_Y = 540
-
 SCREEN_CENTER_POS = Position(960, 540)
-SCREEN_CENTER_REGION = (685, 280, 600, 420)
 
 pydirectinput.PAUSE = 0.05
 
@@ -30,7 +26,6 @@ def abort_script():
 def main():
     keyboard.add_hotkey("ctrl+page down", abort_script)
 
-    # Instantiate the parser
     parser = argparse.ArgumentParser(description="Optional app description")
     parser.add_argument(
         "--chaos", action="store_true", help="Enables 2x chaos on entire roster"
@@ -48,7 +43,6 @@ def main():
         action="store_true",
         help="Enables guild donation/support on entire roster",
     )
-    # parser.add_argument("--cubes", action="store_true", help="testing cubes")
     parser.add_argument("--delay", type=int, help="Delay start of program in seconds")
     args = parser.parse_args()
 
@@ -72,8 +66,6 @@ def main():
     # if config["invisible"] == True:
     #     goInvisible()
 
-    # save bot start time
-    # states["botStartTime"] = int(time.time_ns() / 1000000)
     while True:
         try:
             bot_manager.run()
@@ -88,7 +80,7 @@ def main():
             restart_game()
             wait_overworld_load()
         except ResetException:
-            bot_manager = BotManager(args.chaos, args.unas, args.guild)
+            bot_manager = BotManager(args.chaos, args.kurzanfront, args.unas, args.guild)
 
 
 if __name__ == "__main__":
