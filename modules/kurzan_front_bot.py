@@ -1,4 +1,3 @@
-import statistics
 import time
 
 import pyautogui
@@ -8,6 +7,7 @@ from configs.config import config
 from modules.dungeon_bot import (
     DungeonBot,
     cast_ability,
+    perform_class_specialty,
     do_aura_repair,
     move_in_direction,
     wait_dungeon_load,
@@ -49,6 +49,7 @@ class KurzanFrontBot(DungeonBot):
             )
             for char in self.roster
         ]
+        self.minimap = Minimap()
 
     def do_tasks(self) -> None:
         if self.done_on_curr_char():
@@ -77,7 +78,7 @@ class KurzanFrontBot(DungeonBot):
         """
         Moves character and uses skills. Behavior changes depending on the floor.
         """
-        minimap = Minimap()
+        self.minimap = Minimap()
         curr_class = self.roster[self.curr]["class"]
         char_skills = self.skills[curr_class]
         normal_skills = [
@@ -88,7 +89,7 @@ class KurzanFrontBot(DungeonBot):
         ][0]
         awakeningUsed = False
         jumped = False
-        x, y, move_duration = minimap.get_game_coords()
+        x, y, move_duration = self.minimap.get_game_coords()
         while True:
             self.died_check()
             self.health_check()
@@ -96,13 +97,13 @@ class KurzanFrontBot(DungeonBot):
             self.timeout_check()
             timeout = 0
             # cast sequence
-            for i in range(0, len(normal_skills)):
+            for i in range(len(normal_skills)):
                 if check_kurzan_finish():
                     print("KurzanFront finish screen")
                     return
                 self.died_check()
                 self.health_check()
-                if not jumped and check_50_percent_progress() and minimap.check_jump():
+                if not jumped and check_50_percent_progress() and self.minimap.check_jump():
                     timeout = 0
                     while True:
                         if (
@@ -121,8 +122,8 @@ class KurzanFrontBot(DungeonBot):
                         ):
                             left_click_at_position(SCREEN_CENTER_POS)
                             break
-                        x, y, move_duration = minimap.get_game_coords(
-                            target_found=minimap.check_jump(), pathfind=True
+                        x, y, move_duration = self.minimap.get_game_coords(
+                            target_found=self.minimap.check_jump(), pathfind=True
                         )
                         move_in_direction(x, y, int(move_duration / 4))
                         random_sleep(100, 150)
@@ -138,35 +139,35 @@ class KurzanFrontBot(DungeonBot):
                     pydirectinput.press("g")
                     print("jumped")
                     jumped = True
-                    minimap.targets = []
+                    self.minimap.targets = []
 
                 elif (
-                    minimap.check_buff()
-                    or minimap.check_boss()
-                    or minimap.check_elite()
+                    self.minimap.check_buff()
+                    or self.minimap.check_boss()
+                    or self.minimap.check_elite()
                 ):
-                    x, y, move_duration = minimap.get_game_coords(
+                    x, y, move_duration = self.minimap.get_game_coords(
                         target_found=True, pathfind=True
                     )
-                    move_in_direction(x, y, int(move_duration / 2))
-                elif check_image_on_screen(
-                    "./screenshots/chaos/bossBar.png", confidence=0.75
-                ):
-                    cast_ability(x, y, awakeningSkill)
+                    move_in_direction(x, y, int(move_duration / 3))
+                    if check_image_on_screen(
+                        "./screenshots/chaos/bossBar.png", confidence=0.75
+                    ):
+                        cast_ability(awakeningSkill)
                 elif timeout == 5:
                     random_move()
                     timeout = 0
                 else:
                     print("target not found")
-                    x, y, move_duration = minimap.get_game_coords(
+                    x, y, move_duration = self.minimap.get_game_coords(
                         target_found=False, pathfind=True
                     )
-                    move_in_direction(x, y, int(move_duration / 2))
+                    move_in_direction(x, y, int(move_duration / 3))
                     timeout += 1
-                self.perform_class_specialty(
+                perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
                 )
-                cast_ability(x, y, normal_skills[i])
+                cast_ability(normal_skills[i])
 
 
 def check_50_percent_progress():
