@@ -176,7 +176,7 @@ skills = {
             "directional": False,
         },
     ],
-    "arcana": [
+    "arcanist": [
         {
             "key": "q",
             "skillType": "normal",
@@ -396,7 +396,7 @@ skills = {
             "castTime": 1000,
             "position": SKILL_AWAKENING_REGION,
             "directional": True,
-        }
+        },
     ],
     "scrapper": [
         {
