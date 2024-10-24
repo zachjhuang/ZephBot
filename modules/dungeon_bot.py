@@ -90,8 +90,55 @@ class DungeonBot(TaskBot):
             self.timeout_count += 1
             raise TimeoutException
 
-    def perform_class_specialty(
-        self, char_class: str, i: int, abilities: list[dict]
+
+    def update_print_metrics(self, int):
+        """
+        Updates bot statistics and prints summary.
+        """
+        print("-------------------------------------")
+        print(f"run completed in {int}s")
+        self.completed_count += 1
+        self.total_time += int
+        self.fastest_clear = min(int, self.fastest_clear)
+        self.slowest_clear = max(int, self.slowest_clear)
+        print("-------------------------------------")
+        print(f"total timeouts: {self.timeout_count}")
+        print(f"total deaths: {self.death_count}")
+        print(f"total low hp: {self.health_pot_count}")
+        print("-------------------------------------")
+        avg_time = self.total_time / self.completed_count
+        print(
+            f"average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear}"
+        )
+        print("-------------------------------------")
+
+
+def cast_ability(ability: dict) -> None:
+    """
+    Casts the given ability in the specified direction.
+    """
+    # mouse_move_to(x=x, y=y)
+    # if ability["directional"]:
+    #     mouseMoveTo(x=x, y=y)
+    # else:
+    #     mouseMoveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+
+    if ability["castTime"] is not None:
+        pydirectinput.press(ability["key"])
+        random_sleep(100, 150)
+        pydirectinput.press(ability["key"])
+        random_sleep(ability["castTime"], (ability["castTime"] + 100))
+    elif ability["holdTime"] is not None:
+        pydirectinput.keyDown(ability["key"])
+        random_sleep(ability["holdTime"], (ability["holdTime"] + 100))
+        pydirectinput.keyUp(ability["key"])
+    else:
+        pydirectinput.press(ability["key"])
+        random_sleep(100, 150)
+        
+
+def perform_class_specialty(
+        char_class: str, i: int, abilities: list[dict]
     ) -> None:
         """
         Performs custom class behavior (activating identity, using specialty, stance swapping, etc.).
@@ -221,51 +268,6 @@ class DungeonBot(TaskBot):
                     random_sleep(50, 60)
                     pydirectinput.press(config["specialty2"])
                     random_sleep(150, 160)
-
-    def update_print_metrics(self, int):
-        """
-        Updates bot statistics and prints summary.
-        """
-        print("-------------------------------------")
-        print(f"run completed in {int}s")
-        self.completed_count += 1
-        self.total_time += int
-        self.fastest_clear = min(int, self.fastest_clear)
-        self.slowest_clear = max(int, self.slowest_clear)
-        print("-------------------------------------")
-        print(f"total timeouts: {self.timeout_count}")
-        print(f"total deaths: {self.death_count}")
-        print(f"total low hp: {self.health_pot_count}")
-        print("-------------------------------------")
-        avg_time = self.total_time / self.completed_count
-        print(
-            f"average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear}"
-        )
-        print("-------------------------------------")
-
-
-def cast_ability(x: int, y: int, ability: dict) -> None:
-    """
-    Casts the given ability in the specified direction.
-    """
-    mouse_move_to(x=x, y=y)
-    # if ability["directional"]:
-    #     mouseMoveTo(x=x, y=y)
-    # else:
-    #     mouseMoveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
-
-    if ability["castTime"] is not None:
-        pydirectinput.press(ability["key"])
-        random_sleep(100, 150)
-        pydirectinput.press(ability["key"])
-        random_sleep(ability["castTime"], (ability["castTime"] + 100))
-    elif ability["holdTime"] is not None:
-        pydirectinput.keyDown(ability["key"])
-        random_sleep(ability["holdTime"], (ability["holdTime"] + 100))
-        pydirectinput.keyUp(ability["key"])
-    else:
-        pydirectinput.press(ability["key"])
-        random_sleep(100, 150)
 
 
 def do_aura_repair(forced: bool) -> None:
