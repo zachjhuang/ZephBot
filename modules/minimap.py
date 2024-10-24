@@ -54,9 +54,9 @@ class Minimap:
         self, name: str, inColorRange: Callable[[int, int, int], bool]
     ) -> bool:
         """
-        Check minimap for closest pixel that satisfies the color range lambda given.
+        Check minimap for closest pixel that satisfies the color range function given.
 
-        Range lambda should take `r`, `g`, and `b` values and return True if each value is
+        Range function should take `r`, `g`, and `b` values and return True if each value is
         within a certain threshold.
 
         Updates `targets` attribute if found.
@@ -64,18 +64,7 @@ class Minimap:
         This function is intended for internal use only.
 
         Returns:
-            `True` if found, `False` otherwise.
-        Check minimap for closest pixel that satisfies the color range lambda given.
-
-        Range lambda should take `r`, `g`, and `b` values and return True if each value is
-        within a certain threshold.
-
-        Updates `targets` attribute if found.
-
-        This function is intended for internal use only.
-
-        Returns:
-            `True` if found, `False` otherwise.
+            True if found, False otherwise.
         """
         minimap = pyautogui.screenshot(region=MINIMAP_REGION)
         width, height = minimap.size
@@ -100,18 +89,6 @@ class Minimap:
             return True
         else:
             return False
-        # for entry in order:
-        #     if entry[0] >= width or entry[1] >= height:
-        #         continue
-        #     r, g, b = minimap.getpixel((entry[0], entry[1]))
-        #     if inColorRange(r, g, b):
-        #         left, top, _w, _h = MINIMAP_REGION
-        #         self.targetX = left + entry[0] - MINIMAP_CENTER_X
-        #         self.targetY = top + entry[1] - MINIMAP_CENTER_Y
-        #         return True
-        # self.targetX = 0
-        # self.targetY = 0
-        # return False
 
     def get_game_coords(
         self, target_found: bool = False, pathfind: bool = False
@@ -122,6 +99,9 @@ class Minimap:
         Args:
             target_found: If `True`, calculate where to click based on the most recently acquired target's location. \\
                 Otherwise, calculate based on an average of all previously acquired targets.
+
+            pathfind: If `True`, find the location connected to the target that is closest to the player. \\
+                Otherwise, directly use the target's location.
 
         Returns:
             The `x` and `y` values of where to click in the game, as well as the `duration` (magnitude).
@@ -153,22 +133,29 @@ class Minimap:
 
         return x + SCREEN_CENTER_X, y + SCREEN_CENTER_Y, int(magnitude * 50)
 
-    def get_closest_valid_coord(self, target: tuple[int, int]) -> list[tuple]:
+    def get_closest_valid_coord(self, target: tuple[int, int]) -> tuple[int, int]:
         """
-        Given a target, return the valid coordinate closest to the target.
+        Finds the closest valid coordinate to a given target. The list of valid coordinates
+        is provided by the instance's respective attribute.
+        
+        Args:
+            target: Target coordinate.
+
+        Returns:
+            Closest valid coordinate.
         """
         sorted_valid_coords = sorted(
             self.valid_coords,
             key=lambda validCoord: distance_between_coords(validCoord, target),
         )
-        if len(sorted_valid_coords) == 0:
-            return 0, 0
-        else:
+        if sorted_valid_coords:
             return sorted_valid_coords[0]
+        else:
+            return 0, 0
 
     def check_mob(self) -> bool:
         """
-        Check minimap for closest orange pixel of elite icon.
+        Checks minimap for closest orange pixel of elite icon.
 
         Updates `targets` attribute with coordinates if found.
 
@@ -179,7 +166,7 @@ class Minimap:
 
     def check_elite(self) -> bool:
         """
-        Check minimap for closest red pixel of mob icon.
+        Checks minimap for closest red pixel of mob icon.
 
         Updates `targets` attribute with coordinates if found.
 
@@ -190,7 +177,7 @@ class Minimap:
 
     def check_buff(self) -> bool:
         """
-        Check minimap for closest yellow pixel of Kurzan Front elemental buff icon.
+        Checks minimap for closest yellow pixel of Kurzan Front elemental buff icon.
 
         Updates `targets` attribute with coordinates if found.
 
@@ -201,7 +188,7 @@ class Minimap:
 
     def check_portal(self) -> bool:
         """
-        Check minimap for portal icon and closest blue portal pixels.
+        Checks minimap for portal icon and closest blue portal pixels.
 
         Updates `targets` attribute with coordinates if found.
 
@@ -233,7 +220,7 @@ class Minimap:
 
     def check_boss(self) -> bool:
         """
-        Check minimap for boss icon.
+        Checks minimap for boss icon and closest dark red pixels.
 
         Updates `targets` attribute with coordinates if found.
 
@@ -250,11 +237,11 @@ class Minimap:
             self.targets.append((x, y))
             print(f"boss x: {x} y: {y}")
             return True
-        return False
+        return self.find_closest_pixel("boss", boss_rgb_range)
 
     def check_rift_core(self) -> bool:
         """
-        Check minimap for rift core icon.
+        Checks minimap for rift core icon.
 
         Updates `targets` attribute with coordinates if found.
 
@@ -278,7 +265,7 @@ class Minimap:
 
     def check_jump(self) -> bool:
         """
-        Check minimap for jump pad icon.
+        Checks minimap for jump pad icon.
 
         Updates `targets` attribute with coordinates if found.
 
@@ -310,7 +297,7 @@ def distance_between_coords(coord1: tuple[int, int], coord2: tuple[int, int]) ->
 
 def average_coordinate(coords: list[tuple[int, int]]) -> tuple[int, int]:
     """
-    Calculate the average coordinate from a list of coordinates.
+    Calculates the average coordinate from a list of coordinates.
     """
     xs = [coord[0] for coord in coords]
     ys = [coord[1] for coord in coords]
@@ -319,7 +306,7 @@ def average_coordinate(coords: list[tuple[int, int]]) -> tuple[int, int]:
     return meanX, meanY
 
 
-def get_adjacent_coordinates(coord: tuple[int, int]):
+def get_adjacent_coordinates(coord: tuple[int, int]) -> list[tuple[int, int]]:
     """
     Return a list of adjacent coordinates (4-directional).
     """
@@ -328,12 +315,20 @@ def get_adjacent_coordinates(coord: tuple[int, int]):
 
 
 def closest_connected_coordinate(
-    valid_coords: list[tuple[int, int]], target: tuple[int, int]
+    coords: list[tuple[int, int]], target: tuple[int, int]
 ) -> tuple[int, int]:
     """
-    Find the coordinate closest to the origin that is connected to the target.
-    """
+    Using BFS, find the coordinate closest to the origin that is connected to the target. \\
+    Coordinates are considered connected if they are adjacent in the cardinal directions.
 
+    Args:
+        coords: List of coordinates.
+
+        target: Target coordinate.
+
+    Returns:
+        The coordinate closest to the origin and connected to the target.
+    """
     queue = deque([target])
     visited = []
     closest_coord = None
@@ -347,14 +342,14 @@ def closest_connected_coordinate(
 
         visited.append(current)
 
-        if current in valid_coords:
+        if current in coords:
             distance = distance_between_coords(current, (0, 0))
             if distance < min_distance:
                 min_distance = distance
                 closest_coord = current
 
         for neighbor in get_adjacent_coordinates(current):
-            if neighbor not in visited and neighbor in valid_coords:
+            if neighbor not in visited and neighbor in coords:
                 queue.append(neighbor)
 
     return closest_coord
