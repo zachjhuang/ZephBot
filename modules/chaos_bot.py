@@ -1,4 +1,3 @@
-import random
 import time
 from datetime import datetime
 
@@ -9,6 +8,7 @@ from configs.config import config
 from modules.dungeon_bot import (
     DungeonBot,
     cast_ability,
+    perform_class_specialty,
     do_aura_repair,
     move_in_direction,
     random_move,
@@ -77,7 +77,7 @@ CHAOS_TAB_POSITION = {
 class ChaosBot(DungeonBot):
     def __init__(self, roster):
         super().__init__(roster)
-        self.remaining_tasks = [
+        self.remaining_tasks: list[int] = [
             (
                 2
                 if char["chaosItemLevel"] is not None and char["chaosItemLevel"] <= 1610
@@ -85,6 +85,7 @@ class ChaosBot(DungeonBot):
             )
             for char in self.roster
         ]
+        self.minimap: Minimap = Minimap()
 
     def do_tasks(self) -> None:
         if self.done_on_curr_char():
@@ -114,9 +115,15 @@ class ChaosBot(DungeonBot):
             #     raise ResetException
         quit_chaos()
 
-    def do_chaos_floor(self, n: int) -> None:
+    def do_chaos_floor(self, floor: int) -> None:
+        """
+        Completes one floor of chaos dungeon.
+
+        Args:
+            floor: The specific floor of chaos to complete.
+        """
         wait_dungeon_load()
-        print(f"floor {n} loaded")
+        print(f"floor {floor} loaded")
 
         if config["auraRepair"]:
             do_aura_repair(False)
@@ -124,8 +131,8 @@ class ChaosBot(DungeonBot):
         left_click_at_position(SCREEN_CENTER_POS)
         random_sleep(1500, 1600)
 
-        self.use_skills(n)
-        print(f"floor {n} cleared")
+        self.use_skills(floor)
+        print(f"floor {floor} cleared")
 
         restart_check()
         self.timeout_check()
@@ -133,8 +140,11 @@ class ChaosBot(DungeonBot):
     def use_skills(self, floor) -> None:
         """
         Moves character and uses skills. Behavior changes depending on the floor.
+
+        Args:
+            floor: The floor that skills are being used on.
         """
-        minimap = Minimap()
+        self.minimap = Minimap()
         curr_class = self.roster[self.curr]["class"]
         char_skills = self.skills[curr_class]
         normal_skills = [
@@ -144,166 +154,161 @@ class ChaosBot(DungeonBot):
             skill for skill in char_skills if skill["skillType"] == "awakening"
         ][0]
         awakening_used = False
+
         while True:
             self.died_check()
             self.health_check()
             restart_check()
             self.timeout_check()
 
-            x, y, move_duration = minimap.get_game_coords()
+            x, y, move_duration = self.minimap.get_game_coords()
 
-            if floor == 1 and not awakening_used:
-                awakening_used = True
-                cast_ability(x, y, awakening_skill)
-
-            # check for accident
-            if floor == 1 and minimap.check_elite():
-                print("accidentally entered floor 2")
-                return
-            elif floor == 2 and minimap.check_rift_core():
-                print("accidentally entered floor 3")
+            if self.check_accidental_portal_enter(floor):
                 return
 
-            if floor == 1 and not minimap.check_mob():
+            if floor == 1 and not self.minimap.check_mob():
                 print("no floor 1 mob detected, random move")
                 random_move()
-            elif floor == 2 and not minimap.check_elite() and not minimap.check_mob():
+            elif (
+                floor == 2
+                and not self.minimap.check_elite()
+                and not self.minimap.check_mob()
+            ):
                 print("no floor 2 elite/mob detected, random move")
                 random_move()
-            elif floor == 3 and minimap.check_elite():
-                x, y, move_duration = minimap.get_game_coords(
-                    target_found=True, pathfind=True
-                )
-                move_in_direction(x, y, move_duration)
             elif (
                 floor == 3
-                and not minimap.check_rift_core()
-                and not minimap.check_elite()
-                and not minimap.check_mob()
+                and not self.minimap.check_rift_core()
+                and not self.minimap.check_elite()
+                and not self.minimap.check_mob()
             ):
                 random_move()
 
-            # cast sequence
-            for i in range(0, len(normal_skills)):
+            if floor == 1 and not awakening_used:
+                cast_ability(awakening_skill)
+            if floor == 2 and check_boss_bar() and not awakening_used:
+                cast_ability(awakening_skill)
+                awakening_used = True
+
+            for i in range(len(normal_skills)):
                 if floor == 3 and check_chaos_finish():
                     print("chaos finish screen")
                     return
                 self.died_check()
                 self.health_check()
 
-                if (floor == 1 or floor == 2) and minimap.check_portal():
-                    pydirectinput.click(
-                        x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y, button=config["move"]
-                    )
-                    random_sleep(100, 150)
-                    while True:
-                        minimap.check_portal()
-                        x, y, move_duration = minimap.get_game_coords(target_found=True)
-                        if self.enter_portal(x, y, int(move_duration / 3)):
-                            break
-                        self.timeout_check()
+                if (floor == 1 or floor == 2) and self.minimap.check_portal():
+                    self.enter_portal()
                     return
 
-                # click rift core
+                self.move_to_targets(floor)
+
                 if floor == 3:
                     click_rift_core()
 
-                # check high-priority mobs
-                match floor:
-                    case 1:
-                        x, y, move_duration = minimap.get_game_coords(
-                            target_found=minimap.check_mob()
-                        )
-                    case 2:
-                        x, y, move_duration = minimap.get_game_coords(
-                            target_found=(
-                                minimap.check_boss()
-                                or minimap.check_elite()
-                                or minimap.check_mob()
-                            )
-                        )
-                        move_in_direction(x, y, int(move_duration / 5))
-                        if minimap.check_boss() or checkBossBar() and not awakening_used:
-                            cast_ability(x, y, awakening_skill)
-                            awakening_used = True
-                    case 3:
-                        x, y, move_duration = minimap.get_game_coords(
-                            target_found=(
-                                minimap.check_rift_core()
-                                or minimap.check_elite()
-                                or minimap.check_mob()
-                            ),
-                            pathfind=True,
-                        )
-                        move_in_direction(x, y, int(move_duration / 2))
-                        # if not minimap.checkElite() and not minimap.checkMob():
-                        #     minimap.checkRiftCore()
-                        #     newX, newY, _ = minimap.getGameCoords()
-                        #     if (
-                        #         newX - 30 < x < newX + 30
-                        #         and newY - 20 < y < newY + 20
-                        #     ):
-                        #         randomMove()
-
-                self.perform_class_specialty(
+                perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
                 )
-                cast_ability(x, y, normal_skills[i])
+                cast_ability(normal_skills[i])
 
-    def enter_portal(self, x: int, y: int, moveDuration: int) -> bool:
+    def check_accidental_portal_enter(self, floor) -> bool:
         """
-        Moves to (x, y) over moveDuration milliseconds while pressing interact.
+        Check if icon that's not supposed to be on floor is on minimap.
 
-        Returns true if black loading screen reached from interacting with portal within time limit, false otherwise.
+        Args:
+            floor: The floor the instance should currently be on.
+
+        Returns:
+            True if on wrong floor, False otherwise.
         """
-        if moveDuration > 550:
-            pydirectinput.click(x=x, y=y, button=config["move"])
-            random_sleep(100, 150)
-            if self.roster[self.curr]["class"] != "gunlancer":
-                pydirectinput.press(config["blink"])
+        if floor == 1 and self.minimap.check_elite():
+            print("accidentally entered floor 2")
+            return True
+        elif floor == 2 and self.minimap.check_rift_core():
+            print("accidentally entered floor 3")
+            return True
+        return False
 
-        for _ in range(10):
-            # try to enter portal until black screen
+    def enter_portal(self) -> None:
+        """
+        Moves to portal and tries to enter it.
+        """
+        pydirectinput.click(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y, button=config["move"])
+        random_sleep(100, 150)
+        while True:
+            self.minimap.check_portal()
+            x, y, _move_duration = self.minimap.get_game_coords(target_found=True)
+
+            # Try to enter portal until black screen
             im = pyautogui.screenshot(region=(1652, 168, 240, 210))
             r, g, b = im.getpixel((1772 - 1652, 272 - 168))
             if r + g + b < 30:
                 mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
-                return True
+                break
             pydirectinput.press(config["interact"])
             random_sleep(100, 120)
             pydirectinput.click(x=x, y=y, button=config["move"])
             random_sleep(60, 70)
-        pydirectinput.press(self.skills[self.roster[self.curr]["class"]][0])
-        random_sleep(100, 150)
-        pydirectinput.press(config["meleeAttack"])
-        random_sleep(100, 150)
-        return False
+            self.timeout_check()
+
+    def move_to_targets(self, floor) -> None:
+        """
+        Detects targets and moves in mouse in direction. Clicks to move character
+        depending on the floor.
+        """
+        match floor:
+            case 1:
+                x, y, move_duration = self.minimap.get_game_coords(
+                    target_found=self.minimap.check_mob()
+                )
+            case 2:
+                x, y, move_duration = self.minimap.get_game_coords(
+                    target_found=(
+                        self.minimap.check_boss()
+                        or self.minimap.check_elite()
+                        or self.minimap.check_mob()
+                    )
+                )
+                move_in_direction(x, y, int(move_duration / 5))
+            case 3:
+                x, y, move_duration = self.minimap.get_game_coords(
+                    target_found=(
+                        self.minimap.check_rift_core()
+                        or self.minimap.check_elite()
+                        or self.minimap.check_mob()
+                    ),
+                    pathfind=True,
+                )
+                move_in_direction(x, y, int(move_duration / 4))
 
 
 def enter_chaos(ilvl: int) -> None:
     """
-    Enters specified chaos dungeon level.
+    Opens and navigates content menu before entering specified chaos dungeon level.
+
+    Args:
+        ilvl: A valid item level entry requirement for a chaos dungeon.
     """
     toggle_menu("content")
     wait_for_menu_load("content")
 
-    elementPos = find_image_center(
+    element_pos = find_image_center(
         "./screenshots/menus/chaosDungeonContentMenuElement.png", confidence=0.9
     )
-    if elementPos is not None:
-        x, y = elementPos
+    if element_pos is not None:
+        x, y = element_pos
         left_click_at_position(Position(x + 300, y + 30))  # shortcut button
     else:
         left_click_at_position(Position(786, 315))  # edge case different UI
     random_sleep(800, 900)
     wait_for_menu_load("chaosDungeon")
-    isCorrectChaosDungeon = check_image_on_screen(
+    correct_chaos_dungeon = check_image_on_screen(
         f"./screenshots/chaos/ilvls/{ilvl}.png",
         region=(1255, 380, 80, 50),
         confidence=0.95,
     )
-    if not isCorrectChaosDungeon:
-        print("not correct")
+    if not correct_chaos_dungeon:
+        print("correct chaos dungeon not selected")
         select_chaos_dungeon(ilvl)
 
     find_and_click_image("weeklyPurificationClaimAll", confidence=0.90)
@@ -320,6 +325,9 @@ def enter_chaos(ilvl: int) -> None:
 def select_chaos_dungeon(ilvl: int) -> None:
     """
     With chaos dungeon menu open, select chaos dungeon level corresponding to item level.
+
+    Args:
+        ilvl: A valid item level entry requirement for a chaos dungeon.
     """
     chaos_menu_right_arrow = find_image_center(
         f"./screenshots/chaosMenuRightArrow.png", confidence=0.95
@@ -360,7 +368,10 @@ def click_rift_core() -> None:
 
 def check_chaos_finish() -> bool:
     """
-    Returns true if chaos finish screen detected and clears the finish overlay. Otherwise returns false.
+    Detects if completion overlay of chaos dungeon is onscreen and clears it by clicking OK.
+
+    Returns:
+        True if completion overlay detected, False otherwise.
     """
     clear_ok = find_image_center(
         "./screenshots/chaos/clearOk.png", confidence=0.75, region=(625, 779, 500, 155)
@@ -382,18 +393,22 @@ def reenter_chaos() -> None:
     """
     print("reentering chaos")
     random_sleep(1200, 1400)
-    find_and_click_image(
-        "chaos/selectLevel", region=LEAVE_MENU_REGION, confidence=0.7
-    )
-    random_sleep(500, 600)
-    find_and_click_image("enterButton", region=(1380, 760, 210, 60), confidence=0.75)
+    find_and_click_image("chaos/selectLevel", region=LEAVE_MENU_REGION, confidence=0.7)
+    random_sleep(800, 900)
+    find_and_click_image("enterButton", confidence=0.75)
     random_sleep(800, 900)
     find_and_click_image("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
     random_sleep(2000, 3200)
     return
 
 
-def checkBossBar() -> bool:
+def check_boss_bar() -> bool:
+    """
+    Check if boss icon from health bar on top of screen is visible.
+
+    Returns:
+        True if found, False otherwise.
+    """
     return check_image_on_screen(
         "./screenshots/chaos/bossBar.png",
         region=(406, 159, 1000, 200),
