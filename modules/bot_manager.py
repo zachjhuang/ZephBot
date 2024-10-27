@@ -74,6 +74,7 @@ class BotManager:
         while not self.all_bots_done():
             restart_check()
             wait_overworld_load()
+            clear_notifs()
 
             if config["auraRepair"] == False:
                 do_city_repair()
