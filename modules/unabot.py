@@ -26,12 +26,12 @@ class UnaBot(TaskBot):
     def __init__(self, roster) -> None:
         super().__init__(roster)
         for char in self.roster:
-            if char["unas"] is None:
+            if not char["unas"]:
                 self.remaining_tasks.append(0)
-            elif char["unas"] == "lopang":
+            elif 'lopang' in char["unas"]:
                 self.remaining_tasks.append(3)
             else:
-                self.remaining_tasks.append(len(char["unas"].split()))
+                self.remaining_tasks.append(len(char["unas"]))
 
     def do_tasks(self) -> None:
         """

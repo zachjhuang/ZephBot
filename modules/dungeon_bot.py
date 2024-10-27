@@ -123,12 +123,12 @@ def cast_ability(ability: dict) -> None:
     # else:
     #     mouseMoveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
 
-    if ability["castTime"] is not None:
+    if ability["castTime"] is not None and ability["castTime"] > 0:
         pydirectinput.press(ability["key"])
         random_sleep(100, 150)
         pydirectinput.press(ability["key"])
         random_sleep(ability["castTime"], (ability["castTime"] + 100))
-    elif ability["holdTime"] is not None:
+    elif ability["holdTime"] is not None and ability["holdTime"] > 0:
         pydirectinput.keyDown(ability["key"])
         random_sleep(ability["holdTime"], (ability["holdTime"] + 100))
         pydirectinput.keyUp(ability["key"])
