@@ -17,7 +17,6 @@ from modules.dungeon_bot import (
 from modules.menu_nav import quit_chaos, restart_check, toggle_menu, wait_for_menu_load
 from modules.minimap import Minimap
 from modules.utilities import (
-    Position,
     ResetException,
     TimeoutException,
     check_image_on_screen,
@@ -31,25 +30,25 @@ from modules.utilities import (
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
 
-SCREEN_CENTER_POS = Position(960, 540)
+SCREEN_CENTER_POS = (960, 540)
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
 
 PORTAL_REGION = (228, 230, 1370, 570)
 LEAVE_MENU_REGION = (0, 154, 250, 300)
 
-PUNIKA_CHAOS_TAB_POS = Position(1020, 307)
-SOUTH_VERN_CHAOS_TAB_POS = Position(1160, 307)
-ELGACIA_CHAOS_TAB_POS = Position(1300, 307)
-VOLDIS_CHAOS_TAB_POS = Position(1440, 307)
+PUNIKA_CHAOS_TAB_POS = (1020, 307)
+SOUTH_VERN_CHAOS_TAB_POS = (1160, 307)
+ELGACIA_CHAOS_TAB_POS = (1300, 307)
+VOLDIS_CHAOS_TAB_POS = (1440, 307)
 
-LEVEL_1_CHAOS_POS = Position(624, 405)
-LEVEL_2_CHAOS_POS = Position(624, 457)
-LEVEL_3_CHAOS_POS = Position(624, 509)
-LEVEL_4_CHAOS_POS = Position(624, 561)
-LEVEL_5_CHAOS_POS = Position(624, 613)
-LEVEL_6_CHAOS_POS = Position(624, 665)
-LEVEL_7_CHAOS_POS = Position(624, 717)
-LEVEL_8_CHAOS_POS = Position(624, 769)
+LEVEL_1_CHAOS_POS = (624, 405)
+LEVEL_2_CHAOS_POS = (624, 457)
+LEVEL_3_CHAOS_POS = (624, 509)
+LEVEL_4_CHAOS_POS = (624, 561)
+LEVEL_5_CHAOS_POS = (624, 613)
+LEVEL_6_CHAOS_POS = (624, 665)
+LEVEL_7_CHAOS_POS = (624, 717)
+LEVEL_8_CHAOS_POS = (624, 769)
 
 CHAOS_TAB_POSITION = {
     1100: {"tabPos": PUNIKA_CHAOS_TAB_POS, "levelPos": LEVEL_1_CHAOS_POS},
@@ -297,9 +296,9 @@ def enter_chaos(ilvl: int) -> None:
     )
     if element_pos is not None:
         x, y = element_pos
-        left_click_at_position(Position(x + 300, y + 30))  # shortcut button
+        left_click_at_position((x + 300, y + 30))  # shortcut button
     else:
-        left_click_at_position(Position(786, 315))  # edge case different UI
+        left_click_at_position((786, 315))  # edge case different UI
     random_sleep(800, 900)
     wait_for_menu_load("chaosDungeon")
     correct_chaos_dungeon = check_image_on_screen(
@@ -313,7 +312,7 @@ def enter_chaos(ilvl: int) -> None:
 
     find_and_click_image("weeklyPurificationClaimAll", confidence=0.90)
     random_sleep(500, 600)
-    left_click_at_position(Position(920, 575))  # accept button
+    left_click_at_position((920, 575))  # accept button
     random_sleep(500, 600)
 
     find_and_click_image("enterButton", confidence=0.75)

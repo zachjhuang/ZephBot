@@ -5,16 +5,6 @@ import pyautogui
 import pydirectinput
 
 
-class Position:
-    def __init__(self, x: int, y: int) -> None:
-        self.x = x
-        self.y = y
-
-    def shift(self, dx: int, dy: int) -> None:
-        self.x += dx
-        self.y += dy
-
-
 class RestartException(Exception):
     pass
 
@@ -42,16 +32,11 @@ def mouse_move_to(**kwargs):
     pydirectinput.moveTo(x=x, y=y)
 
 
-def mouse_move_to_position(position: Position) -> None:
-    """Move mouse to position."""
-    pydirectinput.moveTo(x=position.x, y=position.y)
-
-
-def left_click_at_position(position: Position) -> None:
+def left_click_at_position(position: tuple[int, int]) -> None:
     """Move mouse to position and left click."""
-    mouse_move_to_position(position=position)
+    pydirectinput.moveTo(x=position[0], y=position[1])
     random_sleep(200, 250)
-    pydirectinput.click(x=position.x, y=position.y, button="left")
+    pydirectinput.click(x=position[0], y=position[1], button="left")
 
 
 def check_image_on_screen(
@@ -85,15 +70,14 @@ def find_image_center_position(
     confidence: float = 1.0,
     region: None | tuple = None,
     grayscale: bool = False,
-) -> None | Position:
-    """Return center of image as Position class if found on screen, otherwise return None."""
+) -> None | tuple[int, int]:
+    """Return center of image if found on screen, otherwise return None."""
     try:
         location = pyautogui.locateCenterOnScreen(
             image_path, confidence=confidence, region=region, grayscale=grayscale
         )
         if location is not None:
-            x, y = location
-            return Position(x, y)
+            return location
         return None
     except pyautogui.ImageNotFoundException:
         return None
@@ -103,8 +87,8 @@ def find_and_click_image(
     name: str, region: None | tuple = None, confidence: float = 0.8
 ) -> None:
     """If image found on screen, click on center of image."""
-    imagePosition = find_image_center_position(
+    image_position = find_image_center_position(
         f"./screenshots/{name}.png", region=region, confidence=confidence
     )
-    if imagePosition is not None:
-        left_click_at_position(imagePosition)
+    if image_position is not None:
+        left_click_at_position(image_position)

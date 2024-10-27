@@ -16,7 +16,6 @@ from modules.dungeon_bot import (
 from modules.menu_nav import quit_chaos, restart_check, toggle_menu, wait_for_menu_load
 from modules.minimap import Minimap
 from modules.utilities import (
-    Position,
     check_image_on_screen,
     find_and_click_image,
     find_image_center,
@@ -28,14 +27,14 @@ from modules.utilities import (
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
 
-SCREEN_CENTER_POS = Position(960, 540)
+SCREEN_CENTER_POS = (960, 540)
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
 
 CHAOS_CLICKABLE_REGION = (460, 290, 1000, 500)
 CHAOS_LEAVE_MENU_REGION = (0, 154, 250, 300)
 
-ABIDOS_1_POS = Position(830, 670)
-ABIDOS_2_POS = Position(965, 590)
+ABIDOS_1_POS = (830, 670)
+ABIDOS_2_POS = (965, 590)
 
 
 class KurzanFrontBot(DungeonBot):

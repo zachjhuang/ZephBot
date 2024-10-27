@@ -3,7 +3,6 @@ import pydirectinput
 from modules.menu_nav import toggle_menu, wait_for_menu_load
 from modules.task_bot import TaskBot
 from modules.utilities import (
-    Position,
     check_image_on_screen,
     find_and_click_image,
     left_click_at_position,
@@ -14,10 +13,10 @@ SCREEN_CENTER_REGION = (685, 280, 600, 420)
 SUPPORT_RESEARCH_REGION = (1164, 455, 106, 20)
 CAN_SUPPORT_RESEARCH_REGION = (761, 566, 177, 29)
 
-DONATE_MENU_POS = Position(1455, 350)
-DONATE_SILVER_POS = Position(760, 542)
+DONATE_MENU_POS = (1455, 350)
+DONATE_SILVER_POS = (760, 542)
 
-RESEARCH_CONFIRM_POS = Position(920, 705)
+RESEARCH_CONFIRM_POS = (920, 705)
 
 
 class GuildBot(TaskBot):
