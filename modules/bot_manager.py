@@ -22,6 +22,7 @@ SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
+CLEAR_NOTIFS_REGION = (880, 720, 16, 40)
 
 MINIMAP_REGION = (1655, 170, 240, 200)
 MINIMAP_CENTER_X = 1772
@@ -187,38 +188,26 @@ def do_city_repair() -> None:
         random_sleep(1500, 1900)
 
 
-def clear_quest() -> None:
-    quest = find_image_center(
-        "./screenshots/quest.png", region=(815, 600, 250, 200), confidence=0.9
-    )
-    leveled_up = find_image_center(
-        "./screenshots/leveledup.png", region=(815, 600, 250, 200), confidence=0.9
-    )
-    game_menu = find_image_center(
-        "./screenshots/menus/gameMenu.png", region=SCREEN_CENTER_REGION, confidence=0.95
-    )
-    if game_menu is not None:
-        print("game menu detected")
-        pydirectinput.press("esc")
-        random_sleep(1800, 1900)
-    if quest is not None:
-        print("clear quest")
-        x, y = quest
-        mouse_move_to(x=x, y=y)
-        random_sleep(1800, 1900)
-        pydirectinput.click(button="left")
-        random_sleep(1800, 1900)
-        pydirectinput.press("esc")
-        random_sleep(1800, 1900)
-    elif leveled_up is not None:
-        print("clear level")
-        x, y = leveled_up
-        mouse_move_to(x=x, y=y)
-        random_sleep(1800, 1900)
-        pydirectinput.click(button="left")
-        random_sleep(1800, 1900)
-        pydirectinput.press("esc")
-        random_sleep(1800, 1900)
+def clear_notifs() -> None:
+    match find_image_center(
+        "./screenshots/quest.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
+    ):
+        case x, y:
+            print("clear quest notification")
+            left_click_at_position((x, y))
+            random_sleep(800, 900)
+            pydirectinput.press("esc")
+            random_sleep(800, 900)
+
+    match find_image_center(
+        "./screenshots/leveledup.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
+    ):
+        case x, y:
+            print("clear level")
+            left_click_at_position((x, y))
+            random_sleep(800, 900)
+            pydirectinput.press("esc")
+            random_sleep(800, 900)
 
 
 def check_unas_completed() -> int:
