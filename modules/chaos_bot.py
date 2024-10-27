@@ -260,6 +260,7 @@ class ChaosBot(DungeonBot):
                 x, y, move_duration = self.minimap.get_game_coords(
                     target_found=self.minimap.check_mob()
                 )
+                move_in_direction(x, y, move_duration)
             case 2:
                 x, y, move_duration = self.minimap.get_game_coords(
                     target_found=(
@@ -268,7 +269,7 @@ class ChaosBot(DungeonBot):
                         or self.minimap.check_mob()
                     )
                 )
-                move_in_direction(x, y, int(move_duration / 5))
+                move_in_direction(x, y, move_duration)
             case 3:
                 x, y, move_duration = self.minimap.get_game_coords(
                     target_found=(
@@ -278,7 +279,7 @@ class ChaosBot(DungeonBot):
                     ),
                     pathfind=True,
                 )
-                move_in_direction(x, y, int(move_duration / 4))
+                move_in_direction(x, y, move_duration)
 
 
 def enter_chaos(ilvl: int) -> None:

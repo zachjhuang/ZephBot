@@ -88,7 +88,7 @@ class KurzanFrontBot(DungeonBot):
         ][0]
         awakeningUsed = False
         jumped = False
-        x, y, move_duration = self.minimap.get_game_coords()
+        x, y, magnitude = self.minimap.get_game_coords()
         while True:
             self.died_check()
             self.health_check()
@@ -121,10 +121,10 @@ class KurzanFrontBot(DungeonBot):
                         ):
                             left_click_at_position(SCREEN_CENTER_POS)
                             break
-                        x, y, move_duration = self.minimap.get_game_coords(
+                        x, y, magnitude = self.minimap.get_game_coords(
                             target_found=self.minimap.check_jump(), pathfind=True
                         )
-                        move_in_direction(x, y, int(move_duration / 4))
+                        move_in_direction(x, y, magnitude)
                         random_sleep(100, 150)
                         left_click_at_position(SCREEN_CENTER_POS)
                         timeout += 1
@@ -145,10 +145,10 @@ class KurzanFrontBot(DungeonBot):
                     or self.minimap.check_boss()
                     or self.minimap.check_elite()
                 ):
-                    x, y, move_duration = self.minimap.get_game_coords(
+                    x, y, magnitude = self.minimap.get_game_coords(
                         target_found=True, pathfind=True
                     )
-                    move_in_direction(x, y, int(move_duration / 3))
+                    move_in_direction(x, y, magnitude)
                     if check_image_on_screen(
                         "./screenshots/chaos/bossBar.png", confidence=0.75
                     ):
@@ -158,10 +158,10 @@ class KurzanFrontBot(DungeonBot):
                     timeout = 0
                 else:
                     print("target not found")
-                    x, y, move_duration = self.minimap.get_game_coords(
+                    x, y, magnitude = self.minimap.get_game_coords(
                         target_found=False, pathfind=True
                     )
-                    move_in_direction(x, y, int(move_duration / 3))
+                    move_in_direction(x, y, magnitude)
                     timeout += 1
                 perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills

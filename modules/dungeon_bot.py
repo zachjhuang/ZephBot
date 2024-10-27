@@ -1,5 +1,6 @@
 import random
 import time
+import math
 
 import pyautogui
 import pydirectinput
@@ -293,16 +294,15 @@ def do_aura_repair(forced: bool) -> None:
         random_sleep(2500, 2600)
 
 
-def move_in_direction(x: int, y: int, duration: int) -> None:
+def move_in_direction(x: int, y: int, magnitude: int) -> None:
     """
-    Moves to (x, y) across duration.
+    Moves in (x, y) direction with magnitude.
     """
     if x == SCREEN_CENTER_X and y == SCREEN_CENTER_Y:
         return
-    halfstep = int(duration / 2)
-    for _ in range(2):
+    for _ in range(math.floor(magnitude / 10) + 1):
         pydirectinput.click(x=x, y=y, button=config["move"])
-        random_sleep(halfstep - 20, halfstep + 20)
+        random_sleep(100,110)
 
 
 def random_move() -> None:

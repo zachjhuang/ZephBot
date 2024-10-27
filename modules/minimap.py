@@ -114,8 +114,13 @@ class Minimap:
         else:
             target = average_coordinate(self.targets)
 
-        if not pathfind or distance_between_coords(target, (0, 0)) < 15:
+        # definitely don't pathfind if set to false
+        if not pathfind:
             coord = target
+        # even if it is set to true, don't bother if we have a close target
+        elif target_found and distance_between_coords(target, (0, 0)) < 20:
+            coord = target
+        # all other cases -> pathfind
         else:
             self.update_valid_coords()
             coord = closest_connected_coordinate(
@@ -128,10 +133,10 @@ class Minimap:
         unit_x = coord[0] / magnitude
         unit_y = coord[1] / magnitude
 
-        x = int(unit_x * 320)
-        y = int(unit_y * 240)  # y axis not orthogonal to camera axis unlike minimap
+        x = int(unit_x * 150)
+        y = int(unit_y * 100)  # y axis not orthogonal to camera axis unlike minimap
 
-        return x + SCREEN_CENTER_X, y + SCREEN_CENTER_Y, int(magnitude * 50)
+        return x + SCREEN_CENTER_X, y + SCREEN_CENTER_Y, int(magnitude)
 
     def get_closest_valid_coord(self, target: tuple[int, int]) -> tuple[int, int]:
         """
@@ -275,7 +280,7 @@ class Minimap:
         jumpIcon = find_image_center(
             "./screenshots/chaos/jumpIcon2.png",
             region=MINIMAP_REGION,
-            confidence=0.90,
+            confidence=0.8,
         )
         if jumpIcon is not None:
             x, y = jumpIcon
@@ -331,7 +336,7 @@ def closest_connected_coordinate(
     """
     queue = deque([target])
     visited = []
-    closest_coord = None
+    closest_coord = (0, 0)
     min_distance = float("inf")
 
     while queue:
