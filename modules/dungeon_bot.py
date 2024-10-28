@@ -1,5 +1,6 @@
 import random
 import time
+import math
 
 import pyautogui
 import pydirectinput
@@ -25,6 +26,7 @@ LEAVE_MENU_REGION = (0, 154, 250, 300)
 CHARACTER_SPECIALTY_REGION = (900, 800, 120, 940)
 CHARACTER_BUFFS_REGION = (625, 780, 300, 60)
 CHARACTER_DEBUFFS_REGION = (1040, 810, 90, 40)
+
 
 class DungeonBot(TaskBot):
     def __init__(self, roster):
@@ -90,7 +92,6 @@ class DungeonBot(TaskBot):
             self.timeout_count += 1
             raise TimeoutException
 
-
     def update_print_metrics(self, int):
         """
         Updates bot statistics and prints summary.
@@ -135,139 +136,137 @@ def cast_ability(ability: dict) -> None:
     else:
         pydirectinput.press(ability["key"])
         random_sleep(100, 150)
-        
 
-def perform_class_specialty(
-        char_class: str, i: int, abilities: list[dict]
-    ) -> None:
-        """
-        Performs custom class behavior (activating identity, using specialty, stance swapping, etc.).
-        """
-        match char_class:
-            case "arcana":
+
+def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> None:
+    """
+    Performs custom class behavior (activating identity, using specialty, stance swapping, etc.).
+    """
+    match char_class:
+        case "arcanist":
+            pydirectinput.press(config["specialty1"])
+            pydirectinput.press(config["specialty2"])
+        case "souleater":
+            soul_snatch = check_image_on_screen(
+                "./screenshots/classSpecialties/soulSnatch.png",
+                region=CHARACTER_DEBUFFS_REGION,
+                confidence=0.85,
+            )
+            # if soulSnatch:
+            #     castAbility(960, 540, abilities[0])
+            #     random_sleep(300, 400)
+            #     castAbility(960, 540, abilities[1])
+            #     random_sleep(300, 400)
+            #     castAbility(960, 540, abilities[5])
+            #     random_sleep(300, 400)
+        case "slayer":
+            slayer_specialty = check_image_on_screen(
+                "./screenshots/classSpecialties/slayerSpecialty.png",
+                region=CHARACTER_SPECIALTY_REGION,
+                confidence=0.85,
+            )
+            if slayer_specialty:
                 pydirectinput.press(config["specialty1"])
+                random_sleep(150, 160)
+        case "deathblade":
+            deathblade_three_orbs = check_image_on_screen(
+                "./screenshots/classSpecialties/deathTrance.png",
+                region=CHARACTER_SPECIALTY_REGION,
+                confidence=0.80,
+            )
+            if deathblade_three_orbs:
+                pydirectinput.press(config["specialty1"])
+                random_sleep(150, 160)
+        case "gunslinger":
+            pistol_stance = check_image_on_screen(
+                "./screenshots/classSpecialties/pistolStance.png",
+                region=(930, 819, 58, 56),
+                confidence=0.75,
+            )
+            shotgun_stance = check_image_on_screen(
+                "./screenshots/classSpecialties/shotgunStance.png",
+                region=(930, 819, 58, 56),
+                confidence=0.75,
+            )
+            sniper_stance = check_image_on_screen(
+                "./screenshots/classSpecialties/sniperStance.png",
+                region=(930, 819, 58, 56),
+                confidence=0.75,
+            )
+            # swap to shotgun
+            if i == 0 and not shotgun_stance:
+                if pistol_stance:
+                    pydirectinput.press(config["specialty1"])
+                    random_sleep(150, 160)
+                if sniper_stance:
+                    pydirectinput.press(config["specialty2"])
+                    random_sleep(150, 160)
+            # swap to sniper
+            elif i < 3 and not sniper_stance:
+                if pistol_stance:
+                    pydirectinput.press(config["specialty2"])
+                    random_sleep(150, 160)
+                if shotgun_stance:
+                    pydirectinput.press(config["specialty1"])
+                    random_sleep(150, 160)
+            # swap to pistol
+            elif not pistol_stance:
+                if shotgun_stance:
+                    pydirectinput.press(config["specialty2"])
+                    random_sleep(150, 160)
+                if sniper_stance:
+                    pydirectinput.press(config["specialty1"])
+                    random_sleep(150, 160)
+        case "artist":
+            artist_orb = check_image_on_screen(
+                "./screenshots/classSpecialties/artistOrb.png",
+                region=CHARACTER_SPECIALTY_REGION,
+                confidence=0.85,
+            )
+            if artist_orb:
+                mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+                random_sleep(150, 160)
                 pydirectinput.press(config["specialty2"])
-            case "souleater":
-                soul_snatch = check_image_on_screen(
-                    "./screenshots/classSpecialties/soulSnatch.png",
-                    region=CHARACTER_DEBUFFS_REGION,
-                    confidence=0.85,
-                )
-                # if soulSnatch:
-                #     castAbility(960, 540, abilities[0])
-                #     random_sleep(300, 400)
-                #     castAbility(960, 540, abilities[1])
-                #     random_sleep(300, 400)
-                #     castAbility(960, 540, abilities[5])
-                #     random_sleep(300, 400)
-            case "slayer":
-                slayer_specialty = check_image_on_screen(
-                    "./screenshots/classSpecialties/slayerSpecialty.png",
-                    region=CHARACTER_SPECIALTY_REGION,
-                    confidence=0.85,
-                )
-                if slayer_specialty:
-                    pydirectinput.press(config["specialty1"])
-                    random_sleep(150, 160)
-            case "deathblade":
-                deathblade_three_orbs = check_image_on_screen(
-                    "./screenshots/classSpecialties/deathTrance.png",
-                    region=CHARACTER_SPECIALTY_REGION,
-                    confidence=0.80,
-                )
-                if deathblade_three_orbs:
-                    pydirectinput.press(config["specialty1"])
-                    random_sleep(150, 160)
-            case "gunslinger":
-                pistol_stance = check_image_on_screen(
-                    "./screenshots/classSpecialties/pistolStance.png",
-                    region=(930, 819, 58, 56),
-                    confidence=0.75,
-                )
-                shotgun_stance = check_image_on_screen(
-                    "./screenshots/classSpecialties/shotgunStance.png",
-                    region=(930, 819, 58, 56),
-                    confidence=0.75,
-                )
-                sniper_stance = check_image_on_screen(
-                    "./screenshots/classSpecialties/sniperStance.png",
-                    region=(930, 819, 58, 56),
-                    confidence=0.75,
-                )
-                # swap to shotgun
-                if i == 0 and not shotgun_stance:
-                    if pistol_stance:
-                        pydirectinput.press(config["specialty1"])
-                        random_sleep(150, 160)
-                    if sniper_stance:
-                        pydirectinput.press(config["specialty2"])
-                        random_sleep(150, 160)
-                # swap to sniper
-                elif i < 3 and not sniper_stance:
-                    if pistol_stance:
-                        pydirectinput.press(config["specialty2"])
-                        random_sleep(150, 160)
-                    if shotgun_stance:
-                        pydirectinput.press(config["specialty1"])
-                        random_sleep(150, 160)
-                # swap to pistol
-                elif not pistol_stance:
-                    if shotgun_stance:
-                        pydirectinput.press(config["specialty2"])
-                        random_sleep(150, 160)
-                    if sniper_stance:
-                        pydirectinput.press(config["specialty1"])
-                        random_sleep(150, 160)
-            case "artist":
-                artist_orb = check_image_on_screen(
-                    "./screenshots/classSpecialties/artistOrb.png",
-                    region=CHARACTER_SPECIALTY_REGION,
-                    confidence=0.85,
-                )
-                if artist_orb:
-                    mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
-                    random_sleep(150, 160)
-                    pydirectinput.press(config["specialty2"])
-                    random_sleep(1500, 1600)
-                    pydirectinput.press(config["interact"])
-            case "aeromancer":
-                aero_specialty = check_image_on_screen(
-                    "./screenshots/classSpecialties/aeroSpecialty.png",
-                    region=CHARACTER_SPECIALTY_REGION,
-                    confidence=0.95,
-                )
-                if aero_specialty:
-                    random_sleep(150, 160)
-                    pydirectinput.press(config["specialty1"])
-            case "scrapper":
-                scrapper_specialty = check_image_on_screen(
-                    "./screenshots/classSpecialties/scrapperSpecialty.png",
-                    region=CHARACTER_SPECIALTY_REGION,
-                    confidence=0.85,
-                )
-                if scrapper_specialty:
-                    random_sleep(150, 160)
-                    pydirectinput.press(config["specialty1"])
-            case "bard":
-                courage_buff = check_image_on_screen(
-                    "./screenshots/classSpecialties/bardCourage120.png",
-                    region=CHARACTER_BUFFS_REGION,
-                    confidence=0.75,
-                )
-                rZ, gZ, bZ = pyautogui.pixel(920, 866)
-                rX, gX, bX = pyautogui.pixel(1006, 875)
-                if rZ - gZ > 80 and courage_buff:
-                    pydirectinput.press(config["specialty1"])
-                    random_sleep(50, 60)
-                    pydirectinput.press(config["specialty1"])
-                    random_sleep(150, 160)
-                elif bX - gX > 70 and not courage_buff:
-                    mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
-                    random_sleep(150, 160)
-                    pydirectinput.press(config["specialty2"])
-                    random_sleep(50, 60)
-                    pydirectinput.press(config["specialty2"])
-                    random_sleep(150, 160)
+                random_sleep(1500, 1600)
+                pydirectinput.press(config["interact"])
+        case "aeromancer":
+            aero_specialty = check_image_on_screen(
+                "./screenshots/classSpecialties/aeroSpecialty.png",
+                region=CHARACTER_SPECIALTY_REGION,
+                confidence=0.95,
+            )
+            if aero_specialty:
+                random_sleep(150, 160)
+                pydirectinput.press(config["specialty1"])
+        case "scrapper":
+            scrapper_specialty = check_image_on_screen(
+                "./screenshots/classSpecialties/scrapperSpecialty.png",
+                region=CHARACTER_SPECIALTY_REGION,
+                confidence=0.85,
+            )
+            if scrapper_specialty:
+                random_sleep(150, 160)
+                pydirectinput.press(config["specialty1"])
+        case "bard":
+            courage_buff = check_image_on_screen(
+                "./screenshots/classSpecialties/bardCourage120.png",
+                region=CHARACTER_BUFFS_REGION,
+                confidence=0.75,
+            )
+            rZ, gZ, bZ = pyautogui.pixel(920, 866)
+            rX, gX, bX = pyautogui.pixel(1006, 875)
+            if rZ - gZ > 80 and courage_buff:
+                pydirectinput.press(config["specialty1"])
+                random_sleep(50, 60)
+                pydirectinput.press(config["specialty1"])
+                random_sleep(150, 160)
+            elif bX - gX > 70 and not courage_buff:
+                mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+                random_sleep(150, 160)
+                pydirectinput.press(config["specialty2"])
+                random_sleep(50, 60)
+                pydirectinput.press(config["specialty2"])
+                random_sleep(150, 160)
 
 
 def do_aura_repair(forced: bool) -> None:
@@ -295,16 +294,15 @@ def do_aura_repair(forced: bool) -> None:
         random_sleep(2500, 2600)
 
 
-def move_in_direction(x: int, y: int, duration: int) -> None:
+def move_in_direction(x: int, y: int, magnitude: int) -> None:
     """
-    Moves to (x, y) across duration.
+    Moves in (x, y) direction with magnitude.
     """
     if x == SCREEN_CENTER_X and y == SCREEN_CENTER_Y:
         return
-    halfstep = int(duration / 2)
-    for _ in range(2):
+    for _ in range(math.floor(magnitude / 10) + 1):
         pydirectinput.click(x=x, y=y, button=config["move"])
-        random_sleep(halfstep - 20, halfstep + 20)
+        random_sleep(100,110)
 
 
 def random_move() -> None:
@@ -320,6 +318,7 @@ def random_move() -> None:
     random_sleep(200, 250)
     pydirectinput.click(x=x, y=y, button=config["move"])
     random_sleep(200, 250)
+
 
 def wait_dungeon_load() -> None:
     """
@@ -351,6 +350,7 @@ def wait_dungeon_load() -> None:
         if leave_button:
             return
         random_sleep(100, 150)
+
 
 def quit_dungeon() -> None:
     """

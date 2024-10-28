@@ -8,14 +8,13 @@ import pydirectinput
 from modules.bot_manager import BotManager
 from modules.menu_nav import restart_game, wait_overworld_load
 from modules.utilities import (
-    Position,
     ResetException,
     RestartException,
     left_click_at_position,
     random_sleep,
 )
 
-SCREEN_CENTER_POS = Position(960, 540)
+SCREEN_CENTER_POS = (960, 540)
 
 pydirectinput.PAUSE = 0.05
 

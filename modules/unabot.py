@@ -10,7 +10,6 @@ from modules.menu_nav import (
 )
 from modules.task_bot import TaskBot
 from modules.utilities import (
-    Position,
     check_image_on_screen,
     find_and_click_image,
     find_image_center,
@@ -144,7 +143,7 @@ def accept_dailies() -> None:
         )
     )
     for region in accept_buttons:
-        left_click_at_position(Position(region.left, region.top))
+        left_click_at_position((region.left, region.top))
         random_sleep(400, 500)
 
     toggle_menu("unas")
@@ -326,7 +325,7 @@ def walk_lopang() -> None:
 
 
 def claim_completed_quest() -> None:
-    left_click_at_position(Position(x=1700, y=430))
+    left_click_at_position((1700, 430))
     random_sleep(1000, 1100)
     find_and_click_image("completeQuest", confidence=0.85)
 

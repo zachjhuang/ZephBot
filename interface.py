@@ -32,4 +32,4 @@ with ui.tab_panels(tabs, value="Config").classes("w-full"):
 with ui.page_sticky(position="bottom-right", x_offset=20, y_offset=20):
     ui.button(on_click=ui.dark_mode().toggle, icon="dark_mode").props("fab")
 
-ui.run(native=True, window_size=(900, 600), fullscreen=False, dark=True, uvicorn_reload_excludes="configs\*.py")
+ui.run(native=True, window_size=(960, 540), fullscreen=False, dark=True, uvicorn_reload_excludes="configs\*.py")

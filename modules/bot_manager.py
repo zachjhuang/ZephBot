@@ -11,7 +11,6 @@ from modules.menu_nav import restart_check, wait_overworld_load
 from modules.task_bot import TaskBot
 from modules.unabot import UnaBot
 from modules.utilities import (
-    Position,
     check_image_on_screen,
     find_image_center,
     left_click_at_position,
@@ -22,8 +21,8 @@ from modules.utilities import (
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
 
-SCREEN_CENTER_POS = Position(960, 540)
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
+CLEAR_NOTIFS_REGION = (880, 720, 16, 40)
 
 MINIMAP_REGION = (1655, 170, 240, 200)
 MINIMAP_CENTER_X = 1772
@@ -31,15 +30,15 @@ MINIMAP_CENTER_Y = 272
 
 CHARACTER_STATUS_ICON_REGION = (1280, 440, 30, 230)
 CHARACTER_SELECT_POS = [
-    Position(760, 440),
-    Position(960, 440),
-    Position(1160, 440),
-    Position(760, 530),
-    Position(960, 530),
-    Position(1160, 530),
-    Position(760, 620),
-    Position(960, 620),
-    Position(1160, 620),
+    (760, 440),
+    (960, 440),
+    (1160, 440),
+    (760, 530),
+    (960, 530),
+    (1160, 530),
+    (760, 620),
+    (960, 620),
+    (1160, 620),
 ]
 
 
@@ -75,6 +74,7 @@ class BotManager:
         while not self.all_bots_done():
             restart_check()
             wait_overworld_load()
+            clear_notifs()
 
             if config["auraRepair"] == False:
                 do_city_repair()
@@ -115,16 +115,16 @@ class BotManager:
             random_sleep(1000, 1100)
         print("game menu detected")
         random_sleep(800, 900)
-        left_click_at_position(Position(540, 700))
+        left_click_at_position((540, 700))
         random_sleep(800, 900)
 
         for _ in range(4):
-            left_click_at_position(Position(1270, 430))
+            left_click_at_position((1270, 430))
             random_sleep(200, 300)
 
         if index > 8:
             for i in range(math.floor(index / 3) - 2):
-                left_click_at_position(Position(1267, 638))
+                left_click_at_position((1267, 638))
                 random_sleep(200, 300)
 
         position_index = index if index < 9 else index - 3 * ((index - 6) // 3)
@@ -159,9 +159,9 @@ class BotManager:
             pydirectinput.press("esc")
             random_sleep(500, 600)
         else:
-            left_click_at_position(Position(1030, 700))
+            left_click_at_position((1030, 700))
             random_sleep(1000, 1100)
-            left_click_at_position(Position(920, 590))
+            left_click_at_position((920, 590))
             random_sleep(1000, 1100)
 
             random_sleep(10000, 12000)
@@ -189,38 +189,26 @@ def do_city_repair() -> None:
         random_sleep(1500, 1900)
 
 
-def clear_quest() -> None:
-    quest = find_image_center(
-        "./screenshots/quest.png", region=(815, 600, 250, 200), confidence=0.9
-    )
-    leveled_up = find_image_center(
-        "./screenshots/leveledup.png", region=(815, 600, 250, 200), confidence=0.9
-    )
-    game_menu = find_image_center(
-        "./screenshots/menus/gameMenu.png", region=SCREEN_CENTER_REGION, confidence=0.95
-    )
-    if game_menu is not None:
-        print("game menu detected")
-        pydirectinput.press("esc")
-        random_sleep(1800, 1900)
-    if quest is not None:
-        print("clear quest")
-        x, y = quest
-        mouse_move_to(x=x, y=y)
-        random_sleep(1800, 1900)
-        pydirectinput.click(button="left")
-        random_sleep(1800, 1900)
-        pydirectinput.press("esc")
-        random_sleep(1800, 1900)
-    elif leveled_up is not None:
-        print("clear level")
-        x, y = leveled_up
-        mouse_move_to(x=x, y=y)
-        random_sleep(1800, 1900)
-        pydirectinput.click(button="left")
-        random_sleep(1800, 1900)
-        pydirectinput.press("esc")
-        random_sleep(1800, 1900)
+def clear_notifs() -> None:
+    match find_image_center(
+        "./screenshots/quest.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
+    ):
+        case x, y:
+            print("clear quest notification")
+            left_click_at_position((x, y))
+            random_sleep(800, 900)
+            pydirectinput.press("esc")
+            random_sleep(800, 900)
+
+    match find_image_center(
+        "./screenshots/leveledup.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
+    ):
+        case x, y:
+            print("clear level")
+            left_click_at_position((x, y))
+            random_sleep(800, 900)
+            pydirectinput.press("esc")
+            random_sleep(800, 900)
 
 
 def check_unas_completed() -> int:

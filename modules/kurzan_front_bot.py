@@ -16,7 +16,6 @@ from modules.dungeon_bot import (
 from modules.menu_nav import quit_chaos, restart_check, toggle_menu, wait_for_menu_load
 from modules.minimap import Minimap
 from modules.utilities import (
-    Position,
     check_image_on_screen,
     find_and_click_image,
     find_image_center,
@@ -28,14 +27,14 @@ from modules.utilities import (
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
 
-SCREEN_CENTER_POS = Position(960, 540)
+SCREEN_CENTER_POS = (960, 540)
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
 
 CHAOS_CLICKABLE_REGION = (460, 290, 1000, 500)
 CHAOS_LEAVE_MENU_REGION = (0, 154, 250, 300)
 
-ABIDOS_1_POS = Position(830, 670)
-ABIDOS_2_POS = Position(965, 590)
+ABIDOS_1_POS = (830, 670)
+ABIDOS_2_POS = (965, 590)
 
 
 class KurzanFrontBot(DungeonBot):
@@ -89,7 +88,7 @@ class KurzanFrontBot(DungeonBot):
         ][0]
         awakeningUsed = False
         jumped = False
-        x, y, move_duration = self.minimap.get_game_coords()
+        x, y, magnitude = self.minimap.get_game_coords()
         while True:
             self.died_check()
             self.health_check()
@@ -122,10 +121,10 @@ class KurzanFrontBot(DungeonBot):
                         ):
                             left_click_at_position(SCREEN_CENTER_POS)
                             break
-                        x, y, move_duration = self.minimap.get_game_coords(
+                        x, y, magnitude = self.minimap.get_game_coords(
                             target_found=self.minimap.check_jump(), pathfind=True
                         )
-                        move_in_direction(x, y, int(move_duration / 4))
+                        move_in_direction(x, y, magnitude)
                         random_sleep(100, 150)
                         left_click_at_position(SCREEN_CENTER_POS)
                         timeout += 1
@@ -146,10 +145,10 @@ class KurzanFrontBot(DungeonBot):
                     or self.minimap.check_boss()
                     or self.minimap.check_elite()
                 ):
-                    x, y, move_duration = self.minimap.get_game_coords(
+                    x, y, magnitude = self.minimap.get_game_coords(
                         target_found=True, pathfind=True
                     )
-                    move_in_direction(x, y, int(move_duration / 3))
+                    move_in_direction(x, y, magnitude)
                     if check_image_on_screen(
                         "./screenshots/chaos/bossBar.png", confidence=0.75
                     ):
@@ -159,10 +158,10 @@ class KurzanFrontBot(DungeonBot):
                     timeout = 0
                 else:
                     print("target not found")
-                    x, y, move_duration = self.minimap.get_game_coords(
+                    x, y, magnitude = self.minimap.get_game_coords(
                         target_found=False, pathfind=True
                     )
-                    move_in_direction(x, y, int(move_duration / 3))
+                    move_in_direction(x, y, magnitude)
                     timeout += 1
                 perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
