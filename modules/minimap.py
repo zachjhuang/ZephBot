@@ -277,18 +277,28 @@ class Minimap:
         Returns:
             `True` if found, `False` otherwise.
         """
-        jumpIcon = find_image_center(
-            "./screenshots/chaos/jumpIcon2.png",
+        match find_image_center(
+            "./screenshots/chaos/jumpIconForward.png",
             region=MINIMAP_REGION,
             confidence=0.8,
-        )
-        if jumpIcon is not None:
-            x, y = jumpIcon
-            x = x - MINIMAP_CENTER_X - 7
-            y = y - MINIMAP_CENTER_Y + 7
-            self.targets.append((x, y))
-            print(f"jump icon at x: {x} y: {y}")
-            return True
+        ):
+            case x, y:
+                x = x - MINIMAP_CENTER_X - 7
+                y = y - MINIMAP_CENTER_Y + 7
+                self.targets.append((x, y))
+                print(f"forward jump icon")
+                return True
+        match find_image_center(
+            "./screenshots/chaos/jumpIconBack.png",
+            region=MINIMAP_REGION,
+            confidence=0.8,
+        ):
+            case x, y:
+                x = x - MINIMAP_CENTER_X - 27
+                y = y - MINIMAP_CENTER_Y + 27
+                self.targets.append((x, y))
+                print(f"back jump icon")
+                return True
         return False
 
 
