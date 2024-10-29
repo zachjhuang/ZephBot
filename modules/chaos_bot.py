@@ -23,7 +23,6 @@ from modules.utilities import (
     find_and_click_image,
     find_image_center,
     left_click_at_position,
-    mouse_move_to,
     random_sleep,
 )
 
@@ -242,7 +241,7 @@ class ChaosBot(DungeonBot):
             im = pyautogui.screenshot(region=(1652, 168, 240, 210))
             r, g, b = im.getpixel((1772 - 1652, 272 - 168))
             if r + g + b < 30:
-                mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+                pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
                 break
             pydirectinput.press(config["interact"])
             random_sleep(100, 120)
@@ -334,7 +333,7 @@ def select_chaos_dungeon(ilvl: int) -> None:
     )
     if chaos_menu_right_arrow is not None:
         x, y = chaos_menu_right_arrow
-        mouse_move_to(x=x, y=y)
+        pydirectinput.moveTo(x=x, y=y)
         random_sleep(200, 250)
         pydirectinput.click(button="left")
         random_sleep(200, 250)
@@ -373,18 +372,15 @@ def check_chaos_finish() -> bool:
     Returns:
         True if completion overlay detected, False otherwise.
     """
-    clear_ok = find_image_center(
+    match find_image_center(
         "./screenshots/chaos/clearOk.png", confidence=0.75, region=(625, 779, 500, 155)
-    )
-    if clear_ok is not None:
-        x, y = clear_ok
-        mouse_move_to(x=x, y=y)
-        random_sleep(800, 900)
-        pydirectinput.click(x=x, y=y, button="left")
-        random_sleep(200, 300)
-        pydirectinput.click(x=x, y=y, button="left")
-        random_sleep(200, 300)
-    return clear_ok is not None
+    ):
+        case x, y:
+            left_click_at_position((x, y))
+            random_sleep(800, 900)
+            return True
+        case _:
+            return False
 
 
 def reenter_chaos() -> None:

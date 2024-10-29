@@ -20,7 +20,6 @@ from modules.utilities import (
     find_and_click_image,
     find_image_center,
     left_click_at_position,
-    mouse_move_to,
     random_sleep,
 )
 
@@ -33,8 +32,10 @@ SCREEN_CENTER_REGION = (685, 280, 600, 420)
 CHAOS_CLICKABLE_REGION = (460, 290, 1000, 500)
 CHAOS_LEAVE_MENU_REGION = (0, 154, 250, 300)
 
-ABIDOS_1_POS = (830, 670)
-ABIDOS_2_POS = (965, 590)
+ABIDOS_ICON_POS = {
+    1640: (830, 670),
+    1660: (965, 590)
+}
 
 
 class KurzanFrontBot(DungeonBot):
@@ -182,10 +183,7 @@ def enter_kurzan_front(ilvl: int) -> None:
     toggle_menu("content")
     wait_for_menu_load("kazerosWarMap")
     random_sleep(1200, 1300)
-    if ilvl == 1640:
-        left_click_at_position(ABIDOS_1_POS)
-    elif ilvl == 1660:
-        left_click_at_position(ABIDOS_2_POS)
+    left_click_at_position(ABIDOS_ICON_POS[ilvl])
     wait_for_menu_load("kurzanFront")
     random_sleep(1200, 1300)
     find_and_click_image("enterButton", region=(1300, 750, 210, 40), confidence=0.75)
@@ -198,17 +196,15 @@ def check_kurzan_finish() -> bool:
     """
     Returns true if chaos finish screen detected and clears the finish overlay. Otherwise returns false.
     """
-    ok_button = find_image_center(
+    match find_image_center(
         "./screenshots/chaos/kurzanFrontClearOK.png",
         confidence=0.65,
         region=(880, 820, 150, 70),
-    )
-    if ok_button is not None:
-        x, y = ok_button
-        mouse_move_to(x=x, y=y)
-        random_sleep(800, 900)
-        pydirectinput.click(x=x, y=y, button="left")
-        random_sleep(200, 300)
-        pydirectinput.click(x=x, y=y, button="left")
-        random_sleep(200, 300)
-    return ok_button is not None
+    ):
+        case x, y:
+            left_click_at_position((x, y))
+            random_sleep(800, 900)
+            return True
+        case _:
+            return False
+

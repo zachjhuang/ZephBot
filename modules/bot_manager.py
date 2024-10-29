@@ -14,7 +14,6 @@ from modules.utilities import (
     check_image_on_screen,
     find_image_center,
     left_click_at_position,
-    mouse_move_to,
     random_sleep,
 )
 
@@ -22,7 +21,7 @@ SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
-CLEAR_NOTIFS_REGION = (880, 720, 16, 40)
+CLEAR_NOTIFS_REGION = (880, 720, 160, 40)
 
 MINIMAP_REGION = (1655, 170, 240, 200)
 MINIMAP_CENTER_X = 1772
@@ -181,7 +180,7 @@ def do_city_repair() -> None:
         print("repairing")
         pydirectinput.press(config["interact"])
         random_sleep(600, 700)
-        mouse_move_to(x=1057, y=455)
+        pydirectinput.moveTo(x=1057, y=455)
         random_sleep(600, 700)
         pydirectinput.click(button="left")
         random_sleep(600, 700)

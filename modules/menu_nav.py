@@ -1,18 +1,18 @@
-from configs.config import config
-
-from modules.utilities import RestartException
-from modules.utilities import random_sleep
-from modules.utilities import mouse_move_to
-from modules.utilities import (
-    check_image_on_screen,
-    find_image_center,
-    find_and_click_image,
-)
-
 import os
 import time
-import pydirectinput
+
 import pyautogui
+import pydirectinput
+
+from configs.config import config
+from modules.utilities import (
+    RestartException,
+    check_image_on_screen,
+    left_click_at_position,
+    find_and_click_image,
+    find_image_center,
+    random_sleep,
+)
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
 SCREEN_CENTER_X = 960
@@ -63,9 +63,7 @@ def restart_check() -> None:
                 curr_time = int(time.time_ns() / 1000000)
                 limitshot = pyautogui.screenshot()
                 limitshot.save(f"./debug/{error_type}_{curr_time}.png")
-                mouse_move_to(x=1029, y=822)
-                random_sleep(1300, 1400)
-                pydirectinput.click(button="left")
+                left_click_at_position((1029, 822))
                 random_sleep(1300, 1400)
                 print(error_type)
                 raise RestartException
@@ -93,9 +91,7 @@ def boot_gfn_session() -> None:
             confidence=0.8,
         ):
             case x, y:
-                mouse_move_to(x=x, y=y)
-                random_sleep(2200, 2300)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 print("clicked play restart on GFN")
                 random_sleep(40000, 42000)
                 break
@@ -104,9 +100,7 @@ def boot_gfn_session() -> None:
             confidence=0.8,
         ):
             case x, y:
-                mouse_move_to(x=x, y=y)
-                random_sleep(2200, 2300)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 print("clicked image restart on GFN")
                 random_sleep(40000, 42000)
                 break
@@ -116,9 +110,7 @@ def boot_gfn_session() -> None:
         ):
             case x, y:
                 print("afk GFN")
-                mouse_move_to(x=x, y=y)
-                random_sleep(1300, 1400)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 random_sleep(1300, 1400)
         random_sleep(1000, 1100)
 
@@ -135,23 +127,17 @@ def boot_steam_session() -> None:
         match find_image_center("./screenshots/steamStop.png", confidence=0.75):
             case x, y:
                 print("clicking stop game on steam")
-                mouse_move_to(x=x, y=y)
-                random_sleep(1200, 1300)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 random_sleep(500, 600)
         match find_image_center("./screenshots/steamConfirm.png", confidence=0.75):
             case x, y:
                 print("confirming stop game")
-                mouse_move_to(x=x, y=y)
-                random_sleep(1200, 1300)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 random_sleep(10000, 12000)
         match find_image_center("./screenshots/steamPlay.png", confidence=0.75):
             case x, y:
                 print("restarting Lost Ark game client...")
-                mouse_move_to(x=x, y=y)
-                random_sleep(1200, 1300)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 break
 
 
@@ -175,14 +161,10 @@ def enter_server() -> None:
             case x, y:
                 print("selecting first server")
                 random_sleep(1000, 1200)
-                mouse_move_to(x=855, y=582)
-                random_sleep(1200, 1300)
-                pydirectinput.click(button="left")
+                left_click_at_position((855, 582))
                 print("entering server")
                 random_sleep(1000, 1200)
-                mouse_move_to(x=x, y=y)
-                random_sleep(1200, 1300)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 break
         random_sleep(1000, 1100)
 
@@ -199,9 +181,7 @@ def enter_character() -> None:
         ):
             case x, y:
                 print("clicking enterCharacter")
-                mouse_move_to(x=x, y=y)
-                random_sleep(200, 300)
-                pydirectinput.click(button="left")
+                left_click_at_position((x, y))
                 break
         random_sleep(2200, 3300)
 
@@ -217,7 +197,7 @@ def restart_game() -> None:
     enter_server()
     random_sleep(5200, 6300)
     enter_character()
-    mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+    pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
     random_sleep(22200, 23300)
 
 

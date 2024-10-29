@@ -14,7 +14,6 @@ from modules.utilities import (
     find_and_click_image,
     find_image_center,
     left_click_at_position,
-    mouse_move_to,
     random_sleep,
 )
 
@@ -372,7 +371,7 @@ def check_bifrost_on_cooldown() -> bool:
 
 def walk_to(x: int, y: int, ms: int) -> None:
     """Move to specified pixel coordinate with millisecond delay."""
-    mouse_move_to(x=x, y=y)
+    pydirectinput.moveTo(x=x, y=y)
     random_sleep(100, 100)
     pydirectinput.click(x=x, y=y, button=config["move"])
     random_sleep(ms, ms)

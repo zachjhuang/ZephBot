@@ -10,9 +10,9 @@ from configs.skills import skills
 from modules.menu_nav import restart_check, toggle_menu, wait_overworld_load
 from modules.task_bot import TaskBot
 from modules.utilities import (
+    left_click_at_position,
     check_image_on_screen,
     find_and_click_image,
-    mouse_move_to,
     random_sleep,
     TimeoutException,
 )
@@ -20,12 +20,16 @@ from modules.utilities import (
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
 
+INSTANT_RES_POS = (1275, 400)
+
 CLICKABLE_REGION = (460, 290, 1000, 500)
 LEAVE_MENU_REGION = (0, 154, 250, 300)
 
 CHARACTER_SPECIALTY_REGION = (900, 800, 120, 940)
 CHARACTER_BUFFS_REGION = (625, 780, 300, 60)
 CHARACTER_DEBUFFS_REGION = (1040, 810, 90, 40)
+
+DAMAGED_ARMOR_REGION = (1500, 134, 100, 100)
 
 
 class DungeonBot(TaskBot):
@@ -67,15 +71,10 @@ class DungeonBot(TaskBot):
             print("died")
             self.death_count += 1
             random_sleep(5000, 5500)
-            res_ready = check_image_on_screen(
+            if check_image_on_screen(
                 "./screenshots/chaos/resReady.png", confidence=0.7
-            )
-            if res_ready:
-                mouse_move_to(x=1275, y=400)
-                random_sleep(1600, 1800)
-                pydirectinput.click(button="left")
-                random_sleep(600, 800)
-                mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+            ):
+                left_click_at_position(INSTANT_RES_POS)
                 random_sleep(600, 800)
                 restart_check()
                 self.timeout_check()
@@ -224,7 +223,7 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
                 confidence=0.85,
             )
             if artist_orb:
-                mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+                pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
                 random_sleep(150, 160)
                 pydirectinput.press(config["specialty2"])
                 random_sleep(1500, 1600)
@@ -261,7 +260,7 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
                 pydirectinput.press(config["specialty1"])
                 random_sleep(150, 160)
             elif bX - gX > 70 and not courage_buff:
-                mouse_move_to(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
+                pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
                 random_sleep(150, 160)
                 pydirectinput.press(config["specialty2"])
                 random_sleep(50, 60)
@@ -277,16 +276,12 @@ def do_aura_repair(forced: bool) -> None:
         "./screenshots/repair.png",
         grayscale=True,
         confidence=0.4,
-        region=(1500, 134, 100, 100),
+        region=DAMAGED_ARMOR_REGION,
     ):
         toggle_menu("pet")
-        mouse_move_to(x=1142, y=661)
+        left_click_at_position((1142, 661))
         random_sleep(2500, 2600)
-        pydirectinput.click(button="left")
-        random_sleep(5500, 5600)
-        mouse_move_to(x=1054, y=455)
-        random_sleep(2500, 2600)
-        pydirectinput.click(button="left")
+        left_click_at_position((1054, 455))
         random_sleep(2500, 2600)
         pydirectinput.press("esc")
         random_sleep(2500, 2600)
