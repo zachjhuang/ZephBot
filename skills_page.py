@@ -118,13 +118,15 @@ def skills_layout():
                     ui.slider(
                         min=None,
                         max=3000,
+                        step=100,
                     ).bind_value(
                         skills[SkillManager.curr_class][i], "holdTime"
                     ).classes("w-11/12 m-auto").props("label-always")
                     ui.label(text="Cast Time (ms)")
                     ui.slider(
                         min=None,
-                        max=5000,
+                        max=3000,
+                        step=100,
                     ).bind_value(
                         skills[SkillManager.curr_class][i], "castTime"
                     ).classes("w-11/12 m-auto").props("label-always")
