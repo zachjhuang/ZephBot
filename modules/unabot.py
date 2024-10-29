@@ -250,7 +250,7 @@ def do_south_kurzan() -> None:
 
     toggle_menu("defaultCombatPreset")
 
-    walk_to(x=50, y=180, ms=2600)
+    walk_to(x=650, y=180, ms=2600)
     walk_to(x=650, y=180, ms=2600)
     spam_interact(4000)
 
