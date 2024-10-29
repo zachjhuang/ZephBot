@@ -20,8 +20,16 @@ from modules.utilities import (
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
 
+COMPLETED_QUEST_POS = (1700, 430)
+
+SAGE_TOWER_COMPLETED_REGION = (1700, 220, 100, 150)
+GHOST_STORY_F5_REGION = (1575, 440, 80, 450)
+ACCEPT_UNAS_REGION = (1165, 380, 80, 330)
 
 class UnaBot(TaskBot):
+    """
+    Taskbot child class for daily una tasks.
+    """
     def __init__(self, roster) -> None:
         super().__init__(roster)
         for char in self.roster:
@@ -107,44 +115,31 @@ def accept_dailies() -> None:
     wait_for_menu_load("unas")
     # switch to daily tab
     if not check_image_on_screen("./screenshots/dailyTabActive.png", confidence=0.95):
-        mouse_move_to(x=550, y=255)
-        random_sleep(100, 200)
-        pydirectinput.click(button="left")
+        left_click_at_position((550, 255))
         random_sleep(500, 600)
     # toggle dropdown and swap to favorites
     if not check_image_on_screen("./screenshots/addedToFavorites.png", confidence=0.95):
-        mouse_move_to(x=632, y=316)
-        random_sleep(100, 200)
-        pydirectinput.click(button="left")
+        left_click_at_position((632, 316))
         random_sleep(1000, 1100)
-        mouse_move_to(x=634, y=337)
-        random_sleep(100, 200)
-        pydirectinput.click(button="left")
-        random_sleep(500, 600)
-        pydirectinput.click(button="left")
-        random_sleep(500, 600)
-        pydirectinput.click(button="left")
-        random_sleep(500, 600)
-        mouse_move_to(x=548, y=404)
-        random_sleep(100, 200)
-        pydirectinput.click(button="left")
-        random_sleep(500, 600)
-    # if 3x completed unas detected, skip and return false
+        left_click_at_position((634, 337))
+        random_sleep(200, 300)
+        left_click_at_position((634, 337))
+        random_sleep(200, 300)
+        left_click_at_position((634, 337))
+        random_sleep(200, 300)
+        left_click_at_position((548, 404))
+        random_sleep(200, 300)
     random_sleep(500, 600)
-    # if checkImageOnScreen("./screenshots/unasCompleted.png", confidence=0.75):
-    #     print("character has already ran unas")
-    #     toggleMenu("unas")
-    #     return False
 
     # click all accept buttons
     accept_buttons = list(
         pyautogui.locateAllOnScreen(
-            "./screenshots/acceptUna.png", region=(1165, 380, 80, 330), confidence=0.85
+            "./screenshots/acceptUna.png", region=ACCEPT_UNAS_REGION, confidence=0.85
         )
     )
     for region in accept_buttons:
         left_click_at_position((region.left, region.top))
-        random_sleep(400, 500)
+        random_sleep(600, 700)
 
     toggle_menu("unas")
     random_sleep(800, 900)
@@ -191,56 +186,59 @@ def do_hestera_garden() -> None:
 
 
 def do_writers_life() -> None:
-    random_sleep(5000, 5100)
     toggle_menu("unaTaskCombatPreset")
+    # accept at NPC
     spam_interact(4000)
-    pydirectinput.click(x=1100, y=750, button=config["move"])
-    random_sleep(1500, 1600)
-    pydirectinput.click(x=1100, y=750, button=config["move"])
-    random_sleep(1500, 1600)
+
+    # emote in circle
+    walk_to(x=1100, y=750, ms=1600)
+    walk_to(x=1100, y=750, ms=1600)
     pydirectinput.press(config["writersLifeEmoteSlot"])
     random_sleep(9000, 9100)
-    pydirectinput.click(x=800, y=600, button=config["move"])
-    random_sleep(1500, 1600)
+
+    # interact with 3 NPCs
+    walk_to(x=800, y=600, ms=1600)
     spam_interact(10000)
-    pydirectinput.click(x=880, y=250, button=config["move"])
-    random_sleep(1500, 1600)
-    pydirectinput.click(x=880, y=250, button=config["move"])
-    random_sleep(1500, 1600)
+
+    # claim rewards at NPC
+    walk_to(x=880, y=250, ms=1600)
+    walk_to(x=880, y=250, ms=1600)
     spam_interact(4000)
     random_sleep(300, 400)
     toggle_menu("defaultCombatPreset")
 
 
 def do_sage_tower() -> None:
+    # interact with 2 points of interests
     for _ in range(10):
         spam_interact(1000)
         if check_image_on_screen(
             "./screenshots/sageTowerCompleted.png",
-            region=(1700, 220, 100, 150),
+            region=SAGE_TOWER_COMPLETED_REGION,
             confidence=0.65,
         ):
             break
-    mouse_move_to(x=1560, y=540)
-    random_sleep(500, 600)
-    pydirectinput.click(x=1560, y=540, button=config["move"])
-    random_sleep(500, 600)
+    # claim at NPC
+    walk_to(x=1560, y=540, ms=700)
     spam_interact(3000)
 
 
 def do_ghost_story() -> None:
+    # interact with 3 NPCs
     for _ in range(15):
         spam_interact(1000)
         if check_image_on_screen(
             "./screenshots/ghostStoryF5.png",
-            region=(1575, 440, 80, 450),
+            region=GHOST_STORY_F5_REGION,
             confidence=0.85,
         ):
             break
+    # use toy
     pydirectinput.press("f5")
     random_sleep(200, 300)
     pydirectinput.press("f6")
     random_sleep(200, 300)
+
     claim_completed_quest()
     random_sleep(300, 400)
 
@@ -253,42 +251,25 @@ def do_south_kurzan() -> None:
 
     toggle_menu("defaultCombatPreset")
 
-    mouse_move_to(x=650, y=180)
-    random_sleep(500, 600)
-    pydirectinput.click(x=650, y=180, button="left")
-    random_sleep(2500, 2600)
-    pydirectinput.click(x=650, y=180, button="left")
-    random_sleep(2500, 2600)
+    walk_to(x=50, y=180, ms=2600)
+    walk_to(x=650, y=180, ms=2600)
     spam_interact(4000)
 
 
 def do_mokokmoko() -> None:
     spam_interact(4000)
-    mouse_move_to(x=416, y=766)
-    random_sleep(500, 600)
-    pydirectinput.click(x=416, y=766, button="left")
-    random_sleep(5500, 5600)
+    walk_to(x=416, y=766, ms=5600)
 
-    mouse_move_to(x=960, y=770)
-    random_sleep(500, 600)
-    pydirectinput.click(x=960, y=770, button=config["move"])
-    random_sleep(1500, 1600)
+    walk_to(x=960, y=770, ms=1600)
     pydirectinput.press(config["interact"])
     random_sleep(5500, 5600)
 
-    mouse_move_to(x=1360, y=900)
-    random_sleep(500, 600)
-    pydirectinput.click(x=1360, y=900, button=config["move"])
-    random_sleep(1500, 1600)
+    walk_to(x=1360, y=900, ms=1600)
     pydirectinput.press(config["interact"])
     random_sleep(5500, 5600)
 
-    mouse_move_to(x=960, y=330)
-    random_sleep(1500, 1600)
-    pydirectinput.click(x=980, y=280, button=config["move"])
-    random_sleep(1500, 1600)
-    pydirectinput.click(x=980, y=280, button=config["move"])
-    random_sleep(1500, 1600)
+    walk_to(x=980, y=280, ms=1600)
+    walk_to(x=980, y=280, ms=1600)
     spam_interact(4000)
     random_sleep(1500, 1600)
 
@@ -300,32 +281,32 @@ def walk_lopang() -> None:
     # right terminal
     spam_interact(2000)
     # walk to middle terminal
-    walk_to(315, 473, 1500)
-    walk_to(407, 679, 1300)
-    walk_to(584, 258, 1000)
-    walk_to(1043, 240, 1200)
-    walk_to(1339, 246, 1300)
-    walk_to(1223, 406, 800)
-    walk_to(1223, 406, 800)
-    walk_to(1263, 404, 1300)
+    walk_to(x=315, y=473, ms=1500)
+    walk_to(x=407, y=679, ms=1300)
+    walk_to(x=584, y=258, ms=1000)
+    walk_to(x=1043, y=240, ms=1200)
+    walk_to(x=1339, y=246, ms=1300)
+    walk_to(x=1223, y=406, ms=800)
+    walk_to(x=1223, y=406, ms=800)
+    walk_to(x=1263, y=404, ms=1300)
     # middle terminal
     spam_interact(500)
     # walk to left terminal
-    walk_to(496, 750, 1200)
-    walk_to(496, 750, 1200)
-    walk_to(496, 750, 1200)
-    walk_to(753, 687, 800)
-    walk_to(753, 687, 800)
-    walk_to(674, 264, 800)
-    walk_to(573, 301, 1200)
-    walk_to(820, 240, 1300)
+    walk_to(x=496, y=750, ms=1200)
+    walk_to(x=496, y=750, ms=1200)
+    walk_to(x=496, y=750, ms=1200)
+    walk_to(x=753, y=687, ms=800)
+    walk_to(x=753, y=687, ms=800)
+    walk_to(x=674, y=264, ms=800)
+    walk_to(x=573, y=301, ms=1200)
+    walk_to(x=820, y=240, ms=1300)
     # left terminal
     spam_interact(500)
     random_sleep(1000, 2000)
 
 
 def claim_completed_quest() -> None:
-    left_click_at_position((1700, 430))
+    left_click_at_position(COMPLETED_QUEST_POS)
     random_sleep(1000, 1100)
     find_and_click_image("completeQuest", confidence=0.85)
 
@@ -334,9 +315,8 @@ def go_to_bifrost(location: str) -> bool:
     """
     Attempts to bifrost to location.
 
-    Return false if bifrost not found or on cooldown.
-
-    Return true if bifrost to location is successful.
+    Returns:
+        False if bifrost not found or on cooldown, True otherwise.
     """
     print(f"bifrost to: {location}")
     if not check_image_on_screen(
@@ -344,42 +324,34 @@ def go_to_bifrost(location: str) -> bool:
     ):
         toggle_menu("bifrost")
     wait_for_menu_load("bifrost")
-    bifrost = find_image_center(
+    match find_image_center(
         f"./screenshots/bifrosts/{location}Bifrost.png", confidence=0.80
-    )
-    if bifrost is None:
-        print(f"{location} bifrost not found, skipping")
-        toggle_menu("bifrost")
-        return False
-    x, y = bifrost
-    mouse_move_to(x=(x + 280), y=(y - 25))
-    random_sleep(300, 400)
-    pydirectinput.click(button="left")
-    random_sleep(500, 600)
-    pydirectinput.click(button="left")
-    random_sleep(1500, 1600)
+    ):
+        case x, y:
+            left_click_at_position((x + 280, y - 25))
+            random_sleep(1500, 1600)
+        case _:
+            print(f"{location} bifrost not found, skipping")
+            toggle_menu("bifrost")
+            return False
 
     # return false if bifrost on cooldown
     if check_bifrost_on_cooldown():
         pydirectinput.press("esc")
-        random_sleep(1500, 1600)
+        random_sleep(500, 600)
         pydirectinput.press("esc")
-        random_sleep(1500, 1600)
+        random_sleep(500, 600)
         return False
     else:
         while True:
-            ok_button = find_image_center(
+            match find_image_center(
                 "./screenshots/ok.png",
                 confidence=0.75,
                 region=SCREEN_CENTER_REGION,
-            )
-            if ok_button is not None:
-                x, y = ok_button
-                mouse_move_to(x=x, y=y)
-                random_sleep(2000, 2100)
-                pydirectinput.click(x=x, y=y, button="left")
-                random_sleep(2000, 2100)
-                break
+            ):
+                case x, y:
+                    left_click_at_position((x, y))
+                    break
             random_sleep(300, 400)
     random_sleep(10000, 12000)
 
@@ -406,10 +378,10 @@ def walk_to(x: int, y: int, ms: int) -> None:
     random_sleep(ms, ms)
 
 
-def spam_interact(msDuration: int) -> None:
+def spam_interact(duration_ms: int) -> None:
     """Presses interact key for approximately the given duration in milliseconds."""
-    count = msDuration / 100
+    count = duration_ms / 100
     while count != 0:
         pydirectinput.press(config["interact"])
-        random_sleep(90, 120)
+        random_sleep(90, 110)
         count = count - 1
