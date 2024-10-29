@@ -35,38 +35,49 @@ class GuildBot(TaskBot):
         toggle_menu("guild")
         wait_for_menu_load("guild")
 
-        random_sleep(500, 600)
-        find_and_click_image("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
-        random_sleep(500, 600)
-        left_click_at_position(DONATE_MENU_POS)
-        random_sleep(500, 600)
-        left_click_at_position(DONATE_SILVER_POS)
+        accept_checkin()
+        donate_silver()
+        support_research()
 
-        pydirectinput.press("esc")
-        random_sleep(500, 600)
-
-        find_and_click_image(
-            "supportResearch", region=SUPPORT_RESEARCH_REGION, confidence=0.75
-        )
-        random_sleep(500, 600)
-        if check_image_on_screen(
-            "./screenshots/canSupportResearch.png",
-            region=CAN_SUPPORT_RESEARCH_REGION,
-            confidence=0.75,
-        ):
-            find_and_click_image(
-                "canSupportResearch",
-                region=CAN_SUPPORT_RESEARCH_REGION,
-                confidence=0.75,
-            )
-            random_sleep(500, 600)
-            left_click_at_position(RESEARCH_CONFIRM_POS)
-        elif check_image_on_screen(
-            "./screenshots/alreadySupportedResearch.png",
-            region=CAN_SUPPORT_RESEARCH_REGION,
-            confidence=0.75,
-        ):
-            pydirectinput.press("esc")
         random_sleep(500, 600)
         toggle_menu("guild")
         self.remaining_tasks[self.curr] = 0
+
+
+def accept_checkin() -> None:
+    random_sleep(500, 600)
+    find_and_click_image("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
+
+
+def donate_silver() -> None:
+    random_sleep(500, 600)
+    left_click_at_position(DONATE_MENU_POS)
+    random_sleep(500, 600)
+    left_click_at_position(DONATE_SILVER_POS)
+    pydirectinput.press("esc")
+    random_sleep(500, 600)
+
+
+def support_research() -> None:
+    find_and_click_image(
+        "supportResearch", region=SUPPORT_RESEARCH_REGION, confidence=0.75
+    )
+    random_sleep(500, 600)
+    if check_image_on_screen(
+        "./screenshots/canSupportResearch.png",
+        region=CAN_SUPPORT_RESEARCH_REGION,
+        confidence=0.75,
+    ):
+        find_and_click_image(
+            "canSupportResearch",
+            region=CAN_SUPPORT_RESEARCH_REGION,
+            confidence=0.75,
+        )
+        random_sleep(500, 600)
+        left_click_at_position(RESEARCH_CONFIRM_POS)
+    elif check_image_on_screen(
+        "./screenshots/alreadySupportedResearch.png",
+        region=CAN_SUPPORT_RESEARCH_REGION,
+        confidence=0.75,
+    ):
+        pydirectinput.press("esc")
