@@ -5,7 +5,7 @@ from typing import Callable
 import pyautogui
 
 from configs.config import config
-from modules.utilities import check_image_on_screen, find_image_center
+from modules.utilities import find_image_center
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -51,17 +51,20 @@ class Minimap:
                     self.valid_coords.append((x - width / 2, y - height / 2))
 
     def find_closest_pixel(
-        self, name: str, inColorRange: Callable[[int, int, int], bool]
+        self, name: str, in_color_range: Callable[[int, int, int], bool]
     ) -> bool:
         """
         Check minimap for closest pixel that satisfies the color range function given.
 
-        Range function should take `r`, `g`, and `b` values and return True if each value is
-        within a certain threshold.
-
         Updates `targets` attribute if found.
 
         This function is intended for internal use only.
+
+        Args:
+            name: Generic name of target that pixel belongs to.
+
+            in_color_range: A function that takes `r`, `g`, and `b` values and
+                returns True if each value is within a certain threshold.
 
         Returns:
             True if found, False otherwise.
@@ -75,7 +78,7 @@ class Minimap:
         for x in range(width):
             for y in range(height):
                 r, g, b = minimap.getpixel((x, y))
-                if inColorRange(r, g, b):
+                if in_color_range(r, g, b):
                     left, top, _w, _h = MINIMAP_REGION
                     dx = left + x - MINIMAP_CENTER_X
                     dy = top + y - MINIMAP_CENTER_Y
@@ -142,7 +145,7 @@ class Minimap:
         """
         Finds the closest valid coordinate to a given target. The list of valid coordinates
         is provided by the instance's respective attribute.
-        
+
         Args:
             target: Target coordinate.
 
