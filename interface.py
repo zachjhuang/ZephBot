@@ -2,6 +2,7 @@ from nicegui import ui
 
 from main import main
 
+from home_page import home_page
 from roster_page import roster_page
 from skills_page import skills_page
 from configs_page import configs_page
@@ -14,6 +15,7 @@ with ui.header().classes(replace="row items-center") as header:
     #     "flat color=white"
     # )
     with ui.tabs() as tabs:
+        ui.tab("Home")
         ui.tab("Roster")
         ui.tab("Skills")
         ui.tab("Config")
@@ -21,7 +23,9 @@ with ui.header().classes(replace="row items-center") as header:
 # with ui.left_drawer(value=False).classes("bg-blue-100") as left_drawer:
 #     ui.label("Side menu")
 
-with ui.tab_panels(tabs, value="Config").classes("w-full"):
+with ui.tab_panels(tabs, value="Home").classes("w-full"):
+    with ui.tab_panel("Home"):
+        home_page()
     with ui.tab_panel("Roster"):
         roster_page()
     with ui.tab_panel("Skills"):
