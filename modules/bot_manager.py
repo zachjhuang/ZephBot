@@ -3,7 +3,6 @@ import math
 import pydirectinput
 
 from configs.config import config
-from configs.roster import roster
 from modules.chaos_bot import ChaosBot
 from modules.guild_bot import GuildBot
 from modules.kurzan_front_bot import KurzanFrontBot
@@ -15,6 +14,7 @@ from modules.utilities import (
     find_image_center,
     left_click_at_position,
     random_sleep,
+    get_roster
 )
 
 SCREEN_CENTER_X = 960
@@ -43,27 +43,38 @@ CHARACTER_SELECT_POS = [
 
 class BotManager:
     def __init__(
-        self, do_chaos: bool, do_kurzan_front: bool, do_unas: bool, do_guild: bool
+        self, options
     ) -> None:
         self.curr = 0
-
+        roster = get_roster()
         self.running_bots: list[TaskBot] = []
-        if do_chaos:
+        if options['do_chaos']:
             self.running_bots.append(ChaosBot(roster))
-        if do_kurzan_front:
+        if options['do_kurzan_front']:
             self.running_bots.append(KurzanFrontBot(roster))
-        if do_unas:
+        if options['do_unas']:
             self.running_bots.append(UnaBot(roster))
-        if do_guild:
+        if options['do_guild']:
             self.running_bots.append(GuildBot(roster))
 
     def all_bots_done(self) -> bool:
+        """
+        Checks if all bots have no more remaining tasks.
+
+        Returns:
+            bool: True if any bot still has remaining tasks, False otherwise.
+        """
         for bot in self.running_bots:
             if not bot.is_done():
                 return False
         return True
 
     def run(self) -> None:
+        """
+        Loop through the roster. 
+        On each character, run all available bots.
+        Stop when all bots have no remaining tasks.
+        """
         restart_check()
         self.switch_to_char(0)
 
@@ -82,15 +93,30 @@ class BotManager:
                 bot.do_tasks()
 
             restart_check()
-            next = (self.curr + 1) % len(roster)
-            print(f"character {self.curr} is done, switching to: {next}")
-            self.switch_to_char(next)
+            next_char = (self.curr + 1) % len(get_roster())
+            print(f"character {self.curr} is done, switching to: {next_char}")
+            self.switch_to_char(next_char)
 
     def update_curr_char(self, char: int) -> None:
+        """
+        Updates the current character for all running bots to the index supplied.
+
+        Args:
+            char (int): The index of the specified character.
+        """
         for bot in self.running_bots:
             bot.set_current_char(char)
 
-    def is_char_done(self, char: int) -> None:
+    def is_char_done(self, char: int) -> bool:
+        """
+        Checks if any of the running bots still have tasks to complete on the specified characters.
+
+        Args:
+            char (int): The index of the specified character.
+
+        Returns:
+            bool: True if no bots have remaining tasks for the character, otherwise False.
+        """
         return sum([bot.remaining_tasks[char] for bot in self.running_bots]) == 0
 
     # def runCharTasks(self) -> None:
@@ -98,7 +124,9 @@ class BotManager:
     #         bot.doTasks()
 
     def switch_to_char(self, index: int) -> None:
-        """Opens ESC menu and switches to character designated by index."""
+        """
+        Opens ESC menu and switches to character designated by index.
+        """
         self.curr = index
         self.update_curr_char(index)
         random_sleep(500, 600)
@@ -106,7 +134,7 @@ class BotManager:
         for bot in self.running_bots:
             print(f"{bot.__class__.__name__}: {bot.remaining_tasks}")
         print("----------------------------")
-        print("switching to {}".format(index))
+        print(f"switching to {index}")
         while not check_image_on_screen(
             "./screenshots/menus/gameMenu.png", confidence=0.7
         ):
@@ -122,7 +150,7 @@ class BotManager:
             random_sleep(200, 300)
 
         if index > 8:
-            for i in range(math.floor(index / 3) - 2):
+            for _ in range(math.floor(index / 3) - 2):
                 left_click_at_position((1267, 638))
                 random_sleep(200, 300)
 
@@ -130,19 +158,7 @@ class BotManager:
         left_click_at_position(CHARACTER_SELECT_POS[position_index])
         random_sleep(1500, 1600)
 
-        for bot in self.running_bots:
-            if isinstance(bot, ChaosBot):
-                bot.remaining_tasks[index] = max(
-                    0, bot.remaining_tasks[index] - check_chaos_completed()
-                )
-            if isinstance(bot, KurzanFrontBot):
-                bot.remaining_tasks[index] = max(
-                    0, bot.remaining_tasks[index] - check_kurzan_front_completed()
-                )
-            if isinstance(bot, UnaBot):
-                bot.remaining_tasks[index] = max(
-                    0, bot.remaining_tasks[index] - check_unas_completed()
-                )
+        self.check_and_update_status(index)
 
         if self.all_bots_done():
             return
@@ -167,10 +183,26 @@ class BotManager:
             if config["GFN"] == True:
                 random_sleep(8000, 9000)
 
-
+    def check_and_update_status(self, index: int):
+        for bot in self.running_bots:
+            if isinstance(bot, ChaosBot):
+                bot.remaining_tasks[index] = max(
+                    0, bot.remaining_tasks[index] - check_chaos_completed()
+                )
+            if isinstance(bot, KurzanFrontBot):
+                bot.remaining_tasks[index] = max(
+                    0, bot.remaining_tasks[index] - check_kurzan_front_completed()
+                )
+            if isinstance(bot, UnaBot):
+                bot.remaining_tasks[index] = max(
+                    0, bot.remaining_tasks[index] - check_unas_completed()
+                )
+                
+                
 def do_city_repair() -> None:
-    # for non-aura users: MUST have your character parked near a repairer in city before starting the script
-    # Check if repair needed
+    """
+    With the character standing next to a repair NPC, repairs armor.
+    """
     if check_image_on_screen(
         "./screenshots/repair.png",
         grayscale=True,
@@ -189,6 +221,9 @@ def do_city_repair() -> None:
 
 
 def clear_notifs() -> None:
+    """
+    Gets rid of any quest and/or level up notifications that appear below the center of the screen.
+    """
     match find_image_center(
         "./screenshots/quest.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
     ):
@@ -211,6 +246,15 @@ def clear_notifs() -> None:
 
 
 def check_unas_completed() -> int:
+    """
+    When viewing character status in ESC menu, check how many una tasks have been completed.
+
+    Does not account for task limit increases.
+    
+    Returns:
+        int: The number of unas completed on the currently selected character. 0 if unas icon 
+            not detected.
+    """
     una_icon = find_image_center(
         "./screenshots/unaIcon.png",
         region=CHARACTER_STATUS_ICON_REGION,
@@ -231,6 +275,13 @@ def check_unas_completed() -> int:
 
 
 def check_chaos_completed() -> int:
+    """
+    When viewing character status in ESC menu, check how many chaos runs have been completed.
+
+    Returns:
+        int: The number of chaos dungeons completed on the currently selected character. 
+            0 if chaos icon not detected. 
+    """
     chaos_icon = find_image_center(
         "./screenshots/chaosIcon.png",
         region=CHARACTER_STATUS_ICON_REGION,
@@ -258,6 +309,13 @@ def check_chaos_completed() -> int:
 
 
 def check_kurzan_front_completed() -> int:
+    """
+    When viewing character status in ESC menu, check if Kurzan Front has been cleared.
+    
+    Returns:
+        int: The number of Kurzan Front completed on the currently selected character.
+            0 if Kurzan Front icon not detected.
+    """
     kurzan_front_icon = find_image_center(
         "./screenshots/kurzanFrontIcon.png",
         region=CHARACTER_STATUS_ICON_REGION,

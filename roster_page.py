@@ -1,7 +1,9 @@
-from nicegui import ui
-import sys
+# pylint: disable=missing-module-docstring
+import yaml
 
-import importlib.util
+from nicegui import ui
+
+from modules.utilities import get_roster
 
 CLASS_NAMES = {
     "aeromancer": "Aeromancer",
@@ -67,29 +69,26 @@ UNA_TASK_NAMES = {
     "writersLife": "Writer's Life: Fan Meeting",
 }
 
-
-def load_roster():
-    spec = importlib.util.spec_from_file_location("roster", "configs/roster.py")
-    roster_module = importlib.util.module_from_spec(spec)
-    sys.modules["roster"] = roster_module
-    spec.loader.exec_module(roster_module)
-    return roster_module.roster
+# pylint: disable=global-statement
+roster = get_roster()
 
 
-roster = load_roster()
-
-
-def save_roster():
+def save_roster() -> None:
+    """
+    Saves the application's roster instance.
+    """
     global roster
     roster = sorted(roster, key=lambda char: char["index"])
-    with open("configs/roster.py", "w") as f:
-        f.write("roster = " + repr(roster))
-
+    with open("configs/roster.yaml", 'w', encoding='utf-8') as file:
+        yaml.dump(roster, file, default_flow_style=False)
     ui.notify("Roster saved successfully!")
     roster_layout.refresh()
 
+
 def add_char_to_roster():
-    global roster
+    """
+    Adds a blank character placeholder to the application's roster instance.
+    """
     new_entry = {
         "index": len(roster),
         "class": None,
@@ -102,28 +101,41 @@ def add_char_to_roster():
 
 
 def reload_roster():
+    """
+    Overwrites the application's roster instance with the one saved on file.
+    """
     global roster
-    roster = load_roster()
+    roster = get_roster()
     roster_layout.refresh()
 
 
 @ui.refreshable
-def roster_layout():
+def roster_layout() -> None:
+    """
+    A grid of character cards.
+    """
     with ui.grid(columns=3).classes("gap-5"):
-        for i in range(len(roster)):
-            character_card(roster[i])
+        for char in roster:
+            character_card(char)
 
-        with ui.card():
-            ui.button("Add new character", on_click=add_char_to_roster).style(
-                "margin: auto"
-            )
+        with ui.card().classes("w-11/12 h-full m-auto"):
+            ui.button("Add new character",
+                      on_click=add_char_to_roster).classes("m-auto")
 
 
-def character_card(char: dict):
-    with ui.card().classes("w-auto m-auto") as card:
+def character_card(char: dict) -> None:
+    """
+    Character card displaying relevant information and inputs for a given character.
+
+    Args:
+        char (dict): A character in a roster object.
+    """
+    with ui.card().classes("w-11/12 h-full m-auto"):
         with ui.row().classes("w-11/12 m-auto"):
-            ui.input(label="Name").bind_value(char, "name").classes("w-8/12 m-auto")
-            ui.select(options=list(range(len(roster))), label="#").bind_value(char, "index").classes("w-3/12 m-auto")
+            ui.input(label="Name").bind_value(
+                char, "name").classes("w-8/12 m-auto")
+            ui.select(options=list(range(len(roster))), label="#").bind_value(
+                char, "index").classes("w-3/12 m-auto")
         ui.select(options=CLASS_NAMES, label="Class", with_input=True).bind_value(
             char, "class"
         ).classes("w-11/12 m-auto")
@@ -144,10 +156,16 @@ def character_card(char: dict):
 
 
 class CharacterDeleter:
+    """
+    Object for deleting a target character from the application's roster instance.
+    """
     target = ""
 
     @classmethod
     def delete_character(cls):
+        """
+        Remove target from application's roster instance.
+        """
         global roster
         roster = [char for char in roster if char["name"] != cls.target]
         roster_layout.refresh()
@@ -165,13 +183,15 @@ with ui.dialog() as delete_character_popup, ui.card():
                 delete_character_popup.close(),
             ],
         ).props("color=red")
-        ui.button("Cancel", on_click=delete_character_popup.close).props("color=grey")
+        ui.button("Cancel", on_click=delete_character_popup.close).props(
+            "color=grey")
 
 
 def roster_page():
+    """Full page for roster tab."""
     with ui.row():
         ui.button("Save Roster", on_click=save_roster)
-        ui.button("Reload Roster", on_click=lambda: reload_roster())
+        ui.button("Reload Roster", on_click=reload_roster)
         ui.button("Delete Character", on_click=delete_character_popup.open).props(
             "color=red"
         )
