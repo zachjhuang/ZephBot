@@ -55,10 +55,12 @@ def main():
     left_click_at_position(SCREEN_CENTER_POS)
 
     bot_manager = BotManager(
-        do_chaos=args.chaos,
-        do_kurzan_front=args.kurzanfront,
-        do_unas=args.unas,
-        do_guild=args.guild,
+        options={
+            "do_chaos": args.chaos,
+            "do_kurzan_front": args.kurzanfront,
+            "do_unas": args.unas,
+            "do_guild": args.guild
+        }
     )
 
     # stay invis in friends list

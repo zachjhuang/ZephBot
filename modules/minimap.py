@@ -39,6 +39,7 @@ class Minimap:
         """
         self.targets: list[tuple[int, int]] = []
         self.valid_coords: list[tuple[int, int]] = []
+        self.config: dict = get_config()
 
     def update_valid_coords(self) -> None:
         """
@@ -74,6 +75,7 @@ class Minimap:
         Returns:
             True if found, False otherwise.
         """
+        print("finding closest pixel")
         minimap = pyautogui.screenshot(region=MINIMAP_REGION)
         width, height = minimap.size
 
@@ -94,6 +96,7 @@ class Minimap:
         if closest_dist < 200:
             print(f"{name} pixel at x:{closest_x} y:{closest_y}")
             self.targets.append((closest_x, closest_y))
+            print("found closest pixel")
             return True
         else:
             return False
@@ -133,6 +136,7 @@ class Minimap:
             coord = target
         # all other cases -> pathfind
         else:
+            print("finding closest valid coord")
             self.update_valid_coords()
             coord = closest_connected_coordinate(
                 self.valid_coords, self.get_closest_valid_coord(target)
@@ -212,7 +216,7 @@ class Minimap:
         Returns:
             `True` if found, `False` otherwise.
         """
-        if not get_config("performance"):
+        if not self.config["performance"]:
             for portal_part in ["portal", "portalTop", "portalBot"]:
                 portal_coords = find_image_center(
                     f"./screenshots/chaos/{portal_part}.png",
@@ -385,31 +389,35 @@ def closest_connected_coordinate(
 # pylint: disable=missing-function-docstring
 
 def mob_rgb_range(r: int, g: int, b: int) -> bool:
-    if get_config("GFN"):
-        return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
-    else:
-        return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
+    return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
+    # if get_config("GFN"):
+    #     return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
+    # else:
+    #     return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
 
 
 def elite_rgb_range(r: int, g: int, b: int) -> bool:
-    if get_config("GFN"):
-        return 184 < r < 215 and 124 < g < 147 and 59 < b < 78
-    else:
-        return 189 < r < 215 and 124 < g < 150 and 29 < b < 70
+    return 184 < r < 215 and 124 < g < 147 and 59 < b < 78
+    # if get_config("GFN"):
+    #     return 184 < r < 215 and 124 < g < 147 and 59 < b < 78
+    # else:
+    #     return 189 < r < 215 and 124 < g < 150 and 29 < b < 70
 
 
 def boss_rgb_range(r: int, g: int, b: int) -> bool:
-    if get_config("GFN"):
-        return 100 < r < 170 and g < 35 and b < 35
-    else:
-        return 100 < r < 170 and g < 35 and b < 35
+    return 100 < r < 170 and g < 35 and b < 35
+    # if get_config("GFN"):
+    #     return 100 < r < 170 and g < 35 and b < 35
+    # else:
+    #     return 100 < r < 170 and g < 35 and b < 35
 
 
 def buff_rgb_range(r: int, g: int, b: int) -> bool:
-    if get_config("GFN"):
-        return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
-    else:
-        return 200 < r < 255 and 170 < g < 200 and 30 < b < 70
+    return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
+    # if get_config("GFN"):
+    #     return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
+    # else:
+    #     return 200 < r < 255 and 170 < g < 200 and 30 < b < 70
 
 
 def valid_area_rgb_range(r: int, g: int, b: int) -> bool:
@@ -419,11 +427,14 @@ def valid_area_rgb_range(r: int, g: int, b: int) -> bool:
 
 
 def portal_rgb_range(r: int, g: int, b: int) -> bool:
-    if get_config("GFN"):
-        return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
+    return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
             120 < r < 130 and 210 < g < 240 and 240 < b < 256
         )
-    else:
-        return (75 < r < 85 and 140 < g < 150 and 250 < b < 256) or (
-            120 < r < 130 and 210 < g < 220 and 250 < b < 256
-        )
+    # if get_config("GFN"):
+    #     return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
+    #         120 < r < 130 and 210 < g < 240 and 240 < b < 256
+    #     )
+    # else:
+    #     return (75 < r < 85 and 140 < g < 150 and 250 < b < 256) or (
+    #         120 < r < 130 and 210 < g < 220 and 250 < b < 256
+    #     )

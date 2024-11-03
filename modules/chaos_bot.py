@@ -7,10 +7,7 @@ import pydirectinput
 from modules.dungeon_bot import (
     DungeonBot,
     cast_skill,
-    perform_class_specialty,
     do_aura_repair,
-    move_in_direction,
-    random_move,
     wait_dungeon_load,
 )
 from modules.menu_nav import quit_chaos, restart_check, toggle_menu, wait_for_menu_load
@@ -76,8 +73,8 @@ class ChaosBot(DungeonBot):
     """
     DungeonBot child class for completing chaos dungeon.
     """
-    def __init__(self, roster):
-        super().__init__(roster)
+    def __init__(self, roster, config):
+        super().__init__(roster, config)
         self.remaining_tasks: list[int] = [
             (
                 2
@@ -110,7 +107,7 @@ class ChaosBot(DungeonBot):
             self.remaining_tasks[self.curr] -= 1
             if self.remaining_tasks[self.curr] > 0:
                 reenter_chaos()
-            # if datetime.now().hour == config["resetHour"] and not self.resetOnce:
+            # if datetime.now().hour == get_config("resetHour") and not self.resetOnce:
             #     self.resetOnce = True
             #     quit_chaos()
             #     raise ResetException
@@ -169,21 +166,21 @@ class ChaosBot(DungeonBot):
 
             if floor == 1 and not self.minimap.check_mob():
                 print("no floor 1 mob detected, random move")
-                random_move()
+                self.random_move()
             elif (
                 floor == 2
                 and not self.minimap.check_elite()
                 and not self.minimap.check_mob()
             ):
                 print("no floor 2 elite/mob detected, random move")
-                random_move()
+                self.random_move()
             elif (
                 floor == 3
                 and not self.minimap.check_rift_core()
                 and not self.minimap.check_elite()
                 and not self.minimap.check_mob()
             ):
-                random_move()
+                self.random_move()
 
             if floor == 1 and not awakening_used:
                 cast_skill(awakening_skill)
@@ -201,13 +198,14 @@ class ChaosBot(DungeonBot):
                 if (floor == 1 or floor == 2) and self.minimap.check_portal():
                     self.enter_portal()
                     return
-
+                print("moving")
                 self.move_to_targets(floor)
+                print("moved")
 
                 if floor == 3:
-                    click_rift_core()
+                    self.click_rift_core()
 
-                perform_class_specialty(
+                self.perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
                 )
                 cast_skill(skill)
@@ -235,8 +233,8 @@ class ChaosBot(DungeonBot):
         Moves to portal and tries to enter it.
         """
         pydirectinput.click(x=SCREEN_CENTER_X,
-                            y=SCREEN_CENTER_Y, 
-                            button=get_config("move"))
+                            y=SCREEN_CENTER_Y,
+                            button=self.config["move"])
         random_sleep(100, 150)
         while True:
             self.minimap.check_portal()
@@ -249,9 +247,9 @@ class ChaosBot(DungeonBot):
             if r + g + b < 30:
                 pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
                 break
-            pydirectinput.press(get_config("interact"))
+            pydirectinput.press(self.config["interact"])
             random_sleep(100, 120)
-            pydirectinput.click(x=x, y=y, button=get_config("move"))
+            pydirectinput.click(x=x, y=y, button=self.config["move"])
             random_sleep(60, 70)
             self.timeout_check()
 
@@ -265,7 +263,7 @@ class ChaosBot(DungeonBot):
                 x, y, move_duration = self.minimap.get_game_coords(
                     target_found=self.minimap.check_mob()
                 )
-                move_in_direction(x, y, move_duration)
+                self.move_in_direction(x, y, move_duration)
             case 2:
                 x, y, move_duration = self.minimap.get_game_coords(
                     target_found=(
@@ -274,7 +272,7 @@ class ChaosBot(DungeonBot):
                         or self.minimap.check_mob()
                     )
                 )
-                move_in_direction(x, y, move_duration)
+                self.move_in_direction(x, y, move_duration)
             case 3:
                 x, y, move_duration = self.minimap.get_game_coords(
                     target_found=(
@@ -284,8 +282,27 @@ class ChaosBot(DungeonBot):
                     ),
                     pathfind=True,
                 )
-                move_in_direction(x, y, move_duration)
+                self.move_in_direction(x, y, move_duration)
 
+    def click_rift_core(self) -> None:
+        """
+        Uses basic attacks if rift core label on screen.
+        """
+        for i in [1, 2]:
+            rift_core = find_image_center(
+                f"./screenshots/chaos/riftcore{i}.png",
+                confidence=0.6,
+                region=PORTAL_REGION,
+            )
+            if rift_core is not None:
+                x, y = rift_core
+                if y > 650 or x < 400 or x > 1500:
+                    return
+                pydirectinput.click(x=x, y=y + 190, button=self.config["move"])
+                random_sleep(100, 120)
+                for _ in range(4):
+                    pydirectinput.press(self.config["meleeAttack"])
+                    random_sleep(300, 360)
 
 def enter_chaos(ilvl: int) -> None:
     """
@@ -352,25 +369,6 @@ def select_chaos_dungeon(ilvl: int) -> None:
     random_sleep(1000, 1100)
 
 
-def click_rift_core() -> None:
-    """
-    Uses basic attacks if rift core label on screen.
-    """
-    for i in [1, 2]:
-        rift_core = find_image_center(
-            f"./screenshots/chaos/riftcore{i}.png",
-            confidence=0.6,
-            region=PORTAL_REGION,
-        )
-        if rift_core is not None:
-            x, y = rift_core
-            if y > 650 or x < 400 or x > 1500:
-                return
-            pydirectinput.click(x=x, y=y + 190, button=get_config("move"))
-            random_sleep(100, 120)
-            for _ in range(4):
-                pydirectinput.press(get_config("meleeAttack"))
-                random_sleep(300, 360)
 
 
 def check_chaos_finish() -> bool:

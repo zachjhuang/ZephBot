@@ -1,7 +1,8 @@
 class TaskBot:
-    def __init__(self, roster):
+    def __init__(self, roster, config):
         self.curr: int = 0
         self.roster: list[dict] = roster
+        self.config: dict = config
         self.remaining_tasks: list[int] = []
 
     def is_done(self) -> bool:

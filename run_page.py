@@ -2,15 +2,15 @@
 # https://github.com/zauberzeug/nicegui/discussions/1663
 
 import asyncio
+import os
 import sys
-import importlib
 from io import StringIO
 from logging import StreamHandler, getLogger
 
 import keyboard
 from nicegui import app, ui
 
-import test_main
+import start_bot
 
 logger = getLogger(__name__)
 logger.setLevel("DEBUG")
@@ -20,24 +20,13 @@ options = {'do_chaos': False, 'do_kurzan_front': False, 'do_unas': False, 'do_gu
 # Backend
 def long_sync_func():
     """A synchronous function with a lot of printing or logging."""
-    test_main.main(options=options)
+    keyboard.add_hotkey("ctrl+page down", lambda: os._exit(1))
+    start_bot.main(options=options)
 
 async def start_script():
     """Called after button click"""
-    importlib.reload(test_main)
-    main_task = asyncio.create_task(asyncio.to_thread(long_sync_func))
-    
-    async def cancel_main():
-        await cancel_task(main_task)
+    asyncio.create_task(asyncio.to_thread(long_sync_func))
 
-    keyboard.add_hotkey("ctrl+page down", lambda: asyncio.run(cancel_main()))
-
-async def cancel_task(task: asyncio.Task):
-    task.cancel()
-    try:
-        await task
-    except asyncio.CancelledError:
-        print("Script cancelled")
 
 async def start_stream(log):
     """Start a 'stream' of console outputs."""

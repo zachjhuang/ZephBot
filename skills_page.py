@@ -1,7 +1,7 @@
 from nicegui import ui
-import sys
+import yaml
 
-import importlib.util
+from modules.utilities import get_skills
 
 CLASS_NAMES = {
     "aeromancer": "Aeromancer",
@@ -33,22 +33,14 @@ CLASS_NAMES = {
 }
 
 
-def load_skills():
-    spec = importlib.util.spec_from_file_location("skills", "configs/skills.py")
-    skills_module = importlib.util.module_from_spec(spec)
-    sys.modules["skills"] = skills_module
-    spec.loader.exec_module(skills_module)
-    return skills_module.skills
-
-
-skills = load_skills()
+skills = get_skills()
 
 
 def save_skills():
-    with open("configs/skills.py", "w") as f:
-        f.write("skills = " + repr(skills))
-
+    with open("configs/skills.yaml", 'w', encoding='utf-8') as file:
+        yaml.dump(skills, file, default_flow_style=False)
     ui.notify("Skills saved successfully!")
+    skills_layout.refresh()
 
 
 def add_skill():
@@ -64,7 +56,7 @@ def add_skill():
 
 def reload_skills():
     global skills
-    skills = load_skills()
+    skills = get_skills
     skills_layout.refresh()
 
 
@@ -74,7 +66,6 @@ class SkillManager:
 
     @classmethod
     def delete_skill(cls):
-        global skills
         skills[cls.curr_class] = [
             skill
             for skill in skills[cls.curr_class]
@@ -100,7 +91,7 @@ def skills_layout():
     elif SkillManager.curr_class in skills.keys():
         with ui.row().classes("gap-5"):
             for i in range(len(skills[SkillManager.curr_class])):
-                with ui.card().classes("w-56 m-auto") as card:
+                with ui.card().classes("w-56 m-auto"):
                     with ui.row():
                         ui.input(label="Key").bind_value(
                             skills[SkillManager.curr_class][i], "key"
@@ -156,6 +147,6 @@ def skills_page():
     class_select()
     with ui.row():
         ui.button("Save Skills", on_click=save_skills)
-        ui.button("Reload Skills", on_click=lambda: reload_skills())
+        ui.button("Reload Skills", on_click=reload_skills)
         ui.button("Delete Skill", on_click=confirmation_dialog.open).props("color=red")
     skills_layout()

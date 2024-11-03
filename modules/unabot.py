@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring
 import pyautogui
+import pyscreeze
 import pydirectinput
 
 from modules.menu_nav import (
@@ -15,7 +16,6 @@ from modules.utilities import (
     find_image_center,
     left_click_at_position,
     random_sleep,
-    get_config,
 )
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
@@ -32,12 +32,12 @@ class UnaBot(TaskBot):
     Taskbot child class for daily una tasks.
     """
 
-    def __init__(self, roster) -> None:
-        super().__init__(roster)
+    def __init__(self, roster, config) -> None:
+        super().__init__(roster, config)
         for char in self.roster:
             if not char["unas"]:
                 self.remaining_tasks.append(0)
-            elif 'lopang' in char["unas"]:
+            elif "lopang" in char["unas"]:
                 self.remaining_tasks.append(3)
             else:
                 self.remaining_tasks.append(len(char["unas"]))
@@ -56,12 +56,12 @@ class UnaBot(TaskBot):
         if "lopang" in unas:
             restart_check()
             if go_to_bifrost("lopangIsland"):
-                self.remaining_tasks[self.curr] -= do_lopang()
+                self.remaining_tasks[self.curr] -= self.do_lopang()
 
         if "mokomoko" in unas:
             restart_check()
             if go_to_bifrost("mokomoko"):
-                do_mokokmoko()
+                self.do_mokokmoko()
                 self.remaining_tasks[self.curr] -= 1
 
         if "bleakNightFog" in unas:
@@ -73,40 +73,198 @@ class UnaBot(TaskBot):
         if "prehilia" in unas:
             restart_check()
             if go_to_bifrost("prehilia"):
-                do_prehilia()
+                self.do_prehilia()
                 self.remaining_tasks[self.curr] -= 1
 
         if "hesteraGarden" in unas:
             restart_check()
             if go_to_bifrost("hesteraGarden"):
-                do_hestera_garden()
+                self.do_hestera_garden()
                 self.remaining_tasks[self.curr] -= 1
 
         if "writersLife" in unas:
             restart_check()
             if go_to_bifrost("writersLife"):
-                do_writers_life()
+                self.do_writers_life()
                 self.remaining_tasks[self.curr] -= 1
 
         if "sageTower" in unas:
             restart_check()
             if go_to_bifrost("sageTower"):
-                do_sage_tower()
+                self.do_sage_tower()
                 self.remaining_tasks[self.curr] -= 1
 
         if "ghostStory" in unas:
             restart_check()
             if go_to_bifrost("ghostStory"):
-                do_ghost_story()
+                self.do_ghost_story()
                 self.remaining_tasks[self.curr] -= 1
 
         if "southKurzan" in unas:
             restart_check()
             if go_to_bifrost("southKurzan"):
-                do_south_kurzan()
+                self.do_south_kurzan()
                 self.remaining_tasks[self.curr] -= 1
 
         print("unas completed")
+
+    def do_lopang(self) -> int:
+        """Does 3 lopang dailies (Shushire -> Arthetine -> Vern)."""
+        self.walk_lopang()
+        completed = 0
+        for lopang_location in ["Shushire", "Arthetine", "Vern"]:
+            random_sleep(1500, 1600)
+            if go_to_bifrost("lopang" + lopang_location):
+                self.spam_interact(6000)
+                completed += 1
+        return completed
+
+    def do_prehilia(self) -> None:
+        toggle_menu("unaTaskCombatPreset")
+
+        pydirectinput.press(self.config["prehiliaEmoteSlot"])
+        self.spam_interact(8000)
+
+        toggle_menu("defaultCombatPreset")
+
+    def do_hestera_garden(self) -> None:
+        toggle_menu("unaTaskCombatPreset")
+
+        pydirectinput.press(self.config["hesteraGardenEmoteSlot"])
+        random_sleep(140000, 141000)
+        claim_completed_quest()
+        random_sleep(300, 400)
+
+        toggle_menu("defaultCombatPreset")
+
+    def do_writers_life(self) -> None:
+        toggle_menu("unaTaskCombatPreset")
+        # accept at NPC
+        self.spam_interact(4000)
+
+        # emote in circle
+        self.walk_to(x=1100, y=750, ms=1600)
+        self.walk_to(x=1100, y=750, ms=1600)
+        pydirectinput.press(self.config["writersLifeEmoteSlot"])
+        random_sleep(9000, 9100)
+
+        # interact with 3 NPCs
+        self.walk_to(x=800, y=600, ms=1600)
+        self.spam_interact(10000)
+
+        # claim rewards at NPC
+        self.walk_to(x=880, y=250, ms=1600)
+        self.walk_to(x=880, y=250, ms=1600)
+        self.spam_interact(4000)
+        random_sleep(300, 400)
+        toggle_menu("defaultCombatPreset")
+
+    def do_sage_tower(self) -> None:
+        # interact with 2 points of interests
+        for _ in range(10):
+            self.spam_interact(1000)
+            if check_image_on_screen(
+                "./screenshots/sageTowerCompleted.png",
+                region=SAGE_TOWER_COMPLETED_REGION,
+                confidence=0.65,
+            ):
+                break
+        # claim at NPC
+        self.walk_to(x=1560, y=540, ms=700)
+        self.spam_interact(3000)
+
+    def do_ghost_story(self) -> None:
+        # interact with 3 NPCs
+        for _ in range(15):
+            self.spam_interact(1000)
+            if check_image_on_screen(
+                "./screenshots/ghostStoryF5.png",
+                region=GHOST_STORY_F5_REGION,
+                confidence=0.85,
+            ):
+                break
+        # use toy
+        pydirectinput.press("f5")
+        random_sleep(200, 300)
+        pydirectinput.press("f6")
+        random_sleep(200, 300)
+
+        claim_completed_quest()
+        random_sleep(300, 400)
+
+    def do_south_kurzan(self) -> None:
+        toggle_menu("unaTaskCombatPreset")
+
+        pydirectinput.press(self.config["southKurzanPoseSlot"])
+        random_sleep(14000, 14100)
+
+        toggle_menu("defaultCombatPreset")
+
+        self.walk_to(x=650, y=180, ms=2600)
+        self.walk_to(x=650, y=180, ms=2600)
+        self.spam_interact(4000)
+
+    def do_mokokmoko(self) -> None:
+        self.spam_interact(4000)
+        self.walk_to(x=416, y=766, ms=5600)
+
+        self.walk_to(x=960, y=770, ms=1600)
+        pydirectinput.press(self.config["interact"])
+        random_sleep(5500, 5600)
+
+        self.walk_to(x=1360, y=900, ms=1600)
+        pydirectinput.press(self.config["interact"])
+        random_sleep(5500, 5600)
+
+        self.walk_to(x=980, y=280, ms=1600)
+        self.walk_to(x=980, y=280, ms=1600)
+        self.spam_interact(4000)
+        random_sleep(1500, 1600)
+
+    def walk_lopang(self) -> None:
+        """Interacts with and walks to all 3 lopang terminals."""
+        random_sleep(1000, 2000)
+        print("walking lopang")
+        # right terminal
+        self.spam_interact(2000)
+        # walk to middle terminal
+        self.walk_to(x=315, y=473, ms=1500)
+        self.walk_to(x=407, y=679, ms=1300)
+        self.walk_to(x=584, y=258, ms=1000)
+        self.walk_to(x=1043, y=240, ms=1200)
+        self.walk_to(x=1339, y=246, ms=1300)
+        self.walk_to(x=1223, y=406, ms=800)
+        self.walk_to(x=1223, y=406, ms=800)
+        self.walk_to(x=1263, y=404, ms=1300)
+        # middle terminal
+        self.spam_interact(500)
+        # walk to left terminal
+        self.walk_to(x=496, y=750, ms=1200)
+        self.walk_to(x=496, y=750, ms=1200)
+        self.walk_to(x=496, y=750, ms=1200)
+        self.walk_to(x=753, y=687, ms=800)
+        self.walk_to(x=753, y=687, ms=800)
+        self.walk_to(x=674, y=264, ms=800)
+        self.walk_to(x=573, y=301, ms=1200)
+        self.walk_to(x=820, y=240, ms=1300)
+        # left terminal
+        self.spam_interact(500)
+        random_sleep(1000, 2000)
+
+    def walk_to(self, x: int, y: int, ms: int) -> None:
+        """Move to specified pixel coordinate with millisecond delay."""
+        pydirectinput.moveTo(x=x, y=y)
+        random_sleep(100, 100)
+        pydirectinput.click(x=x, y=y, button=self.config["move"])
+        random_sleep(ms, ms)
+
+    def spam_interact(self, duration_ms: int) -> None:
+        """Presses interact key for approximately the given duration in milliseconds."""
+        count = duration_ms / 100
+        while count != 0:
+            pydirectinput.press(self.config["interact"])
+            random_sleep(90, 110)
+            count = count - 1
 
 
 def accept_dailies() -> None:
@@ -134,29 +292,23 @@ def accept_dailies() -> None:
     random_sleep(500, 600)
 
     # click all accept buttons
-    accept_buttons = list(
-        pyautogui.locateAllOnScreen(
-            "./screenshots/acceptUna.png", region=ACCEPT_UNAS_REGION, confidence=0.85
+    # while check_image_on_screen("./screenshots/acceptUna.png", region=ACCEPT_UNAS_REGION, confidence=0.85):
+    #     find_and_click_image("acceptUna", region=ACCEPT_UNAS_REGION, confidence=0.85)
+    #     random_sleep(1700, 1800)
+    try:
+        accept_buttons = list(
+            pyautogui.locateAllOnScreen(
+                "./screenshots/acceptUna.png", region=ACCEPT_UNAS_REGION, confidence=0.85
+            )
         )
-    )
-    for region in accept_buttons:
-        left_click_at_position((region.left, region.top))
-        random_sleep(600, 700)
+        for region in accept_buttons:
+            left_click_at_position((region.left, region.top))
+            random_sleep(600, 700)
+    except pyscreeze.ImageNotFoundException:
+        pass
 
     toggle_menu("unas")
     random_sleep(800, 900)
-
-
-def do_lopang() -> int:
-    """Does 3 lopang dailies (Shushire -> Arthetine -> Vern)."""
-    walk_lopang()
-    completed = 0
-    for lopang_location in ["Shushire", "Arthetine", "Vern"]:
-        random_sleep(1500, 1600)
-        if go_to_bifrost("lopang" + lopang_location):
-            spam_interact(6000)
-            completed += 1
-    return completed
 
 
 def do_bleak_night_fog() -> None:
@@ -165,146 +317,6 @@ def do_bleak_night_fog() -> None:
     pydirectinput.press("f6")
     random_sleep(1800, 1900)
     claim_completed_quest()
-
-
-def do_prehilia() -> None:
-    toggle_menu("unaTaskCombatPreset")
-
-    pydirectinput.press(get_config("prehiliaEmoteSlot"))
-    spam_interact(8000)
-
-    toggle_menu("defaultCombatPreset")
-
-
-def do_hestera_garden() -> None:
-    toggle_menu("unaTaskCombatPreset")
-
-    pydirectinput.press(get_config("hesteraGardenEmoteSlot"))
-    random_sleep(140000, 141000)
-    claim_completed_quest()
-    random_sleep(300, 400)
-
-    toggle_menu("defaultCombatPreset")
-
-
-def do_writers_life() -> None:
-    toggle_menu("unaTaskCombatPreset")
-    # accept at NPC
-    spam_interact(4000)
-
-    # emote in circle
-    walk_to(x=1100, y=750, ms=1600)
-    walk_to(x=1100, y=750, ms=1600)
-    pydirectinput.press(get_config("writersLifeEmoteSlot"))
-    random_sleep(9000, 9100)
-
-    # interact with 3 NPCs
-    walk_to(x=800, y=600, ms=1600)
-    spam_interact(10000)
-
-    # claim rewards at NPC
-    walk_to(x=880, y=250, ms=1600)
-    walk_to(x=880, y=250, ms=1600)
-    spam_interact(4000)
-    random_sleep(300, 400)
-    toggle_menu("defaultCombatPreset")
-
-
-def do_sage_tower() -> None:
-    # interact with 2 points of interests
-    for _ in range(10):
-        spam_interact(1000)
-        if check_image_on_screen(
-            "./screenshots/sageTowerCompleted.png",
-            region=SAGE_TOWER_COMPLETED_REGION,
-            confidence=0.65,
-        ):
-            break
-    # claim at NPC
-    walk_to(x=1560, y=540, ms=700)
-    spam_interact(3000)
-
-
-def do_ghost_story() -> None:
-    # interact with 3 NPCs
-    for _ in range(15):
-        spam_interact(1000)
-        if check_image_on_screen(
-            "./screenshots/ghostStoryF5.png",
-            region=GHOST_STORY_F5_REGION,
-            confidence=0.85,
-        ):
-            break
-    # use toy
-    pydirectinput.press("f5")
-    random_sleep(200, 300)
-    pydirectinput.press("f6")
-    random_sleep(200, 300)
-
-    claim_completed_quest()
-    random_sleep(300, 400)
-
-
-def do_south_kurzan() -> None:
-    toggle_menu("unaTaskCombatPreset")
-
-    pydirectinput.press(get_config("southKurzanPoseSlot"))
-    random_sleep(14000, 14100)
-
-    toggle_menu("defaultCombatPreset")
-
-    walk_to(x=650, y=180, ms=2600)
-    walk_to(x=650, y=180, ms=2600)
-    spam_interact(4000)
-
-
-def do_mokokmoko() -> None:
-    spam_interact(4000)
-    walk_to(x=416, y=766, ms=5600)
-
-    walk_to(x=960, y=770, ms=1600)
-    pydirectinput.press(get_config("interact"))
-    random_sleep(5500, 5600)
-
-    walk_to(x=1360, y=900, ms=1600)
-    pydirectinput.press(get_config("interact"))
-    random_sleep(5500, 5600)
-
-    walk_to(x=980, y=280, ms=1600)
-    walk_to(x=980, y=280, ms=1600)
-    spam_interact(4000)
-    random_sleep(1500, 1600)
-
-
-def walk_lopang() -> None:
-    """Interacts with and walks to all 3 lopang terminals."""
-    random_sleep(1000, 2000)
-    print("walking lopang")
-    # right terminal
-    spam_interact(2000)
-    # walk to middle terminal
-    walk_to(x=315, y=473, ms=1500)
-    walk_to(x=407, y=679, ms=1300)
-    walk_to(x=584, y=258, ms=1000)
-    walk_to(x=1043, y=240, ms=1200)
-    walk_to(x=1339, y=246, ms=1300)
-    walk_to(x=1223, y=406, ms=800)
-    walk_to(x=1223, y=406, ms=800)
-    walk_to(x=1263, y=404, ms=1300)
-    # middle terminal
-    spam_interact(500)
-    # walk to left terminal
-    walk_to(x=496, y=750, ms=1200)
-    walk_to(x=496, y=750, ms=1200)
-    walk_to(x=496, y=750, ms=1200)
-    walk_to(x=753, y=687, ms=800)
-    walk_to(x=753, y=687, ms=800)
-    walk_to(x=674, y=264, ms=800)
-    walk_to(x=573, y=301, ms=1200)
-    walk_to(x=820, y=240, ms=1300)
-    # left terminal
-    spam_interact(500)
-    random_sleep(1000, 2000)
 
 
 def claim_completed_quest() -> None:
@@ -370,20 +382,3 @@ def check_bifrost_on_cooldown() -> bool:
         region=SCREEN_CENTER_REGION,
     )
     return silver_1k is None
-
-
-def walk_to(x: int, y: int, ms: int) -> None:
-    """Move to specified pixel coordinate with millisecond delay."""
-    pydirectinput.moveTo(x=x, y=y)
-    random_sleep(100, 100)
-    pydirectinput.click(x=x, y=y, button=get_config("move"))
-    random_sleep(ms, ms)
-
-
-def spam_interact(duration_ms: int) -> None:
-    """Presses interact key for approximately the given duration in milliseconds."""
-    count = duration_ms / 100
-    while count != 0:
-        pydirectinput.press(get_config("interact"))
-        random_sleep(90, 110)
-        count = count - 1

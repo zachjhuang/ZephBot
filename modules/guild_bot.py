@@ -24,8 +24,8 @@ class GuildBot(TaskBot):
     TaskBot child class for guild check-in, silver donation, and research support.
     """
 
-    def __init__(self, roster) -> None:
-        super().__init__(roster)
+    def __init__(self, roster, config) -> None:
+        super().__init__(roster, config)
         self.remaining_tasks: list[int] = [
             1 if char["guildDonation"] else 0 for char in self.roster
         ]

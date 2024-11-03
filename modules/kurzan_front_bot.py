@@ -29,8 +29,8 @@ class KurzanFrontBot(db.DungeonBot):
     DungeonBot child class for completing Kurzan Front.
     """
 
-    def __init__(self, roster):
-        super().__init__(roster)
+    def __init__(self, roster, config):
+        super().__init__(roster, config)
         self.remaining_tasks: list[int] = [
             (
                 1
@@ -80,12 +80,12 @@ class KurzanFrontBot(db.DungeonBot):
         # awakeningUsed = False
         jumped = False
         x, y, magnitude = self.minimap.get_game_coords()
+        timeout = 0
         while True:
             self.died_check()
             self.health_check()
             restart_check()
             self.timeout_check()
-            timeout = 0
             # cast sequence
             for i, skill in enumerate(normal_skills):
                 if check_kurzan_finish():
@@ -94,7 +94,7 @@ class KurzanFrontBot(db.DungeonBot):
                 self.died_check()
                 self.health_check()
                 if not jumped and check_50_percent_progress() and self.minimap.check_jump():
-                    timeout = 0
+                    jump_timeout = 0
                     while True:
                         if (
                             util.find_image_center(
@@ -111,25 +111,25 @@ class KurzanFrontBot(db.DungeonBot):
                             confidence=0.75,
                         ):
                             util.left_click_at_position(SCREEN_CENTER_POS)
+                            
+                            pydirectinput.press(self.config["interact"])
+                            util.random_sleep(300, 350)
+                            pydirectinput.press(self.config["interact"])
+                            print("jumped")
+                            jumped = True
+                            self.minimap.targets = []
                             break
                         x, y, magnitude = self.minimap.get_game_coords(
                             target_found=self.minimap.check_jump(), pathfind=True
                         )
-                        db.move_in_direction(x, y, magnitude)
+                        self.move_in_direction(x, y, magnitude)
                         util.random_sleep(100, 150)
                         util.left_click_at_position(SCREEN_CENTER_POS)
-                        timeout += 1
-                        if timeout == 10:
-                            db.random_move()
+                        jump_timeout += 1
+                        if jump_timeout == 10:
+                            self.random_move()
                             util.random_sleep(400, 500)
-                            timeout = 0
-
-                    pydirectinput.press("g")
-                    util.random_sleep(300, 350)
-                    pydirectinput.press("g")
-                    print("jumped")
-                    jumped = True
-                    self.minimap.targets = []
+                            break
 
                 elif (
                     self.minimap.check_buff()
@@ -139,22 +139,22 @@ class KurzanFrontBot(db.DungeonBot):
                     x, y, magnitude = self.minimap.get_game_coords(
                         target_found=True, pathfind=True
                     )
-                    db.move_in_direction(x, y, magnitude)
+                    self.move_in_direction(x, y, magnitude)
                     if util.check_image_on_screen(
                         "./screenshots/chaos/bossBar.png", confidence=0.75
                     ):
                         db.cast_skill(awakening_skill)
                 elif timeout == 5:
-                    db.random_move()
+                    self.random_move()
                     timeout = 0
                 else:
                     print("target not found")
                     x, y, magnitude = self.minimap.get_game_coords(
                         target_found=False, pathfind=True
                     )
-                    db.move_in_direction(x, y, magnitude)
+                    self.move_in_direction(x, y, magnitude)
                     timeout += 1
-                db.perform_class_specialty(
+                self.perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
                 )
                 db.cast_skill(skill)

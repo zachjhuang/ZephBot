@@ -51,16 +51,17 @@ class BotManager:
         self, options
     ) -> None:
         self.curr = 0
-        roster = get_roster()
+        self.roster = get_roster()
+        self.config = get_config()
         self.running_bots: list[TaskBot] = []
         if options['do_chaos']:
-            self.running_bots.append(ChaosBot(roster))
+            self.running_bots.append(ChaosBot(self.roster, self.config))
         if options['do_kurzan_front']:
-            self.running_bots.append(KurzanFrontBot(roster))
+            self.running_bots.append(KurzanFrontBot(self.roster, self.config))
         if options['do_unas']:
-            self.running_bots.append(UnaBot(roster))
+            self.running_bots.append(UnaBot(self.roster, self.config))
         if options['do_guild']:
-            self.running_bots.append(GuildBot(roster))
+            self.running_bots.append(GuildBot(self.roster, self.config))
 
     def all_bots_done(self) -> bool:
         """
@@ -83,7 +84,7 @@ class BotManager:
         restart_check()
         self.switch_to_char(0)
 
-        if not get_config("auraRepair"):
+        if not self.config["auraRepair"]:
             do_city_repair()
 
         while not self.all_bots_done():
@@ -91,14 +92,14 @@ class BotManager:
             wait_overworld_load()
             clear_notifs()
 
-            if not get_config("auraRepair"):
+            if not self.config["auraRepair"]:
                 do_city_repair()
 
             for bot in self.running_bots:
                 bot.do_tasks()
 
             restart_check()
-            next_char = (self.curr + 1) % len(get_roster())
+            next_char = (self.curr + 1) % len(self.roster)
             print(f"character {self.curr} is done, switching to: {next_char}")
             self.switch_to_char(next_char)
 
@@ -169,7 +170,7 @@ class BotManager:
             return
         elif self.is_char_done(index):
             print("character already done, switching to next")
-            self.switch_to_char((index + 1) % len(get_roster()))
+            self.switch_to_char((index + 1) % len(self.roster))
         elif check_image_on_screen(
             "./screenshots/alreadyConnected.png", confidence=0.85
         ):
@@ -185,7 +186,7 @@ class BotManager:
             random_sleep(1000, 1100)
 
             random_sleep(10000, 12000)
-            if get_config("GFN"):
+            if self.config["GFN"]:
                 random_sleep(8000, 9000)
 
     def check_and_update_status(self, index: int):
