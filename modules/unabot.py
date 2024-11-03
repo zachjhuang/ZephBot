@@ -1,7 +1,7 @@
+# pylint: disable=missing-module-docstring, missing-function-docstring
 import pyautogui
 import pydirectinput
 
-from configs.config import config
 from modules.menu_nav import (
     restart_check,
     toggle_menu,
@@ -15,6 +15,7 @@ from modules.utilities import (
     find_image_center,
     left_click_at_position,
     random_sleep,
+    get_config,
 )
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
@@ -25,10 +26,12 @@ SAGE_TOWER_COMPLETED_REGION = (1700, 220, 100, 150)
 GHOST_STORY_F5_REGION = (1575, 440, 80, 450)
 ACCEPT_UNAS_REGION = (1165, 380, 80, 330)
 
+
 class UnaBot(TaskBot):
     """
     Taskbot child class for daily una tasks.
     """
+
     def __init__(self, roster) -> None:
         super().__init__(roster)
         for char in self.roster:
@@ -53,7 +56,7 @@ class UnaBot(TaskBot):
         if "lopang" in unas:
             restart_check()
             if go_to_bifrost("lopangIsland"):
-                self.remaining_tasks[self.curr] -= doLopang()
+                self.remaining_tasks[self.curr] -= do_lopang()
 
         if "mokomoko" in unas:
             restart_check()
@@ -144,13 +147,13 @@ def accept_dailies() -> None:
     random_sleep(800, 900)
 
 
-def doLopang() -> int:
+def do_lopang() -> int:
     """Does 3 lopang dailies (Shushire -> Arthetine -> Vern)."""
     walk_lopang()
     completed = 0
-    for lopangLocation in ["Shushire", "Arthetine", "Vern"]:
+    for lopang_location in ["Shushire", "Arthetine", "Vern"]:
         random_sleep(1500, 1600)
-        if go_to_bifrost("lopang" + lopangLocation):
+        if go_to_bifrost("lopang" + lopang_location):
             spam_interact(6000)
             completed += 1
     return completed
@@ -167,7 +170,7 @@ def do_bleak_night_fog() -> None:
 def do_prehilia() -> None:
     toggle_menu("unaTaskCombatPreset")
 
-    pydirectinput.press(config["prehiliaEmoteSlot"])
+    pydirectinput.press(get_config("prehiliaEmoteSlot"))
     spam_interact(8000)
 
     toggle_menu("defaultCombatPreset")
@@ -176,7 +179,7 @@ def do_prehilia() -> None:
 def do_hestera_garden() -> None:
     toggle_menu("unaTaskCombatPreset")
 
-    pydirectinput.press(config["hesteraGardenEmoteSlot"])
+    pydirectinput.press(get_config("hesteraGardenEmoteSlot"))
     random_sleep(140000, 141000)
     claim_completed_quest()
     random_sleep(300, 400)
@@ -192,7 +195,7 @@ def do_writers_life() -> None:
     # emote in circle
     walk_to(x=1100, y=750, ms=1600)
     walk_to(x=1100, y=750, ms=1600)
-    pydirectinput.press(config["writersLifeEmoteSlot"])
+    pydirectinput.press(get_config("writersLifeEmoteSlot"))
     random_sleep(9000, 9100)
 
     # interact with 3 NPCs
@@ -245,7 +248,7 @@ def do_ghost_story() -> None:
 def do_south_kurzan() -> None:
     toggle_menu("unaTaskCombatPreset")
 
-    pydirectinput.press(config["southKurzanPoseSlot"])
+    pydirectinput.press(get_config("southKurzanPoseSlot"))
     random_sleep(14000, 14100)
 
     toggle_menu("defaultCombatPreset")
@@ -260,11 +263,11 @@ def do_mokokmoko() -> None:
     walk_to(x=416, y=766, ms=5600)
 
     walk_to(x=960, y=770, ms=1600)
-    pydirectinput.press(config["interact"])
+    pydirectinput.press(get_config("interact"))
     random_sleep(5500, 5600)
 
     walk_to(x=1360, y=900, ms=1600)
-    pydirectinput.press(config["interact"])
+    pydirectinput.press(get_config("interact"))
     random_sleep(5500, 5600)
 
     walk_to(x=980, y=280, ms=1600)
@@ -373,7 +376,7 @@ def walk_to(x: int, y: int, ms: int) -> None:
     """Move to specified pixel coordinate with millisecond delay."""
     pydirectinput.moveTo(x=x, y=y)
     random_sleep(100, 100)
-    pydirectinput.click(x=x, y=y, button=config["move"])
+    pydirectinput.click(x=x, y=y, button=get_config("move"))
     random_sleep(ms, ms)
 
 
@@ -381,6 +384,6 @@ def spam_interact(duration_ms: int) -> None:
     """Presses interact key for approximately the given duration in milliseconds."""
     count = duration_ms / 100
     while count != 0:
-        pydirectinput.press(config["interact"])
+        pydirectinput.press(get_config("interact"))
         random_sleep(90, 110)
         count = count - 1

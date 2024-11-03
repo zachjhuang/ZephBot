@@ -1,25 +1,32 @@
+"""
+Provides various utilities for basic script functions, such as random sleeping, 
+image recognition, screen navigation, and reading config files.
+"""
+
 import random
 import time
+from typing import Any
 
+import yaml
 import pyautogui
 import pydirectinput
 
 
 class RestartException(Exception):
-    pass
+    """Raised when normal gameplay is interrupted by disconnect, session limit, etc."""
 
 
 class ResetException(Exception):
-    pass
+    """Raised when daily reset is detected."""
 
 
 class TimeoutException(Exception):
-    pass
+    """Raised when time spent in a dungeon instance exceeds a limit"""
 
 
-def random_sleep(min, max) -> None:
+def random_sleep(min_duration, max_duration) -> None:
     """Sleeps for a random amount of time (in ms) in the given range."""
-    duration = random.randint(min, max) / 1000.0
+    duration = random.randint(min_duration, max_duration) / 1000.0
     if duration < 0:
         return
     time.sleep(duration)
@@ -28,7 +35,7 @@ def random_sleep(min, max) -> None:
 def left_click_at_position(position: tuple[int, int]) -> None:
     """
     Move mouse to position and left click.
-    
+
     Args:
         position: (x, y) coordinate 
     """
@@ -75,3 +82,44 @@ def find_and_click_image(
     )
     if image_position is not None:
         left_click_at_position(image_position)
+
+
+def get_roster() -> list[dict]:
+    """
+    Gets the roster object by reading the corresponding .yaml file.
+
+    Returns:
+        list[dict]: The roster, represented by a list of characters (dictionaries).
+    """
+    with open('configs/roster.yaml', 'r', encoding='utf-8') as file:
+        return yaml.safe_load(file)
+
+
+def get_skills() -> dict[str, list[dict]]:
+    """
+    Get the skills object by reading the corresponding .yaml file.
+
+    Returns:
+        dict[str, list[dict]]: A skills object mapping class names to a list of skills.
+    """
+    with open('configs/skills.yaml', 'r', encoding='utf-8') as file:
+        return yaml.safe_load(file)
+
+
+def get_config(key: str = None) -> dict[str, Any] | Any:
+    """
+    Get the configs object by reading the corresponding .yaml file.
+
+    Args:
+        key: Optional argument for the specific setting name to return. If no
+            key is given then return the entire config object.
+    Returns:
+        A config object mapping setting names to values, or the value itself
+            if the setting name is given as an argument.
+    """
+    with open('configs/config.yaml', 'r', encoding='utf-8') as file:
+        config = yaml.safe_load(file)
+        if key is None:
+            return config
+        else:
+            return config[key]

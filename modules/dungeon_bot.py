@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring
 import random
 import time
 import math
@@ -5,8 +6,6 @@ import math
 import pyautogui
 import pydirectinput
 
-from configs.config import config
-from configs.skills import skills
 from modules.menu_nav import restart_check, toggle_menu, wait_overworld_load
 from modules.task_bot import TaskBot
 from modules.utilities import (
@@ -15,6 +14,8 @@ from modules.utilities import (
     find_and_click_image,
     random_sleep,
     TimeoutException,
+    get_config,
+    get_skills,
 )
 
 SCREEN_CENTER_X = 960
@@ -33,10 +34,15 @@ DAMAGED_ARMOR_REGION = (1500, 134, 100, 100)
 
 
 class DungeonBot(TaskBot):
+    """
+    TaskBot child class that can complete combat dungeons (instances) by using skills
+    and navigating based on the minimap.
+    Maintains clear time statistics.
+    """
     def __init__(self, roster):
         super().__init__(roster)
 
-        self.skills: dict[list[dict]] = skills
+        self.skills: dict[list[dict]] = get_skills()
         self.run_start_time: int = 0
 
         self.completed_count: int = 0
@@ -52,13 +58,13 @@ class DungeonBot(TaskBot):
         """
         Press potion if under HP threshold.
         """
-        x = int(690 + 180 * config["healthPotAtPercent"])
-        r1, g, b = pyautogui.pixel(x, 855)
-        r2, g, b = pyautogui.pixel(x - 2, 855)
-        r3, g, b = pyautogui.pixel(x + 2, 855)
+        x = int(690 + 180 * get_config("healthPotAtPercent"))
+        r1, _g, _b = pyautogui.pixel(x, 855)
+        r2, _g, _b = pyautogui.pixel(x - 2, 855)
+        r3, _g, _b = pyautogui.pixel(x + 2, 855)
         if r1 < 30 or r2 < 30 or r3 < 30:
             print("health pot pressed")
-            pydirectinput.press(config["healthPot"])
+            pydirectinput.press(get_config("healthPot"))
             self.health_pot_count += 1
 
     def died_check(self) -> None:
@@ -84,23 +90,23 @@ class DungeonBot(TaskBot):
         Raise timeoutException if total time elapsed in chaos exceeds limit.
         """
         curr_time = int(time.time())
-        if curr_time - self.run_start_time > config["timeLimit"]:
+        if curr_time - self.run_start_time > get_config("timeLimit"):
             print("timeout triggered")
             timeout = pyautogui.screenshot()
             timeout.save(f"./debug/timeout_{curr_time}.png")
             self.timeout_count += 1
             raise TimeoutException
 
-    def update_print_metrics(self, int):
+    def update_print_metrics(self, clear_time: int):
         """
         Updates bot statistics and prints summary.
         """
         print("-------------------------------------")
-        print(f"run completed in {int}s")
+        print(f"run completed in {clear_time}s")
         self.completed_count += 1
-        self.total_time += int
-        self.fastest_clear = min(int, self.fastest_clear)
-        self.slowest_clear = max(int, self.slowest_clear)
+        self.total_time += clear_time
+        self.fastest_clear = min(clear_time, self.fastest_clear)
+        self.slowest_clear = max(clear_time, self.slowest_clear)
         print("-------------------------------------")
         print(f"total timeouts: {self.timeout_count}")
         print(f"total deaths: {self.death_count}")
@@ -108,14 +114,15 @@ class DungeonBot(TaskBot):
         print("-------------------------------------")
         avg_time = self.total_time / self.completed_count
         print(
-            f"average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear}"
+            f"average: {avg_time}, fastest: {
+                self.fastest_clear}, slowest: {self.slowest_clear}"
         )
         print("-------------------------------------")
 
 
-def cast_ability(ability: dict) -> None:
+def cast_skill(skill: dict) -> None:
     """
-    Casts the given ability in the specified direction.
+    Casts the given skill in the specified direction.
     """
     # mouse_move_to(x=x, y=y)
     # if ability["directional"]:
@@ -123,40 +130,40 @@ def cast_ability(ability: dict) -> None:
     # else:
     #     mouseMoveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
 
-    if ability["castTime"] is not None and ability["castTime"] > 0:
-        pydirectinput.press(ability["key"])
+    if skill["castTime"] is not None and skill["castTime"] > 0:
+        pydirectinput.press(skill["key"])
         random_sleep(100, 150)
-        pydirectinput.press(ability["key"])
-        random_sleep(ability["castTime"], (ability["castTime"] + 100))
-    elif ability["holdTime"] is not None and ability["holdTime"] > 0:
-        pydirectinput.keyDown(ability["key"])
-        random_sleep(ability["holdTime"], (ability["holdTime"] + 100))
-        pydirectinput.keyUp(ability["key"])
+        pydirectinput.press(skill["key"])
+        random_sleep(skill["castTime"], (skill["castTime"] + 100))
+    elif skill["holdTime"] is not None and skill["holdTime"] > 0:
+        pydirectinput.keyDown(skill["key"])
+        random_sleep(skill["holdTime"], (skill["holdTime"] + 100))
+        pydirectinput.keyUp(skill["key"])
     else:
-        pydirectinput.press(ability["key"])
+        pydirectinput.press(skill["key"])
         random_sleep(100, 150)
 
 
-def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> None:
+def perform_class_specialty(char_class: str, i: int, skills: list[dict]) -> None:
     """
     Performs custom class behavior (activating identity, using specialty, stance swapping, etc.).
     """
     match char_class:
         case "arcanist":
-            pydirectinput.press(config["specialty1"])
-            pydirectinput.press(config["specialty2"])
+            pydirectinput.press(get_config("specialty1"))
+            pydirectinput.press(get_config("specialty2"))
         case "souleater":
             soul_snatch = check_image_on_screen(
                 "./screenshots/classSpecialties/soulSnatch.png",
                 region=CHARACTER_DEBUFFS_REGION,
                 confidence=0.85,
             )
-            # if soulSnatch:
-            #     castAbility(960, 540, abilities[0])
+            # if soul_snatch:
+            #     cast_skill(skills[0])
             #     random_sleep(300, 400)
-            #     castAbility(960, 540, abilities[1])
+            #     cast_skill(skills[1])
             #     random_sleep(300, 400)
-            #     castAbility(960, 540, abilities[5])
+            #     cast_skill(skills[5])
             #     random_sleep(300, 400)
         case "slayer":
             slayer_specialty = check_image_on_screen(
@@ -165,7 +172,7 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
                 confidence=0.85,
             )
             if slayer_specialty:
-                pydirectinput.press(config["specialty1"])
+                pydirectinput.press(get_config("specialty1"))
                 random_sleep(150, 160)
         case "deathblade":
             deathblade_three_orbs = check_image_on_screen(
@@ -174,7 +181,7 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
                 confidence=0.80,
             )
             if deathblade_three_orbs:
-                pydirectinput.press(config["specialty1"])
+                pydirectinput.press(get_config("specialty1"))
                 random_sleep(150, 160)
         case "gunslinger":
             pistol_stance = check_image_on_screen(
@@ -195,26 +202,26 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
             # swap to shotgun
             if i == 0 and not shotgun_stance:
                 if pistol_stance:
-                    pydirectinput.press(config["specialty1"])
+                    pydirectinput.press(get_config("specialty1"))
                     random_sleep(150, 160)
                 if sniper_stance:
-                    pydirectinput.press(config["specialty2"])
+                    pydirectinput.press(get_config("specialty2"))
                     random_sleep(150, 160)
             # swap to sniper
             elif i < 3 and not sniper_stance:
                 if pistol_stance:
-                    pydirectinput.press(config["specialty2"])
+                    pydirectinput.press(get_config("specialty2"))
                     random_sleep(150, 160)
                 if shotgun_stance:
-                    pydirectinput.press(config["specialty1"])
+                    pydirectinput.press(get_config("specialty1"))
                     random_sleep(150, 160)
             # swap to pistol
             elif not pistol_stance:
                 if shotgun_stance:
-                    pydirectinput.press(config["specialty2"])
+                    pydirectinput.press(get_config("specialty2"))
                     random_sleep(150, 160)
                 if sniper_stance:
-                    pydirectinput.press(config["specialty1"])
+                    pydirectinput.press(get_config("specialty1"))
                     random_sleep(150, 160)
         case "artist":
             artist_orb = check_image_on_screen(
@@ -225,9 +232,9 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
             if artist_orb:
                 pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
                 random_sleep(150, 160)
-                pydirectinput.press(config["specialty2"])
+                pydirectinput.press(get_config("specialty2"))
                 random_sleep(1500, 1600)
-                pydirectinput.press(config["interact"])
+                pydirectinput.press(get_config("interact"))
         case "aeromancer":
             aero_specialty = check_image_on_screen(
                 "./screenshots/classSpecialties/aeroSpecialty.png",
@@ -236,7 +243,7 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
             )
             if aero_specialty:
                 random_sleep(150, 160)
-                pydirectinput.press(config["specialty1"])
+                pydirectinput.press(get_config("specialty1"))
         case "scrapper":
             scrapper_specialty = check_image_on_screen(
                 "./screenshots/classSpecialties/scrapperSpecialty.png",
@@ -245,26 +252,26 @@ def perform_class_specialty(char_class: str, i: int, abilities: list[dict]) -> N
             )
             if scrapper_specialty:
                 random_sleep(150, 160)
-                pydirectinput.press(config["specialty1"])
+                pydirectinput.press(get_config("specialty1"))
         case "bard":
             courage_buff = check_image_on_screen(
                 "./screenshots/classSpecialties/bardCourage120.png",
                 region=CHARACTER_BUFFS_REGION,
                 confidence=0.75,
             )
-            rZ, gZ, bZ = pyautogui.pixel(920, 866)
-            rX, gX, bX = pyautogui.pixel(1006, 875)
-            if rZ - gZ > 80 and courage_buff:
-                pydirectinput.press(config["specialty1"])
+            rz, gz, _bz = pyautogui.pixel(920, 866)
+            _rx, gx, bx = pyautogui.pixel(1006, 875)
+            if rz - gz > 80 and courage_buff:
+                pydirectinput.press(get_config("specialty1"))
                 random_sleep(50, 60)
-                pydirectinput.press(config["specialty1"])
+                pydirectinput.press(get_config("specialty1"))
                 random_sleep(150, 160)
-            elif bX - gX > 70 and not courage_buff:
+            elif bx - gx > 70 and not courage_buff:
                 pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
                 random_sleep(150, 160)
-                pydirectinput.press(config["specialty2"])
+                pydirectinput.press(get_config("specialty2"))
                 random_sleep(50, 60)
-                pydirectinput.press(config["specialty2"])
+                pydirectinput.press(get_config("specialty2"))
                 random_sleep(150, 160)
 
 
@@ -296,8 +303,8 @@ def move_in_direction(x: int, y: int, magnitude: int) -> None:
     if x == SCREEN_CENTER_X and y == SCREEN_CENTER_Y:
         return
     for _ in range(math.floor(magnitude / 10) + 1):
-        pydirectinput.click(x=x, y=y, button=config["move"])
-        random_sleep(100,110)
+        pydirectinput.click(x=x, y=y, button=get_config("move"))
+        random_sleep(100, 110)
 
 
 def random_move() -> None:
@@ -309,9 +316,9 @@ def random_move() -> None:
     y = random.randint(top, top + height)
 
     print(f"random move to x: {x} y: {y}")
-    pydirectinput.click(x=x, y=y, button=config["move"])
+    pydirectinput.click(x=x, y=y, button=get_config("move"))
     random_sleep(200, 250)
-    pydirectinput.click(x=x, y=y, button=config["move"])
+    pydirectinput.click(x=x, y=y, button=get_config("move"))
     random_sleep(200, 250)
 
 
@@ -324,7 +331,7 @@ def wait_dungeon_load() -> None:
     while True:
         restart_check()
         curr_time = int(time.time_ns() / 1000000)
-        if curr_time - black_screen_start_time > config["blackScreenTimeLimit"]:
+        if curr_time - black_screen_start_time > get_config("blackScreenTimeLimit"):
             print("alt f4")
             pydirectinput.keyDown("alt")
             random_sleep(350, 400)
@@ -352,7 +359,8 @@ def quit_dungeon() -> None:
     Quit dungeon after finishing a run.
     """
     print("quitting dungeon")
-    find_and_click_image("chaos/exit", region=LEAVE_MENU_REGION, confidence=0.7)
+    find_and_click_image(
+        "chaos/exit", region=LEAVE_MENU_REGION, confidence=0.7)
     random_sleep(800, 900)
     find_and_click_image("ok", region=CLICKABLE_REGION, confidence=0.75)
     random_sleep(5000, 7000)

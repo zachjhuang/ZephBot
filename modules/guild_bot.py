@@ -23,6 +23,7 @@ class GuildBot(TaskBot):
     """
     TaskBot child class for guild check-in, silver donation, and research support.
     """
+
     def __init__(self, roster) -> None:
         super().__init__(roster)
         self.remaining_tasks: list[int] = [

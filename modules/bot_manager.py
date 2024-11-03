@@ -2,7 +2,6 @@ import math
 
 import pydirectinput
 
-from configs.config import config
 from modules.chaos_bot import ChaosBot
 from modules.guild_bot import GuildBot
 from modules.kurzan_front_bot import KurzanFrontBot
@@ -14,7 +13,8 @@ from modules.utilities import (
     find_image_center,
     left_click_at_position,
     random_sleep,
-    get_roster
+    get_roster,
+    get_config,
 )
 
 SCREEN_CENTER_X = 960
@@ -42,6 +42,11 @@ CHARACTER_SELECT_POS = [
 
 
 class BotManager:
+    """
+    Manages a list of bots and switches between characters, 
+    running each of the bots on each character.
+    """
+
     def __init__(
         self, options
     ) -> None:
@@ -78,7 +83,7 @@ class BotManager:
         restart_check()
         self.switch_to_char(0)
 
-        if config["auraRepair"] == False:
+        if not get_config("auraRepair"):
             do_city_repair()
 
         while not self.all_bots_done():
@@ -86,7 +91,7 @@ class BotManager:
             wait_overworld_load()
             clear_notifs()
 
-            if config["auraRepair"] == False:
+            if not get_config("auraRepair"):
                 do_city_repair()
 
             for bot in self.running_bots:
@@ -164,7 +169,7 @@ class BotManager:
             return
         elif self.is_char_done(index):
             print("character already done, switching to next")
-            self.switch_to_char((index + 1) % len(roster))
+            self.switch_to_char((index + 1) % len(get_roster()))
         elif check_image_on_screen(
             "./screenshots/alreadyConnected.png", confidence=0.85
         ):
@@ -180,10 +185,17 @@ class BotManager:
             random_sleep(1000, 1100)
 
             random_sleep(10000, 12000)
-            if config["GFN"] == True:
+            if get_config("GFN"):
                 random_sleep(8000, 9000)
 
     def check_and_update_status(self, index: int):
+        """
+        Detect what tasks have been completed based on the character 
+        status on the ESC menu screen and update accordingly. 
+
+        Args:
+            index (int): Index of the character to update.
+        """
         for bot in self.running_bots:
             if isinstance(bot, ChaosBot):
                 bot.remaining_tasks[index] = max(
@@ -197,8 +209,8 @@ class BotManager:
                 bot.remaining_tasks[index] = max(
                     0, bot.remaining_tasks[index] - check_unas_completed()
                 )
-                
-                
+
+
 def do_city_repair() -> None:
     """
     With the character standing next to a repair NPC, repairs armor.
@@ -210,7 +222,7 @@ def do_city_repair() -> None:
         region=(1500, 134, 100, 100),
     ):
         print("repairing")
-        pydirectinput.press(config["interact"])
+        pydirectinput.press(get_config("interact"))
         random_sleep(600, 700)
         pydirectinput.moveTo(x=1057, y=455)
         random_sleep(600, 700)
@@ -250,7 +262,7 @@ def check_unas_completed() -> int:
     When viewing character status in ESC menu, check how many una tasks have been completed.
 
     Does not account for task limit increases.
-    
+
     Returns:
         int: The number of unas completed on the currently selected character. 0 if unas icon 
             not detected.
@@ -311,7 +323,7 @@ def check_chaos_completed() -> int:
 def check_kurzan_front_completed() -> int:
     """
     When viewing character status in ESC menu, check if Kurzan Front has been cleared.
-    
+
     Returns:
         int: The number of Kurzan Front completed on the currently selected character.
             0 if Kurzan Front icon not detected.

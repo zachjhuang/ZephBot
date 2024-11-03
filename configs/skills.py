@@ -1,32 +1,3 @@
-"""
-    Make sure you have configured skills for your specific class and skill position:
-    'key: keybind of the skill
-    'skillType': normal or awakening
-    'holdTime': hold for x amount of milliseconds or None
-    'castTime': cast time in milliseconds or None
-    'directional': if the skill needs to be pointed at a direction where mobs are at
-    'position': preset region as shown below
-
-    Layout:
-                1       2       3       4
-    AWAKENING
-                    5       6       7       8
-
-
-    Normal abilities will cast in the order that they are listed. Planning a rotation is optional but recommended.
-
-"""
-
-SKILL_1_REGION = (738, 869, 15, 15)
-SKILL_2_REGION = (777, 869, 15, 15)
-SKILL_3_REGION = (816, 869, 15, 15)
-SKILL_4_REGION = (855, 869, 15, 15)
-SKILL_5_REGION = (759, 907, 15, 15)
-SKILL_6_REGION = (797, 907, 15, 15)
-SKILL_7_REGION = (835, 907, 15, 15)
-SKILL_8_REGION = (873, 907, 15, 15)
-SKILL_AWAKENING_REGION = (691, 894, 19, 11)
-
 skills = {
     "aeromancer": [
         {
@@ -34,7 +5,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -42,7 +13,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 3000,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": False,
         },
         {
@@ -50,7 +21,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -58,7 +29,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -66,7 +37,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": 1000,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -74,7 +45,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 1000,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -82,7 +53,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -90,7 +61,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": False,
         },
         {
@@ -98,7 +69,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": False,
         },
     ],
@@ -108,7 +79,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": False,
         },
         {
@@ -116,7 +87,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
@@ -124,7 +95,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": False,
         },
         {
@@ -132,7 +103,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -140,7 +111,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -148,7 +119,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": False,
         },
         {
@@ -156,7 +127,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": False,
         },
         {
@@ -164,15 +135,15 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": False,
         },
         {
             "key": "v",
             "skillType": "awakening",
             "holdTime": None,
-            "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "castTime": 1000,
+            "position": (691, 894, 19, 11),
             "directional": False,
         },
     ],
@@ -182,23 +153,23 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": False,
         },
         {
             "key": "w",
             "skillType": "normal",
             "holdTime": None,
-            "castTime": None,
-            "position": SKILL_2_REGION,
+            "castTime": 1000,
+            "position": (777, 869, 15, 15),
             "directional": False,
         },
         {
             "key": "e",
             "skillType": "normal",
             "holdTime": None,
-            "castTime": None,
-            "position": SKILL_3_REGION,
+            "castTime": 1000,
+            "position": (816, 869, 15, 15),
             "directional": False,
         },
         {
@@ -206,7 +177,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": False,
         },
         {
@@ -214,7 +185,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -222,7 +193,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -230,7 +201,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": False,
         },
         {
@@ -238,7 +209,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": False,
         },
         {
@@ -246,7 +217,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": False,
         },
     ],
@@ -256,7 +227,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 1700,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -264,7 +235,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": False,
         },
         {
@@ -272,7 +243,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -280,7 +251,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": False,
         },
         {
@@ -288,7 +259,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -296,7 +267,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -304,7 +275,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -312,7 +283,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -320,7 +291,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -330,7 +301,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": False,
         },
         {
@@ -338,7 +309,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
@@ -346,7 +317,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": False,
         },
         {
@@ -354,7 +325,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": False,
         },
         {
@@ -362,7 +333,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": 500,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": False,
         },
         {
@@ -370,7 +341,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": False,
         },
         {
@@ -378,7 +349,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": 2000,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": False,
         },
         {
@@ -386,7 +357,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -394,7 +365,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": 1000,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -404,7 +375,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -412,7 +383,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -420,7 +391,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -428,7 +399,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -436,7 +407,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": False,
         },
         {
@@ -444,7 +415,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -452,7 +423,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -460,7 +431,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": 500,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -470,7 +441,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -478,15 +449,15 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
             "key": "e",
             "skillType": "normal",
-            "holdTime": None,
+            "holdTime": 2000,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -494,15 +465,15 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": False,
         },
         {
             "key": "a",
             "skillType": "normal",
-            "holdTime": None,
-            "castTime": 2000,
-            "position": SKILL_5_REGION,
+            "holdTime": 2000,
+            "castTime": 0,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -510,7 +481,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -518,7 +489,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": False,
         },
         {
@@ -526,7 +497,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -534,27 +505,25 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": False,
         },
     ],
     "gunslinger": [
-        # shotgun
         {
             "key": "q",
             "skillType": "normal",
-            "holdTime": None,
+            "holdTime": 2000,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": False,
         },
-        # sniper
         {
             "key": "a",
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -562,16 +531,15 @@ skills = {
             "skillType": "normal",
             "holdTime": 1000,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
-        # handgun
         {
             "key": "q",
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": False,
         },
         {
@@ -579,7 +547,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": False,
         },
         {
@@ -587,7 +555,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": False,
         },
         {
@@ -595,15 +563,15 @@ skills = {
             "skillType": "normal",
             "holdTime": 3000,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
             "key": "f",
             "skillType": "normal",
-            "holdTime": 2500,
+            "holdTime": 2200,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": False,
         },
         {
@@ -611,7 +579,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -621,7 +589,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 2000,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -629,7 +597,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
@@ -637,7 +605,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": False,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": False,
         },
         {
@@ -645,7 +613,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -653,7 +621,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -661,7 +629,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 2000,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -669,7 +637,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 2000,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -677,7 +645,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 3000,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -685,7 +653,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": 3000,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -695,7 +663,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": False,
         },
         {
@@ -703,7 +671,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": False,
         },
         {
@@ -711,7 +679,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": 500,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -719,7 +687,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": 2000,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": False,
         },
         {
@@ -727,7 +695,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -735,7 +703,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -743,7 +711,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": 2000,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": False,
         },
         {
@@ -751,7 +719,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": 1200,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -759,7 +727,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": False,
         },
     ],
@@ -769,7 +737,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -777,7 +745,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 4000,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -785,7 +753,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -793,7 +761,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -801,7 +769,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -809,7 +777,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -817,7 +785,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -825,7 +793,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -835,7 +803,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": False,
         },
         {
@@ -843,7 +811,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
@@ -851,7 +819,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -859,7 +827,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -867,7 +835,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -875,7 +843,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -883,7 +851,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -891,7 +859,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": 500,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -901,7 +869,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 500,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -909,7 +877,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
@@ -917,7 +885,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -925,7 +893,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -933,7 +901,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": False,
         },
         {
@@ -941,7 +909,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": False,
         },
         {
@@ -949,7 +917,7 @@ skills = {
             "skillType": "normal",
             "holdTime": 2000,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -957,7 +925,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -965,7 +933,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": False,
         },
     ],
@@ -975,7 +943,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
@@ -983,7 +951,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": False,
         },
         {
@@ -991,7 +959,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -999,7 +967,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -1007,7 +975,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -1015,7 +983,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -1023,7 +991,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],
@@ -1033,7 +1001,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_1_REGION,
+            "position": (738, 869, 15, 15),
             "directional": True,
         },
         {
@@ -1041,7 +1009,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_2_REGION,
+            "position": (777, 869, 15, 15),
             "directional": True,
         },
         {
@@ -1049,7 +1017,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_3_REGION,
+            "position": (816, 869, 15, 15),
             "directional": True,
         },
         {
@@ -1057,7 +1025,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_4_REGION,
+            "position": (855, 869, 15, 15),
             "directional": True,
         },
         {
@@ -1065,7 +1033,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_5_REGION,
+            "position": (759, 907, 15, 15),
             "directional": True,
         },
         {
@@ -1073,7 +1041,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_6_REGION,
+            "position": (797, 907, 15, 15),
             "directional": True,
         },
         {
@@ -1081,7 +1049,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_7_REGION,
+            "position": (835, 907, 15, 15),
             "directional": True,
         },
         {
@@ -1089,7 +1057,7 @@ skills = {
             "skillType": "normal",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_8_REGION,
+            "position": (873, 907, 15, 15),
             "directional": True,
         },
         {
@@ -1097,7 +1065,7 @@ skills = {
             "skillType": "awakening",
             "holdTime": None,
             "castTime": None,
-            "position": SKILL_AWAKENING_REGION,
+            "position": (691, 894, 19, 11),
             "directional": True,
         },
     ],

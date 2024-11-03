@@ -1,6 +1,5 @@
 # pylint: disable=missing-module-docstring
 import yaml
-
 from nicegui import ui
 
 from modules.utilities import get_roster

@@ -1,13 +1,12 @@
+# pylint: disable=missing-module-docstring
 import time
-from datetime import datetime
 
 import pyautogui
 import pydirectinput
 
-from configs.config import config
 from modules.dungeon_bot import (
     DungeonBot,
-    cast_ability,
+    cast_skill,
     perform_class_specialty,
     do_aura_repair,
     move_in_direction,
@@ -17,13 +16,14 @@ from modules.dungeon_bot import (
 from modules.menu_nav import quit_chaos, restart_check, toggle_menu, wait_for_menu_load
 from modules.minimap import Minimap
 from modules.utilities import (
-    ResetException,
+    # ResetException,
     TimeoutException,
     check_image_on_screen,
     find_and_click_image,
     find_image_center,
     left_click_at_position,
     random_sleep,
+    get_config,
 )
 
 SCREEN_CENTER_X = 960
@@ -73,6 +73,9 @@ CHAOS_TAB_POSITION = {
 
 
 class ChaosBot(DungeonBot):
+    """
+    DungeonBot child class for completing chaos dungeon.
+    """
     def __init__(self, roster):
         super().__init__(roster)
         self.remaining_tasks: list[int] = [
@@ -123,7 +126,7 @@ class ChaosBot(DungeonBot):
         wait_dungeon_load()
         print(f"floor {floor} loaded")
 
-        if config["auraRepair"]:
+        if get_config("auraRepair"):
             do_aura_repair(False)
 
         left_click_at_position(SCREEN_CENTER_POS)
@@ -159,7 +162,7 @@ class ChaosBot(DungeonBot):
             restart_check()
             self.timeout_check()
 
-            x, y, move_duration = self.minimap.get_game_coords()
+            # x, y, move_duration = self.minimap.get_game_coords()
 
             if self.check_accidental_portal_enter(floor):
                 return
@@ -183,12 +186,12 @@ class ChaosBot(DungeonBot):
                 random_move()
 
             if floor == 1 and not awakening_used:
-                cast_ability(awakening_skill)
+                cast_skill(awakening_skill)
             if floor == 2 and check_boss_bar() and not awakening_used:
-                cast_ability(awakening_skill)
+                cast_skill(awakening_skill)
                 awakening_used = True
 
-            for i in range(len(normal_skills)):
+            for i, skill in enumerate(normal_skills):
                 if floor == 3 and check_chaos_finish():
                     print("chaos finish screen")
                     return
@@ -207,7 +210,7 @@ class ChaosBot(DungeonBot):
                 perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
                 )
-                cast_ability(normal_skills[i])
+                cast_skill(skill)
 
     def check_accidental_portal_enter(self, floor) -> bool:
         """
@@ -231,11 +234,14 @@ class ChaosBot(DungeonBot):
         """
         Moves to portal and tries to enter it.
         """
-        pydirectinput.click(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y, button=config["move"])
+        pydirectinput.click(x=SCREEN_CENTER_X,
+                            y=SCREEN_CENTER_Y, 
+                            button=get_config("move"))
         random_sleep(100, 150)
         while True:
             self.minimap.check_portal()
-            x, y, _move_duration = self.minimap.get_game_coords(target_found=True)
+            x, y, _move_duration = self.minimap.get_game_coords(
+                target_found=True)
 
             # Try to enter portal until black screen
             im = pyautogui.screenshot(region=(1652, 168, 240, 210))
@@ -243,9 +249,9 @@ class ChaosBot(DungeonBot):
             if r + g + b < 30:
                 pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
                 break
-            pydirectinput.press(config["interact"])
+            pydirectinput.press(get_config("interact"))
             random_sleep(100, 120)
-            pydirectinput.click(x=x, y=y, button=config["move"])
+            pydirectinput.click(x=x, y=y, button=get_config("move"))
             random_sleep(60, 70)
             self.timeout_check()
 
@@ -317,7 +323,9 @@ def enter_chaos(ilvl: int) -> None:
 
     find_and_click_image("enterButton", confidence=0.75)
     random_sleep(800, 900)
-    find_and_click_image("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
+    find_and_click_image("acceptButton",
+                         region=SCREEN_CENTER_REGION,
+                         confidence=0.75)
     random_sleep(800, 900)
 
 
@@ -329,8 +337,8 @@ def select_chaos_dungeon(ilvl: int) -> None:
         ilvl: A valid item level entry requirement for a chaos dungeon.
     """
     chaos_menu_right_arrow = find_image_center(
-        f"./screenshots/chaosMenuRightArrow.png", confidence=0.95
-    )
+        "./screenshots/chaosMenuRightArrow.png", 
+        confidence=0.95)
     if chaos_menu_right_arrow is not None:
         x, y = chaos_menu_right_arrow
         pydirectinput.moveTo(x=x, y=y)
@@ -358,10 +366,10 @@ def click_rift_core() -> None:
             x, y = rift_core
             if y > 650 or x < 400 or x > 1500:
                 return
-            pydirectinput.click(x=x, y=y + 190, button=config["move"])
+            pydirectinput.click(x=x, y=y + 190, button=get_config("move"))
             random_sleep(100, 120)
             for _ in range(4):
-                pydirectinput.press(config["meleeAttack"])
+                pydirectinput.press(get_config("meleeAttack"))
                 random_sleep(300, 360)
 
 
@@ -389,11 +397,15 @@ def reenter_chaos() -> None:
     """
     print("reentering chaos")
     random_sleep(1200, 1400)
-    find_and_click_image("chaos/selectLevel", region=LEAVE_MENU_REGION, confidence=0.7)
+    find_and_click_image("chaos/selectLevel",
+                         region=LEAVE_MENU_REGION,
+                         confidence=0.7)
     random_sleep(800, 900)
     find_and_click_image("enterButton", confidence=0.75)
     random_sleep(800, 900)
-    find_and_click_image("acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
+    find_and_click_image("acceptButton",
+                         region=SCREEN_CENTER_REGION,
+                         confidence=0.75)
     random_sleep(2000, 3200)
     return
 

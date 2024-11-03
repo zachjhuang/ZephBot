@@ -1,0 +1,27 @@
+GFN: true
+auraRepair: true
+bifrost: alt w
+blackScreenTimeLimit: 50000
+confidenceForGFN: 0.9
+content: alt q
+defaultCombatPreset: ctrl q
+friends: u
+guild: alt u
+healthPot: f1
+healthPotAtPercent: 0.2
+hesteraGardenEmoteSlot: '8'
+interact: g
+invisible: false
+meleeAttack: c
+move: left
+performance: false
+pet: p
+prehiliaEmoteSlot: '9'
+resetHour: 6
+southKurzanPoseSlot: '7'
+specialty1: z
+specialty2: '`'
+timeLimit: 450
+unaTaskCombatPreset: ctrl r
+unas: alt j
+writersLifeEmoteSlot: '9'

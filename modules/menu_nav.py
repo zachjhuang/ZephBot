@@ -1,10 +1,10 @@
+# pylint: disable=missing-module-docstring
 import os
 import time
 
 import pyautogui
 import pydirectinput
 
-from configs.config import config
 from modules.utilities import (
     RestartException,
     check_image_on_screen,
@@ -12,6 +12,7 @@ from modules.utilities import (
     find_and_click_image,
     find_image_center,
     random_sleep,
+    get_config
 )
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
@@ -36,23 +37,23 @@ def restart_check() -> None:
     -   General catch-all where black bars from forcing 21:9 on GFN are not detected (i.e. GFN closed)
 
     """
-    dc = check_image_on_screen(
+    dc_popup = check_image_on_screen(
         "./screenshots/dc.png",
         region=SCREEN_CENTER_REGION,
         confidence=0.9,
     )
-    enter_server = check_image_on_screen(
+    enter_server_button = check_image_on_screen(
         "./screenshots/enterServer.png",
         region=(885, 801, 160, 55),
         confidence=0.9,
     )
-    if dc or enter_server:
+    if dc_popup or enter_server_button:
         curr_time = int(time.time_ns() / 1000000)
-        dc = pyautogui.screenshot()
-        dc.save(f"./debug/dc_{curr_time}.png")
-        print(f"dc detected...time : {curr_time} dc:{dc} enterServer:{dc}")
+        dc_popup = pyautogui.screenshot()
+        dc_popup.save(f"./debug/dc_{curr_time}.png")
+        print(f"dc detected...time : {curr_time} dc:{dc_popup} enterServer:{dc_popup}")
         raise RestartException
-    if config["GFN"] == True:
+    if get_config("GFN"):
         for error_type in ["sessionLimitReached", "updateMembership", "inactiveGFN"]:
             error_presence = check_image_on_screen(
                 f"./screenshots/GFN/{error_type}.png",
@@ -72,8 +73,8 @@ def restart_check() -> None:
     r2, g2, b2 = bottom.getpixel((0, 49))
     r3, g3, b3 = bottom.getpixel((249, 0))
     r4, g4, b4 = bottom.getpixel((249, 49))
-    sum = r1 + g1 + b1 + r2 + g2 + b2 + r3 + g3 + b3 + r4 + g4 + b4
-    if sum > 50:
+    brightness = r1 + g1 + b1 + r2 + g2 + b2 + r3 + g3 + b3 + r4 + g4 + b4
+    if brightness > 50:
         print("game crashed, restarting game client...")
         curr_time = int(time.time_ns() / 1000000)
         crash = pyautogui.screenshot()
@@ -187,10 +188,13 @@ def enter_character() -> None:
 
 
 def restart_game() -> None:
+    """
+    Reboots the instance from an interrupted state.
+    """
     print("restart game")
     # gameCrashCheck()
     random_sleep(5000, 7000)
-    if config["GFN"]:
+    if get_config("GFN"):
         boot_gfn_session()
     else:
         boot_steam_session()
@@ -201,11 +205,11 @@ def restart_game() -> None:
     random_sleep(22200, 23300)
 
 
-def toggle_menu(menuType: str) -> None:
+def toggle_menu(menu_name: str) -> None:
     """
     Opens/closes specified menu.
     """
-    keys = config[menuType].split(" ")
+    keys = get_config(menu_name).split(" ")
     if len(keys) == 2:
         pydirectinput.keyDown(keys[0])
         random_sleep(300, 400)
@@ -228,7 +232,8 @@ def wait_for_menu_load(menu: str) -> None:
     """
     timeout = 0
     while not check_image_on_screen(
-        f"./screenshots/menus/{menu}Menu.png", confidence=0.85
+        f"./screenshots/menus/{menu}Menu.png",
+        confidence=0.85
     ):
         random_sleep(180, 220)
         timeout += 1
@@ -254,7 +259,9 @@ def wait_overworld_load() -> None:
         random_sleep(1000, 1100)
 
         if check_image_on_screen(
-            "./screenshots/inChaos.png", region=(247, 146, 222, 50), confidence=0.75
+            "./screenshots/inChaos.png", 
+            region=(247, 146, 222, 50),
+            confidence=0.75
         ):
             print("still in the last chaos run, quitting")
             quit_chaos()
@@ -266,9 +273,13 @@ def quit_chaos() -> None:
     Quit chaos dungeon after finishing a run.
     """
     print("quitting chaos")
-    find_and_click_image("chaos/exit", region=CHAOS_LEAVE_MENU_REGION, confidence=0.7)
+    find_and_click_image("chaos/exit",
+                         region=CHAOS_LEAVE_MENU_REGION,
+                         confidence=0.7)
     random_sleep(800, 900)
-    find_and_click_image("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
+    find_and_click_image("ok",
+                         region=SCREEN_CENTER_REGION,
+                         confidence=0.75)
     random_sleep(5000, 7000)
     wait_overworld_load()
     return

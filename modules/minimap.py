@@ -1,11 +1,14 @@
+""" 
+Implements Minimap class and various functions for working with
+(x, y) coordinates represeted as two member tuples
+"""
 import math
 from collections import deque
 from typing import Callable
 
 import pyautogui
 
-from configs.config import config
-from modules.utilities import find_image_center
+from modules.utilities import find_image_center, get_config
 
 SCREEN_CENTER_X = 960
 SCREEN_CENTER_Y = 540
@@ -23,9 +26,11 @@ class Minimap:
     translating them to in game coordinates.
 
     Attributes:
-        targets (list[tuple[int, int]]): (x, y) coordinates of determined targets, relative to center of minimap. Ordered from least to most recently acquired targets.
+        targets (list[tuple[int, int]]): (x, y) coordinates of determined targets, 
+            relative to center of minimap. Ordered from least to most recently acquired targets.
 
-        valid_coords (list[tuple[int, int]]): All (x, y) coordinates that are valid, relative to center of minimap.
+        valid_coords (list[tuple[int, int]]): All (x, y) coordinates that are valid, 
+            relative to center of minimap.
     """
 
     def __init__(self) -> None:
@@ -97,17 +102,20 @@ class Minimap:
         self, target_found: bool = False, pathfind: bool = False
     ) -> tuple[int, int, int]:
         """
-        Translates coordinates of most recently acquired target from relative minimap coordinates into valid, ingame coordinates.
+        Translates coordinates of most recently acquired target from relative minimap coordinates 
+        into valid, ingame coordinates.
 
         Args:
-            target_found: If `True`, calculate where to click based on the most recently acquired target's location. \\
-                Otherwise, calculate based on an average of all previously acquired targets.
+            target_found: If `True`, calculate where to click based on the most recently acquired 
+                target's location. Otherwise, calculate based on an average of all previously 
+                acquired targets.
 
-            pathfind: If `True`, find the location connected to the target that is closest to the player. \\
-                Otherwise, directly use the target's location.
+            pathfind: If `True`, find the location connected to the target that is closest 
+                to the player. Otherwise, directly use the target's location.
 
         Returns:
-            The `x` and `y` values of where to click in the game, as well as the `duration` (magnitude).
+            The `x` and `y` values of where to click in the game, 
+                as well as the `duration` (magnitude).
         """
         if len(self.targets) == 0:
             return SCREEN_CENTER_X, SCREEN_CENTER_Y, 100
@@ -137,7 +145,8 @@ class Minimap:
         unit_y = coord[1] / magnitude
 
         x = int(unit_x * 150)
-        y = int(unit_y * 100)  # y axis not orthogonal to camera axis unlike minimap
+        # y axis not orthogonal to camera axis unlike minimap
+        y = int(unit_y * 100)
 
         return x + SCREEN_CENTER_X, y + SCREEN_CENTER_Y, int(magnitude)
 
@@ -154,7 +163,7 @@ class Minimap:
         """
         sorted_valid_coords = sorted(
             self.valid_coords,
-            key=lambda validCoord: distance_between_coords(validCoord, target),
+            key=lambda valid_coord: distance_between_coords(valid_coord, target),
         )
         if sorted_valid_coords:
             return sorted_valid_coords[0]
@@ -203,7 +212,7 @@ class Minimap:
         Returns:
             `True` if found, `False` otherwise.
         """
-        if config["performance"] == False:
+        if not get_config("performance"):
             for portal_part in ["portal", "portalTop", "portalBot"]:
                 portal_coords = find_image_center(
                     f"./screenshots/chaos/{portal_part}.png",
@@ -289,7 +298,7 @@ class Minimap:
                 x = x - MINIMAP_CENTER_X - 7
                 y = y - MINIMAP_CENTER_Y + 7
                 self.targets.append((x, y))
-                print(f"forward jump icon")
+                print("forward jump icon")
                 return True
         match find_image_center(
             "./screenshots/chaos/jumpIconBack.png",
@@ -300,7 +309,7 @@ class Minimap:
                 x = x - MINIMAP_CENTER_X - 27
                 y = y - MINIMAP_CENTER_Y + 27
                 self.targets.append((x, y))
-                print(f"back jump icon")
+                print("back jump icon")
                 return True
         return False
 
@@ -309,7 +318,8 @@ def distance_between_coords(coord1: tuple[int, int], coord2: tuple[int, int]) ->
     """
     Calculates the distance between two coordinates.
     """
-    target_dist = math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
+    target_dist = math.sqrt(
+        (coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
     return int(target_dist)
 
 
@@ -319,9 +329,9 @@ def average_coordinate(coords: list[tuple[int, int]]) -> tuple[int, int]:
     """
     xs = [coord[0] for coord in coords]
     ys = [coord[1] for coord in coords]
-    meanX = int(sum(xs) / len(xs))
-    meanY = int(sum(ys) / len(ys))
-    return meanX, meanY
+    mean_x = int(sum(xs) / len(xs))
+    mean_y = int(sum(ys) / len(ys))
+    return mean_x, mean_y
 
 
 def get_adjacent_coordinates(coord: tuple[int, int]) -> list[tuple[int, int]]:
@@ -372,30 +382,31 @@ def closest_connected_coordinate(
 
     return closest_coord
 
+# pylint: disable=missing-function-docstring
 
 def mob_rgb_range(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
+    if get_config("GFN"):
         return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
     else:
         return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
 
 
 def elite_rgb_range(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
+    if get_config("GFN"):
         return 184 < r < 215 and 124 < g < 147 and 59 < b < 78
     else:
         return 189 < r < 215 and 124 < g < 150 and 29 < b < 70
 
 
 def boss_rgb_range(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
+    if get_config("GFN"):
         return 100 < r < 170 and g < 35 and b < 35
     else:
         return 100 < r < 170 and g < 35 and b < 35
 
 
 def buff_rgb_range(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
+    if get_config("GFN"):
         return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
     else:
         return 200 < r < 255 and 170 < g < 200 and 30 < b < 70
@@ -408,7 +419,7 @@ def valid_area_rgb_range(r: int, g: int, b: int) -> bool:
 
 
 def portal_rgb_range(r: int, g: int, b: int) -> bool:
-    if config["GFN"]:
+    if get_config("GFN"):
         return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
             120 < r < 130 and 210 < g < 240 and 240 < b < 256
         )
