@@ -53,14 +53,14 @@ def main():
     start_time = time.time()
 
     left_click_at_position(SCREEN_CENTER_POS)
-
+    options={
+        "do_chaos": args.chaos,
+        "do_kurzan_front": args.kurzanfront,
+        "do_unas": args.unas,
+        "do_guild": args.guild
+    }
     bot_manager = BotManager(
-        options={
-            "do_chaos": args.chaos,
-            "do_kurzan_front": args.kurzanfront,
-            "do_unas": args.unas,
-            "do_guild": args.guild
-        }
+        options=options
     )
 
     # stay invis in friends list
@@ -81,7 +81,7 @@ def main():
             restart_game()
             wait_overworld_load()
         except ResetException:
-            bot_manager = BotManager(args.chaos, args.kurzanfront, args.unas, args.guild)
+            bot_manager = BotManager(options=options)
 
 
 if __name__ == "__main__":

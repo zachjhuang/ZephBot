@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 import pydirectinput
@@ -16,11 +17,7 @@ SCREEN_CENTER_POS = (960, 540)
 pydirectinput.PAUSE = 0.05
 
 
-def abort_script():
-    raise Exception
-
-
-def main(options: dict[str, bool]):
+async def start_script(options: dict[str, bool]):
 
     print(f"script starting at {time.asctime(time.localtime())}")
     start_time = time.time()
@@ -35,20 +32,19 @@ def main(options: dict[str, bool]):
 
     while True:
         try:
-            bot_manager.run()
+            await bot_manager.run()
             print(f"script finished at {time.asctime(time.localtime())}")
             runtime = time.time() - start_time
             h, rem = divmod(runtime, 3600)
             m, s = divmod(rem, 60)
             print(f"time elapsed: {int(h)}h {int(m)}m {int(s)}s")
             break
+        except asyncio.CancelledError:
+            print("script aborted")
+            raise
         except RestartException:
             random_sleep(10000, 12200)
             restart_game()
             wait_overworld_load()
         except ResetException:
             bot_manager = BotManager(options)
-
-
-# if __name__ == "__main__":
-#     main()
