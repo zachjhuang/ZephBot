@@ -3,6 +3,7 @@ Implements Minimap class and various functions for working with
 (x, y) coordinates represeted as two member tuples
 """
 import math
+import time
 from collections import deque
 from typing import Callable
 
@@ -54,7 +55,7 @@ class Minimap:
             for y in range(height):
                 r, g, b = minimap.getpixel((x, y))
                 if valid_area_rgb_range(r, g, b):
-                    self.valid_coords.append((x - width / 2, y - height / 2))
+                    self.valid_coords.append((int(x - width / 2), int(y - height / 2)))
 
     def find_closest_pixel(
         self, name: str, in_color_range: Callable[[int, int, int], bool]
@@ -132,15 +133,18 @@ class Minimap:
         if not pathfind:
             coord = target
         # even if it is set to true, don't bother if we have a close target
-        elif target_found and distance_between_coords(target, (0, 0)) < 20:
+        elif target_found and distance_between_coords(target, (0, 0)) < 25:
             coord = target
         # all other cases -> pathfind
         else:
             print("finding closest valid coord")
+            start = time.time_ns()
             self.update_valid_coords()
             coord = closest_connected_coordinate(
                 self.valid_coords, self.get_closest_valid_coord(target)
             )
+            print(len(self.valid_coords))
+            print(f"ms taken: {(time.time_ns() - start) / 1000000}")
             print(f"closest valid coord at {coord}")
         magnitude = math.sqrt(coord[0] ** 2 + coord[1] ** 2)
         magnitude = max(magnitude, 1)
@@ -296,7 +300,7 @@ class Minimap:
         match find_image_center(
             "./screenshots/chaos/jumpIconForward.png",
             region=MINIMAP_REGION,
-            confidence=0.8,
+            confidence=0.75,
         ):
             case x, y:
                 x = x - MINIMAP_CENTER_X - 7
@@ -307,7 +311,7 @@ class Minimap:
         match find_image_center(
             "./screenshots/chaos/jumpIconBack.png",
             region=MINIMAP_REGION,
-            confidence=0.8,
+            confidence=0.75,
         ):
             case x, y:
                 x = x - MINIMAP_CENTER_X - 27
@@ -379,6 +383,8 @@ def closest_connected_coordinate(
             if distance < min_distance:
                 min_distance = distance
                 closest_coord = current
+                if min_distance < 20:
+                    break
 
         for neighbor in get_adjacent_coordinates(current):
             if neighbor not in visited and neighbor in coords:
@@ -413,7 +419,7 @@ def boss_rgb_range(r: int, g: int, b: int) -> bool:
 
 
 def buff_rgb_range(r: int, g: int, b: int) -> bool:
-    return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
+    return 200 < r < 255 and 165 < g < 195 and 20 < b < 60 and r - g > 30
     # if get_config("GFN"):
     #     return 210 < r < 245 and 170 < g < 190 and 30 < b < 50 and r - g > 40
     # else:

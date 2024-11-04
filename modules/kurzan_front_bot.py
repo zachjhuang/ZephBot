@@ -6,7 +6,12 @@ import pydirectinput
 
 import modules.dungeon_bot as db
 import modules.utilities as util
-from modules.menu_nav import quit_chaos, restart_check, toggle_menu, wait_for_menu_load
+from modules.menu_nav import (
+    restart_check,
+    toggle_menu,
+    wait_for_menu_load,
+    quit_dungeon
+)
 from modules.minimap import Minimap
 
 SCREEN_CENTER_X = 960
@@ -18,10 +23,7 @@ SCREEN_CENTER_REGION = (685, 280, 600, 420)
 CHAOS_CLICKABLE_REGION = (460, 290, 1000, 500)
 CHAOS_LEAVE_MENU_REGION = (0, 154, 250, 300)
 
-ABIDOS_ICON_POS = {
-    1640: (830, 670),
-    1660: (965, 590)
-}
+ABIDOS_ICON_POS = {1640: (830, 670), 1660: (965, 590)}
 
 
 class KurzanFrontBot(db.DungeonBot):
@@ -41,30 +43,30 @@ class KurzanFrontBot(db.DungeonBot):
         ]
         self.minimap = Minimap()
 
-    def do_tasks(self) -> None:
+    async def do_tasks(self) -> None:
         if self.done_on_curr_char():
             return
 
-        toggle_menu("defaultCombatPreset")
+        await toggle_menu("defaultCombatPreset")
 
-        enter_kurzan_front(self.roster[self.curr]["chaosItemLevel"])
-        db.wait_dungeon_load()
+        await enter_kurzan_front(self.roster[self.curr]["chaosItemLevel"])
+        await db.wait_dungeon_load()
         self.run_start_time = int(time.time())
         print("kurzan front loaded")
 
         if util.get_config("auraRepair"):
-            db.do_aura_repair(False)
+            await db.do_aura_repair(False)
 
-        util.left_click_at_position(SCREEN_CENTER_POS)
-        util.random_sleep(1500, 1600)
+        await util.left_click_at_position(SCREEN_CENTER_POS)
+        await util.rand_sleep(1500, 1600)
 
-        self.use_skills()
+        await self.use_skills()
         end_time = int(time.time())
         self.update_print_metrics(end_time - self.run_start_time)
         self.remaining_tasks[self.curr] = 0
-        quit_chaos()
+        await quit_dungeon()
 
-    def use_skills(self) -> None:
+    async def use_skills(self) -> None:
         """
         Moves character and uses skills. Behavior changes depending on the floor.
         """
@@ -82,18 +84,22 @@ class KurzanFrontBot(db.DungeonBot):
         x, y, magnitude = self.minimap.get_game_coords()
         timeout = 0
         while True:
-            self.died_check()
+            await self.died_check()
             self.health_check()
-            restart_check()
+            await restart_check()
             self.timeout_check()
             # cast sequence
             for i, skill in enumerate(normal_skills):
-                if check_kurzan_finish():
+                if await check_kurzan_finish():
                     print("KurzanFront finish screen")
                     return
-                self.died_check()
+                await self.died_check()
                 self.health_check()
-                if not jumped and check_50_percent_progress() and self.minimap.check_jump():
+                if (
+                    not jumped
+                    and check_50_percent_progress()
+                    and self.minimap.check_jump()
+                ):
                     jump_timeout = 0
                     while True:
                         if (
@@ -103,17 +109,19 @@ class KurzanFrontBot(db.DungeonBot):
                             is not None
                         ):
                             print("arrow found")
-                            util.find_and_click_image("jumpArrow", confidence=0.75)
-                            util.random_sleep(1000, 1100)
+                            await util.find_and_click_image(
+                                "jumpArrow", confidence=0.75
+                            )
+                            await util.rand_sleep(1000, 1100)
 
                         if util.check_image_on_screen(
                             "./screenshots/chaos/jump.png",
                             confidence=0.75,
                         ):
-                            util.left_click_at_position(SCREEN_CENTER_POS)
-                            
+                            await util.left_click_at_position(SCREEN_CENTER_POS)
+
                             pydirectinput.press(self.config["interact"])
-                            util.random_sleep(300, 350)
+                            await util.rand_sleep(300, 350)
                             pydirectinput.press(self.config["interact"])
                             print("jumped")
                             jumped = True
@@ -122,13 +130,13 @@ class KurzanFrontBot(db.DungeonBot):
                         x, y, magnitude = self.minimap.get_game_coords(
                             target_found=self.minimap.check_jump(), pathfind=True
                         )
-                        self.move_in_direction(x, y, magnitude)
-                        util.random_sleep(100, 150)
-                        util.left_click_at_position(SCREEN_CENTER_POS)
+                        await self.move_in_direction(x, y, magnitude)
+                        await util.rand_sleep(100, 150)
+                        await util.left_click_at_position(SCREEN_CENTER_POS)
                         jump_timeout += 1
                         if jump_timeout == 10:
-                            self.random_move()
-                            util.random_sleep(400, 500)
+                            await self.random_move()
+                            await util.rand_sleep(400, 500)
                             break
 
                 elif (
@@ -139,25 +147,25 @@ class KurzanFrontBot(db.DungeonBot):
                     x, y, magnitude = self.minimap.get_game_coords(
                         target_found=True, pathfind=True
                     )
-                    self.move_in_direction(x, y, magnitude)
+                    await self.move_in_direction(x, y, magnitude)
                     if util.check_image_on_screen(
                         "./screenshots/chaos/bossBar.png", confidence=0.75
                     ):
-                        db.cast_skill(awakening_skill)
+                        await db.cast_skill(awakening_skill)
                 elif timeout == 5:
-                    self.random_move()
+                    await self.random_move()
                     timeout = 0
                 else:
                     print("target not found")
                     x, y, magnitude = self.minimap.get_game_coords(
                         target_found=False, pathfind=True
                     )
-                    self.move_in_direction(x, y, magnitude)
+                    await self.move_in_direction(x, y, magnitude)
                     timeout += 1
-                self.perform_class_specialty(
+                await self.perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
                 )
-                db.cast_skill(skill)
+                await db.cast_skill(skill)
 
 
 def check_50_percent_progress() -> bool:
@@ -174,27 +182,29 @@ def check_50_percent_progress() -> bool:
     return r > 130
 
 
-def enter_kurzan_front(ilvl: int) -> None:
+async def enter_kurzan_front(ilvl: int) -> None:
     """
     Enters specified Kurzan Front level.
     """
-    toggle_menu("content")
-    wait_for_menu_load("kazerosWarMap")
-    util.random_sleep(1200, 1300)
-    util.left_click_at_position(ABIDOS_ICON_POS[ilvl])
-    wait_for_menu_load("kurzanFront")
-    util.random_sleep(1200, 1300)
-    util.find_and_click_image("enterButton", region=(
-        1300, 750, 210, 40), confidence=0.75)
-    util.random_sleep(1200, 1300)
-    util.find_and_click_image(
-        "acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75)
-    util.random_sleep(800, 900)
+    await toggle_menu("content")
+    await wait_for_menu_load("kazerosWarMap")
+    await util.rand_sleep(1200, 1300)
+    await util.left_click_at_position(ABIDOS_ICON_POS[ilvl])
+    await wait_for_menu_load("kurzanFront")
+    await util.rand_sleep(1200, 1300)
+    await util.find_and_click_image(
+        "enterButton", region=(1300, 750, 210, 40), confidence=0.75
+    )
+    await util.rand_sleep(1200, 1300)
+    await util.find_and_click_image(
+        "acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75
+    )
+    await util.rand_sleep(800, 900)
 
 
-def check_kurzan_finish() -> bool:
+async def check_kurzan_finish() -> bool:
     """
-    Returns true if chaos finish screen detected and clears the finish overlay. 
+    Returns true if chaos finish screen detected and clears the finish overlay.
     Otherwise returns false.
     """
     match util.find_image_center(
@@ -203,8 +213,8 @@ def check_kurzan_finish() -> bool:
         region=(880, 820, 150, 70),
     ):
         case x, y:
-            util.left_click_at_position((x, y))
-            util.random_sleep(800, 900)
+            await util.left_click_at_position((x, y))
+            await util.rand_sleep(800, 900)
             return True
         case _:
             return False

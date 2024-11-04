@@ -11,7 +11,7 @@ from modules.utilities import (
     left_click_at_position,
     find_and_click_image,
     find_image_center,
-    random_sleep,
+    rand_sleep,
     get_config
 )
 
@@ -22,7 +22,7 @@ SCREEN_CENTER_Y = 540
 CHAOS_LEAVE_MENU_REGION = (0, 154, 250, 300)
 
 
-def restart_check() -> None:
+async def restart_check() -> None:
     """
     Raises restartException in the following cases:
 
@@ -34,7 +34,8 @@ def restart_check() -> None:
 
     -   GFN inactive (rare case)
 
-    -   General catch-all where black bars from forcing 21:9 on GFN are not detected (i.e. GFN closed)
+    -   General catch-all where black bars from forcing 21:9 on GFN are not detected 
+        (i.e. GFN closed)
 
     """
     dc_popup = check_image_on_screen(
@@ -64,8 +65,8 @@ def restart_check() -> None:
                 curr_time = int(time.time_ns() / 1000000)
                 limitshot = pyautogui.screenshot()
                 limitshot.save(f"./debug/{error_type}_{curr_time}.png")
-                left_click_at_position((1029, 822))
-                random_sleep(1300, 1400)
+                await left_click_at_position((1029, 822))
+                await rand_sleep(1300, 1400)
                 print(error_type)
                 raise RestartException
     bottom = pyautogui.screenshot(region=(600, 960, 250, 50))
@@ -82,7 +83,7 @@ def restart_check() -> None:
         raise RestartException
 
 
-def boot_gfn_session() -> None:
+async def boot_gfn_session() -> None:
     """
     Boots Lost Ark from the Geforce Now main page.
     """
@@ -92,18 +93,18 @@ def boot_gfn_session() -> None:
             confidence=0.8,
         ):
             case x, y:
-                left_click_at_position((x, y))
+                await left_click_at_position((x, y))
                 print("clicked play restart on GFN")
-                random_sleep(40000, 42000)
+                await rand_sleep(40000, 42000)
                 break
         match find_image_center(
             "./screenshots/GFN/loaGFN.png",
             confidence=0.8,
         ):
             case x, y:
-                left_click_at_position((x, y))
+                await left_click_at_position((x, y))
                 print("clicked image restart on GFN")
-                random_sleep(40000, 42000)
+                await rand_sleep(40000, 42000)
                 break
         match find_image_center(
             "./screenshots/GFN/closeGFN.png",
@@ -111,12 +112,12 @@ def boot_gfn_session() -> None:
         ):
             case x, y:
                 print("afk GFN")
-                left_click_at_position((x, y))
-                random_sleep(1300, 1400)
-        random_sleep(1000, 1100)
+                await left_click_at_position((x, y))
+                await rand_sleep(1300, 1400)
+        await rand_sleep(1000, 1100)
 
 
-def boot_steam_session() -> None:
+async def boot_steam_session() -> None:
     """
     Boots Lost Ark from the Steam Library page.
 
@@ -124,25 +125,25 @@ def boot_steam_session() -> None:
     """
     while True:
         os.system("start steam://launch/1599340/dialog")
-        random_sleep(60000, 60000)
+        await rand_sleep(60000, 60000)
         match find_image_center("./screenshots/steamStop.png", confidence=0.75):
             case x, y:
                 print("clicking stop game on steam")
-                left_click_at_position((x, y))
-                random_sleep(500, 600)
+                await left_click_at_position((x, y))
+                await rand_sleep(500, 600)
         match find_image_center("./screenshots/steamConfirm.png", confidence=0.75):
             case x, y:
                 print("confirming stop game")
-                left_click_at_position((x, y))
-                random_sleep(10000, 12000)
+                await left_click_at_position((x, y))
+                await rand_sleep(10000, 12000)
         match find_image_center("./screenshots/steamPlay.png", confidence=0.75):
             case x, y:
                 print("restarting Lost Ark game client...")
-                left_click_at_position((x, y))
+                await left_click_at_position((x, y))
                 break
 
 
-def enter_server() -> None:
+async def enter_server() -> None:
     """
     Selects first server and clicks enter.
     """
@@ -161,16 +162,16 @@ def enter_server() -> None:
         ):
             case x, y:
                 print("selecting first server")
-                random_sleep(1000, 1200)
-                left_click_at_position((855, 582))
+                await rand_sleep(1000, 1200)
+                await left_click_at_position((855, 582))
                 print("entering server")
-                random_sleep(1000, 1200)
-                left_click_at_position((x, y))
+                await rand_sleep(1000, 1200)
+                await left_click_at_position((x, y))
                 break
-        random_sleep(1000, 1100)
+        await rand_sleep(1000, 1100)
 
 
-def enter_character() -> None:
+async def enter_character() -> None:
     """
     Enters the game on the most recently logged character.
     """
@@ -182,47 +183,47 @@ def enter_character() -> None:
         ):
             case x, y:
                 print("clicking enterCharacter")
-                left_click_at_position((x, y))
+                await left_click_at_position((x, y))
                 break
-        random_sleep(2200, 3300)
+        await rand_sleep(2200, 3300)
 
 
-def restart_game() -> None:
+async def restart_game() -> None:
     """
     Reboots the instance from an interrupted state.
     """
     print("restart game")
     # gameCrashCheck()
-    random_sleep(5000, 7000)
+    await rand_sleep(5000, 7000)
     if get_config("GFN"):
-        boot_gfn_session()
+        await boot_gfn_session()
     else:
-        boot_steam_session()
-    enter_server()
-    random_sleep(5200, 6300)
-    enter_character()
+        await boot_steam_session()
+    await enter_server()
+    await rand_sleep(5200, 6300)
+    await enter_character()
     pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
-    random_sleep(22200, 23300)
+    await rand_sleep(22200, 23300)
 
 
-def toggle_menu(menu_name: str) -> None:
+async def toggle_menu(menu_name: str) -> None:
     """
     Opens/closes specified menu.
     """
     keys = get_config(menu_name).split(" ")
     if len(keys) == 2:
         pydirectinput.keyDown(keys[0])
-        random_sleep(300, 400)
+        await rand_sleep(300, 400)
         pydirectinput.press(keys[1])
-        random_sleep(300, 400)
+        await rand_sleep(300, 400)
         pydirectinput.keyUp(keys[0])
-        random_sleep(300, 400)
+        await rand_sleep(300, 400)
     elif len(keys) == 1:
         pydirectinput.press(keys[0])
-        random_sleep(300, 400)
+        await rand_sleep(300, 400)
 
 
-def wait_for_menu_load(menu: str) -> None:
+async def wait_for_menu_load(menu: str) -> None:
     """
     Sleeps until menu is detected on screen.
 
@@ -235,7 +236,7 @@ def wait_for_menu_load(menu: str) -> None:
         f"./screenshots/menus/{menu}Menu.png",
         confidence=0.85
     ):
-        random_sleep(180, 220)
+        await rand_sleep(180, 220)
         timeout += 1
         # if timeout == 50:
         #     toggleMenu(menu)
@@ -243,12 +244,12 @@ def wait_for_menu_load(menu: str) -> None:
             return
 
 
-def wait_overworld_load() -> None:
+async def wait_overworld_load() -> None:
     """
     Sleeps until channel dropdown arrow is on screen.
     """
     while True:
-        restart_check()
+        await restart_check()
         if check_image_on_screen(
             "./screenshots/channelDropdownArrow.png",
             region=(1870, 133, 25, 30),
@@ -256,7 +257,7 @@ def wait_overworld_load() -> None:
         ):
             print("overworld loaded")
             break
-        random_sleep(1000, 1100)
+        await rand_sleep(1000, 1100)
 
         if check_image_on_screen(
             "./screenshots/inChaos.png", 
@@ -264,22 +265,22 @@ def wait_overworld_load() -> None:
             confidence=0.75
         ):
             print("still in the last chaos run, quitting")
-            quit_chaos()
-            random_sleep(4000, 6000)
+            await quit_dungeon()
+            await rand_sleep(4000, 6000)
 
 
-def quit_chaos() -> None:
+async def quit_dungeon() -> None:
     """
     Quit chaos dungeon after finishing a run.
     """
     print("quitting chaos")
-    find_and_click_image("chaos/exit",
+    await find_and_click_image("chaos/exit",
                          region=CHAOS_LEAVE_MENU_REGION,
                          confidence=0.7)
-    random_sleep(800, 900)
-    find_and_click_image("ok",
+    await rand_sleep(800, 900)
+    await find_and_click_image("ok",
                          region=SCREEN_CENTER_REGION,
                          confidence=0.75)
-    random_sleep(5000, 7000)
-    wait_overworld_load()
+    await rand_sleep(5000, 7000)
+    await wait_overworld_load()
     return

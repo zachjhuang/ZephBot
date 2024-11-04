@@ -1,4 +1,5 @@
 class TaskBot:
+    """Basic skeleton for bot class."""
     def __init__(self, roster, config):
         self.curr: int = 0
         self.roster: list[dict] = roster
@@ -17,8 +18,10 @@ class TaskBot:
         """Updates current character of bot instance."""
         self.remaining_tasks[index] = n
 
-    def do_tasks(self) -> None:
+    async def do_tasks(self) -> None:
+        """Placeholder method to run tasks. MUST BE IMPLEMENTED BY CHILD CLASSES."""
         pass
 
     def done_on_curr_char(self) -> bool:
+        """Check if bot has tasks to do on the current character"""
         return self.remaining_tasks[self.curr] == 0

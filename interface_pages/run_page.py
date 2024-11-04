@@ -10,7 +10,7 @@ from logging import StreamHandler, getLogger
 import keyboard
 from nicegui import app, ui
 
-import start_script
+import start_bot
 
 logger = getLogger(__name__)
 logger.setLevel("DEBUG")
@@ -22,17 +22,32 @@ options = {
     "do_guild": False,
 }
 
+script_button = {"not running": True}
 
-# Backend
-def long_sync_func():
-    """A synchronous function with a lot of printing or logging."""
-    keyboard.add_hotkey("ctrl+page down", lambda: [app.shutdown(), os._exit(1)])
-    start_script.start_script(options=options)
+
+def toggle(x, v):
+    x["not running"] = v
+
+
+async def controller():
+    script_task = asyncio.create_task(start_bot.start_script(options=options))
+    keyboard.add_hotkey("ctrl+page down", script_task.cancel)
+    while True:
+        try:
+            await script_task
+            break
+        except asyncio.CancelledError:
+            print("controller confirmed cancel")
+            break
 
 
 async def start_script():
     """Called after button click"""
-    asyncio.create_task(asyncio.to_thread(long_sync_func))
+    while True:
+        if not script_button["not running"]:
+            await controller()
+            script_button["not running"] = True
+        await asyncio.sleep(1)
 
 
 async def start_stream(log):
@@ -62,6 +77,9 @@ def run_page():
             ui.switch("Unas").bind_value(options, "do_unas")
             ui.switch("Kurzan Front (WIP)").bind_value(options, "do_kurzan_front")
             ui.switch("Guild").bind_value(options, "do_guild")
-            ui.button("Start script", on_click=start_script)
+            ui.button(
+                "Start script", on_click=lambda: toggle(script_button, False)
+            ).bind_enabled(script_button, "not running")
         log = ui.log().classes("w-full").style("height: 500px")
     app.on_startup(start_stream(log))
+    app.on_startup(start_script())

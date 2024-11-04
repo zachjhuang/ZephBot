@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring
 import pydirectinput
 
 from modules.menu_nav import toggle_menu, wait_for_menu_load
@@ -6,7 +7,7 @@ from modules.utilities import (
     check_image_on_screen,
     find_and_click_image,
     left_click_at_position,
-    random_sleep,
+    rand_sleep,
 )
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
@@ -30,55 +31,55 @@ class GuildBot(TaskBot):
             1 if char["guildDonation"] else 0 for char in self.roster
         ]
 
-    def do_tasks(self) -> None:
+    async def do_tasks(self) -> None:
         """
         Opens guild menu and does check-in, donation, and available research.
         """
         if self.done_on_curr_char():
             return
-        toggle_menu("guild")
-        wait_for_menu_load("guild")
+        await toggle_menu("guild")
+        await wait_for_menu_load("guild")
 
-        accept_checkin()
-        donate_silver()
-        support_research()
+        await accept_checkin()
+        await donate_silver()
+        await support_research()
 
-        random_sleep(500, 600)
-        toggle_menu("guild")
+        await rand_sleep(500, 600)
+        await toggle_menu("guild")
         self.remaining_tasks[self.curr] = 0
 
+# pylint: disable=missing-function-docstring
+async def accept_checkin() -> None:
+    await rand_sleep(500, 600)
+    await find_and_click_image("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
 
-def accept_checkin() -> None:
-    random_sleep(500, 600)
-    find_and_click_image("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
 
-
-def donate_silver() -> None:
-    random_sleep(500, 600)
-    left_click_at_position(DONATE_MENU_POS)
-    random_sleep(500, 600)
-    left_click_at_position(DONATE_SILVER_POS)
+async def donate_silver() -> None:
+    await rand_sleep(500, 600)
+    await left_click_at_position(DONATE_MENU_POS)
+    await rand_sleep(500, 600)
+    await left_click_at_position(DONATE_SILVER_POS)
     pydirectinput.press("esc")
-    random_sleep(500, 600)
+    await rand_sleep(500, 600)
 
 
-def support_research() -> None:
-    find_and_click_image(
+async def support_research() -> None:
+    await find_and_click_image(
         "supportResearch", region=SUPPORT_RESEARCH_REGION, confidence=0.75
     )
-    random_sleep(500, 600)
+    await rand_sleep(500, 600)
     if check_image_on_screen(
         "./screenshots/canSupportResearch.png",
         region=CAN_SUPPORT_RESEARCH_REGION,
         confidence=0.75,
     ):
-        find_and_click_image(
+        await find_and_click_image(
             "canSupportResearch",
             region=CAN_SUPPORT_RESEARCH_REGION,
             confidence=0.75,
         )
-        random_sleep(500, 600)
-        left_click_at_position(RESEARCH_CONFIRM_POS)
+        await rand_sleep(500, 600)
+        await left_click_at_position(RESEARCH_CONFIRM_POS)
     elif check_image_on_screen(
         "./screenshots/alreadySupportedResearch.png",
         region=CAN_SUPPORT_RESEARCH_REGION,

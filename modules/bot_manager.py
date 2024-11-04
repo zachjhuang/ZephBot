@@ -12,7 +12,7 @@ from modules.utilities import (
     check_image_on_screen,
     find_image_center,
     left_click_at_position,
-    random_sleep,
+    rand_sleep,
     get_roster,
     get_config,
 )
@@ -75,33 +75,33 @@ class BotManager:
                 return False
         return True
 
-    def run(self) -> None:
+    async def run(self) -> None:
         """
         Loop through the roster. 
         On each character, run all available bots.
         Stop when all bots have no remaining tasks.
         """
-        restart_check()
-        self.switch_to_char(0)
+        await restart_check()
+        await self.switch_to_char(0)
 
         if not self.config["auraRepair"]:
-            do_city_repair()
+            await do_city_repair()
 
         while not self.all_bots_done():
-            restart_check()
-            wait_overworld_load()
-            clear_notifs()
+            await restart_check()
+            await wait_overworld_load()
+            await clear_notifs()
 
             if not self.config["auraRepair"]:
-                do_city_repair()
+                await do_city_repair()
 
             for bot in self.running_bots:
-                bot.do_tasks()
+                await bot.do_tasks()
 
-            restart_check()
+            await restart_check()
             next_char = (self.curr + 1) % len(self.roster)
             print(f"character {self.curr} is done, switching to: {next_char}")
-            self.switch_to_char(next_char)
+            await self.switch_to_char(next_char)
 
     def update_curr_char(self, char: int) -> None:
         """
@@ -129,13 +129,13 @@ class BotManager:
     #     for bot in self.runningBotList:
     #         bot.doTasks()
 
-    def switch_to_char(self, index: int) -> None:
+    async def switch_to_char(self, index: int) -> None:
         """
         Opens ESC menu and switches to character designated by index.
         """
         self.curr = index
         self.update_curr_char(index)
-        random_sleep(500, 600)
+        await rand_sleep(500, 600)
         print("----------------------------")
         for bot in self.running_bots:
             print(f"{bot.__class__.__name__}: {bot.remaining_tasks}")
@@ -145,24 +145,24 @@ class BotManager:
             "./screenshots/menus/gameMenu.png", confidence=0.7
         ):
             pydirectinput.press("esc")
-            random_sleep(1000, 1100)
+            await rand_sleep(1000, 1100)
         print("game menu detected")
-        random_sleep(800, 900)
-        left_click_at_position((540, 700))
-        random_sleep(800, 900)
+        await rand_sleep(800, 900)
+        await left_click_at_position((540, 700))
+        await rand_sleep(800, 900)
 
         for _ in range(4):
-            left_click_at_position((1270, 430))
-            random_sleep(200, 300)
+            await left_click_at_position((1270, 430))
+            await rand_sleep(200, 300)
 
         if index > 8:
             for _ in range(math.floor(index / 3) - 2):
-                left_click_at_position((1267, 638))
-                random_sleep(200, 300)
+                await left_click_at_position((1267, 638))
+                await rand_sleep(200, 300)
 
         position_index = index if index < 9 else index - 3 * ((index - 6) // 3)
-        left_click_at_position(CHARACTER_SELECT_POS[position_index])
-        random_sleep(1500, 1600)
+        await left_click_at_position(CHARACTER_SELECT_POS[position_index])
+        await rand_sleep(1500, 1600)
 
         self.check_and_update_status(index)
 
@@ -170,24 +170,24 @@ class BotManager:
             return
         elif self.is_char_done(index):
             print("character already done, switching to next")
-            self.switch_to_char((index + 1) % len(self.roster))
+            await self.switch_to_char((index + 1) % len(self.roster))
         elif check_image_on_screen(
             "./screenshots/alreadyConnected.png", confidence=0.85
         ):
             print("character already connected")
             pydirectinput.press("esc")
-            random_sleep(500, 600)
+            await rand_sleep(500, 600)
             pydirectinput.press("esc")
-            random_sleep(500, 600)
+            await rand_sleep(500, 600)
         else:
-            left_click_at_position((1030, 700))
-            random_sleep(1000, 1100)
-            left_click_at_position((920, 590))
-            random_sleep(1000, 1100)
+            await left_click_at_position((1030, 700))
+            await rand_sleep(1000, 1100)
+            await left_click_at_position((920, 590))
+            await rand_sleep(1000, 1100)
 
-            random_sleep(10000, 12000)
+            await rand_sleep(10000, 12000)
             if self.config["GFN"]:
-                random_sleep(8000, 9000)
+                await rand_sleep(8000, 9000)
 
     def check_and_update_status(self, index: int):
         """
@@ -212,7 +212,7 @@ class BotManager:
                 )
 
 
-def do_city_repair() -> None:
+async def do_city_repair() -> None:
     """
     With the character standing next to a repair NPC, repairs armor.
     """
@@ -224,16 +224,16 @@ def do_city_repair() -> None:
     ):
         print("repairing")
         pydirectinput.press(get_config("interact"))
-        random_sleep(600, 700)
+        await rand_sleep(600, 700)
         pydirectinput.moveTo(x=1057, y=455)
-        random_sleep(600, 700)
+        await rand_sleep(600, 700)
         pydirectinput.click(button="left")
-        random_sleep(600, 700)
+        await rand_sleep(600, 700)
         pydirectinput.press("esc")
-        random_sleep(1500, 1900)
+        await rand_sleep(1500, 1900)
 
 
-def clear_notifs() -> None:
+async def clear_notifs() -> None:
     """
     Gets rid of any quest and/or level up notifications that appear below the center of the screen.
     """
@@ -242,20 +242,20 @@ def clear_notifs() -> None:
     ):
         case x, y:
             print("clear quest notification")
-            left_click_at_position((x, y))
-            random_sleep(800, 900)
+            await left_click_at_position((x, y))
+            await rand_sleep(800, 900)
             pydirectinput.press("esc")
-            random_sleep(800, 900)
+            await rand_sleep(800, 900)
 
     match find_image_center(
         "./screenshots/leveledup.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
     ):
         case x, y:
             print("clear level")
-            left_click_at_position((x, y))
-            random_sleep(800, 900)
+            await left_click_at_position((x, y))
+            await rand_sleep(800, 900)
             pydirectinput.press("esc")
-            random_sleep(800, 900)
+            await rand_sleep(800, 900)
 
 
 def check_unas_completed() -> int:

@@ -12,7 +12,7 @@ from modules.utilities import (
     left_click_at_position,
     check_image_on_screen,
     find_and_click_image,
-    random_sleep,
+    rand_sleep,
     TimeoutException,
     get_skills,
 )
@@ -38,10 +38,11 @@ class DungeonBot(TaskBot):
     and navigating based on the minimap.
     Maintains clear time statistics.
     """
+
     def __init__(self, roster, config):
         super().__init__(roster, config)
 
-        self.skills: dict[list[dict]] = get_skills()
+        self.skills: dict[str, list[dict]] = get_skills()
         self.run_start_time: int = 0
 
         self.completed_count: int = 0
@@ -66,7 +67,7 @@ class DungeonBot(TaskBot):
             pydirectinput.press(self.config["healthPot"])
             self.health_pot_count += 1
 
-    def died_check(self) -> None:
+    async def died_check(self) -> None:
         """
         Checks if death menu on screen and clicks revive.
         """
@@ -75,13 +76,13 @@ class DungeonBot(TaskBot):
         ):
             print("died")
             self.death_count += 1
-            random_sleep(5000, 5500)
+            await rand_sleep(5000, 5500)
             if check_image_on_screen(
                 "./screenshots/chaos/resReady.png", confidence=0.7
             ):
-                left_click_at_position(INSTANT_RES_POS)
-                random_sleep(600, 800)
-                restart_check()
+                await left_click_at_position(INSTANT_RES_POS)
+                await rand_sleep(600, 800)
+                await restart_check()
                 self.timeout_check()
 
     def timeout_check(self) -> None:
@@ -118,7 +119,9 @@ class DungeonBot(TaskBot):
         )
         print("-------------------------------------")
 
-    def perform_class_specialty(self, char_class: str, i: int, skills: list[dict]) -> None:
+    async def perform_class_specialty(
+        self, char_class: str, i: int, skills: list[dict]
+    ) -> None:
         """
         Performs custom class behavior (activating identity, using specialty, stance swapping, etc.).
         """
@@ -147,7 +150,7 @@ class DungeonBot(TaskBot):
                 )
                 if slayer_specialty:
                     pydirectinput.press(self.config["specialty1"])
-                    random_sleep(150, 160)
+                    await rand_sleep(150, 160)
             case "deathblade":
                 deathblade_three_orbs = check_image_on_screen(
                     "./screenshots/classSpecialties/deathTrance.png",
@@ -156,7 +159,7 @@ class DungeonBot(TaskBot):
                 )
                 if deathblade_three_orbs:
                     pydirectinput.press(self.config["specialty1"])
-                    random_sleep(150, 160)
+                    await rand_sleep(150, 160)
             case "gunslinger":
                 pistol_stance = check_image_on_screen(
                     "./screenshots/classSpecialties/pistolStance.png",
@@ -177,26 +180,26 @@ class DungeonBot(TaskBot):
                 if i == 0 and not shotgun_stance:
                     if pistol_stance:
                         pydirectinput.press(self.config["specialty1"])
-                        random_sleep(150, 160)
+                        await rand_sleep(150, 160)
                     if sniper_stance:
                         pydirectinput.press(self.config["specialty2"])
-                        random_sleep(150, 160)
+                        await rand_sleep(150, 160)
                 # swap to sniper
                 elif i < 3 and not sniper_stance:
                     if pistol_stance:
                         pydirectinput.press(self.config["specialty2"])
-                        random_sleep(150, 160)
+                        await rand_sleep(150, 160)
                     if shotgun_stance:
                         pydirectinput.press(self.config["specialty1"])
-                        random_sleep(150, 160)
+                        await rand_sleep(150, 160)
                 # swap to pistol
                 elif not pistol_stance:
                     if shotgun_stance:
                         pydirectinput.press(self.config["specialty2"])
-                        random_sleep(150, 160)
+                        await rand_sleep(150, 160)
                     if sniper_stance:
                         pydirectinput.press(self.config["specialty1"])
-                        random_sleep(150, 160)
+                        await rand_sleep(150, 160)
             case "artist":
                 artist_orb = check_image_on_screen(
                     "./screenshots/classSpecialties/artistOrb.png",
@@ -205,9 +208,9 @@ class DungeonBot(TaskBot):
                 )
                 if artist_orb:
                     pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
-                    random_sleep(150, 160)
+                    await rand_sleep(150, 160)
                     pydirectinput.press(self.config["specialty2"])
-                    random_sleep(1500, 1600)
+                    await rand_sleep(1500, 1600)
                     pydirectinput.press(self.config["interact"])
             case "aeromancer":
                 aero_specialty = check_image_on_screen(
@@ -216,7 +219,7 @@ class DungeonBot(TaskBot):
                     confidence=0.95,
                 )
                 if aero_specialty:
-                    random_sleep(150, 160)
+                    await rand_sleep(150, 160)
                     pydirectinput.press(self.config["specialty1"])
             case "scrapper":
                 scrapper_specialty = check_image_on_screen(
@@ -225,7 +228,7 @@ class DungeonBot(TaskBot):
                     confidence=0.85,
                 )
                 if scrapper_specialty:
-                    random_sleep(150, 160)
+                    await rand_sleep(150, 160)
                     pydirectinput.press(self.config["specialty1"])
             case "bard":
                 courage_buff = check_image_on_screen(
@@ -237,18 +240,18 @@ class DungeonBot(TaskBot):
                 _rx, gx, bx = pyautogui.pixel(1006, 875)
                 if rz - gz > 80 and courage_buff:
                     pydirectinput.press(self.config["specialty1"])
-                    random_sleep(50, 60)
+                    await rand_sleep(50, 60)
                     pydirectinput.press(self.config["specialty1"])
-                    random_sleep(150, 160)
+                    await rand_sleep(150, 160)
                 elif bx - gx > 70 and not courage_buff:
                     pydirectinput.moveTo(x=SCREEN_CENTER_X, y=SCREEN_CENTER_Y)
-                    random_sleep(150, 160)
+                    await rand_sleep(150, 160)
                     pydirectinput.press(self.config["specialty2"])
-                    random_sleep(50, 60)
+                    await rand_sleep(50, 60)
                     pydirectinput.press(self.config["specialty2"])
-                    random_sleep(150, 160)
-                    
-    def move_in_direction(self, x: int, y: int, magnitude: int) -> None:
+                    await rand_sleep(150, 160)
+
+    async def move_in_direction(self, x: int, y: int, magnitude: int) -> None:
         """
         Moves in (x, y) direction with magnitude.
         """
@@ -256,9 +259,9 @@ class DungeonBot(TaskBot):
             return
         for _ in range(math.floor(magnitude / 10) + 1):
             pydirectinput.click(x=x, y=y, button=self.config["move"])
-            random_sleep(100, 110)
-    
-    def random_move(self) -> None:
+            await rand_sleep(100, 110)
+
+    async def random_move(self) -> None:
         """
         Randomly moves by clicking in the clickable region.
         """
@@ -268,9 +271,10 @@ class DungeonBot(TaskBot):
 
         print(f"random move to x: {x} y: {y}")
         pydirectinput.click(x=x, y=y, button=self.config["move"])
-        random_sleep(400, 500)
+        await rand_sleep(400, 500)
 
-def cast_skill(skill: dict) -> None:
+
+async def cast_skill(skill: dict) -> None:
     """
     Casts the given skill in the specified direction.
     """
@@ -282,21 +286,19 @@ def cast_skill(skill: dict) -> None:
 
     if skill["castTime"] is not None and skill["castTime"] > 0:
         pydirectinput.press(skill["key"])
-        random_sleep(100, 150)
+        await rand_sleep(100, 150)
         pydirectinput.press(skill["key"])
-        random_sleep(skill["castTime"], (skill["castTime"] + 100))
+        await rand_sleep(skill["castTime"], (skill["castTime"] + 100))
     elif skill["holdTime"] is not None and skill["holdTime"] > 0:
         pydirectinput.keyDown(skill["key"])
-        random_sleep(skill["holdTime"], (skill["holdTime"] + 100))
+        await rand_sleep(skill["holdTime"], (skill["holdTime"] + 100))
         pydirectinput.keyUp(skill["key"])
     else:
         pydirectinput.press(skill["key"])
-        random_sleep(100, 150)
+        await rand_sleep(100, 150)
 
 
-
-
-def do_aura_repair(forced: bool) -> None:
+async def do_aura_repair(forced: bool) -> None:
     """
     Repair through pet menu if forced or yellow/red armor icon detected.
     """
@@ -306,37 +308,37 @@ def do_aura_repair(forced: bool) -> None:
         confidence=0.4,
         region=DAMAGED_ARMOR_REGION,
     ):
-        toggle_menu("pet")
-        left_click_at_position((1142, 661))
-        random_sleep(2500, 2600)
-        left_click_at_position((1054, 455))
-        random_sleep(2500, 2600)
+        await toggle_menu("pet")
+        await left_click_at_position((1142, 661))
+        await rand_sleep(2500, 2600)
+        await left_click_at_position((1054, 455))
+        await rand_sleep(2500, 2600)
         pydirectinput.press("esc")
-        random_sleep(2500, 2600)
+        await rand_sleep(2500, 2600)
         pydirectinput.press("esc")
-        random_sleep(2500, 2600)
+        await rand_sleep(2500, 2600)
 
 
-def wait_dungeon_load() -> None:
+async def wait_dungeon_load() -> None:
     """
     Sleeps until exit button of dungeon is on screen.
     ALT F4 if loading times out.
     """
     black_screen_start_time = int(time.time())
     while True:
-        restart_check()
+        await restart_check()
         curr_time = int(time.time())
         if curr_time - black_screen_start_time > 50:
             print("alt f4")
             pydirectinput.keyDown("alt")
-            random_sleep(350, 400)
+            await rand_sleep(350, 400)
             pydirectinput.keyDown("f4")
-            random_sleep(350, 400)
+            await rand_sleep(350, 400)
             pydirectinput.keyUp("alt")
-            random_sleep(350, 400)
+            await rand_sleep(350, 400)
             pydirectinput.keyUp("f4")
-            random_sleep(350, 400)
-            random_sleep(10000, 15000)
+            await rand_sleep(350, 400)
+            await rand_sleep(10000, 15000)
             return
         leave_button = check_image_on_screen(
             "./screenshots/chaos/exit.png",
@@ -346,18 +348,17 @@ def wait_dungeon_load() -> None:
         )
         if leave_button:
             return
-        random_sleep(100, 150)
+        await rand_sleep(100, 150)
 
 
-def quit_dungeon() -> None:
+async def quit_dungeon() -> None:
     """
     Quit dungeon after finishing a run.
     """
     print("quitting dungeon")
-    find_and_click_image(
-        "chaos/exit", region=LEAVE_MENU_REGION, confidence=0.7)
-    random_sleep(800, 900)
-    find_and_click_image("ok", region=CLICKABLE_REGION, confidence=0.75)
-    random_sleep(5000, 7000)
-    wait_overworld_load()
+    await find_and_click_image("chaos/exit", region=LEAVE_MENU_REGION, confidence=0.7)
+    await rand_sleep(800, 900)
+    await find_and_click_image("ok", region=CLICKABLE_REGION, confidence=0.75)
+    await rand_sleep(5000, 7000)
+    await wait_overworld_load()
     return

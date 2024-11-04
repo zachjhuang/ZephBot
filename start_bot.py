@@ -9,7 +9,7 @@ from modules.utilities import (
     ResetException,
     RestartException,
     left_click_at_position,
-    random_sleep,
+    rand_sleep,
 )
 
 SCREEN_CENTER_POS = (960, 540)
@@ -22,7 +22,7 @@ async def start_script(options: dict[str, bool]):
     print(f"script starting at {time.asctime(time.localtime())}")
     start_time = time.time()
 
-    left_click_at_position(SCREEN_CENTER_POS)
+    await left_click_at_position(SCREEN_CENTER_POS)
 
     bot_manager = BotManager(options=options)
 
@@ -43,8 +43,8 @@ async def start_script(options: dict[str, bool]):
             print("script aborted")
             raise
         except RestartException:
-            random_sleep(10000, 12200)
-            restart_game()
-            wait_overworld_load()
+            await rand_sleep(10000, 12200)
+            await restart_game()
+            await wait_overworld_load()
         except ResetException:
             bot_manager = BotManager(options)

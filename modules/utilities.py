@@ -5,6 +5,7 @@ image recognition, screen navigation, and reading config files.
 
 import random
 import time
+import asyncio
 from typing import Any
 
 import yaml
@@ -31,16 +32,24 @@ def random_sleep(min_duration, max_duration) -> None:
         return
     time.sleep(duration)
 
+async def rand_sleep(min_duration, max_duration) -> None:
+    """Sleeps for a random amount of time (in ms) in the given range. Awaitable."""
+    duration = random.randint(min_duration, max_duration) / 1000.0
+    if duration < 0:
+        return
+    await asyncio.sleep(duration)
 
-def left_click_at_position(position: tuple[int, int]) -> None:
+
+async def left_click_at_position(position: tuple[int, int]) -> None:
     """
     Move mouse to position and left click.
 
     Args:
-        position: (x, y) coordinate 
+        position: (x, y) coordinate
     """
     pydirectinput.moveTo(x=position[0], y=position[1])
-    random_sleep(200, 250)
+    pydirectinput.moveTo(x=position[0], y=position[1])
+    await rand_sleep(200, 250)
     pydirectinput.click(x=position[0], y=position[1], button="left")
 
 
@@ -51,7 +60,7 @@ def check_image_on_screen(
     grayscale: bool = False,
 ) -> bool:
     """
-    Checks if a specified image is located anywhere on screen. 
+    Checks if a specified image is located anywhere on screen.
 
     Returns true if image is found, False otherwise.
     """
@@ -61,27 +70,27 @@ def check_image_on_screen(
 def find_image_center(
     image_path: str,
     confidence: float = 1.0,
-    region: None | tuple = None,
+    region: tuple[int, int, int, int] | None = None,
     grayscale: bool = False,
 ) -> None | tuple:
     """Return center of image as tuple if found on screen, otherwise return None."""
     try:
         return pyautogui.locateCenterOnScreen(
-            image_path, confidence=confidence, region=region, grayscale=grayscale
+            image=image_path, confidence=confidence, region=region, grayscale=grayscale
         )
     except pyautogui.ImageNotFoundException:
         return None
 
 
-def find_and_click_image(
-    name: str, region: None | tuple = None, confidence: float = 0.8
+async def find_and_click_image(
+    name: str, region: None | tuple[int, int, int, int] = None, confidence: float = 0.8
 ) -> None:
     """If image found on screen, click on center of image."""
     image_position = find_image_center(
         f"./screenshots/{name}.png", region=region, confidence=confidence
     )
     if image_position is not None:
-        left_click_at_position(image_position)
+        await left_click_at_position(image_position)
 
 
 def get_roster() -> list[dict]:
@@ -91,7 +100,7 @@ def get_roster() -> list[dict]:
     Returns:
         list[dict]: The roster, represented by a list of characters (dictionaries).
     """
-    with open('configs/roster.yaml', 'r', encoding='utf-8') as file:
+    with open("configs/roster.yaml", "r", encoding="utf-8") as file:
         return yaml.safe_load(file)
 
 
@@ -102,11 +111,11 @@ def get_skills() -> dict[str, list[dict]]:
     Returns:
         dict[str, list[dict]]: A skills object mapping class names to a list of skills.
     """
-    with open('configs/skills.yaml', 'r', encoding='utf-8') as file:
+    with open("configs/skills.yaml", "r", encoding="utf-8") as file:
         return yaml.safe_load(file)
 
 
-def get_config(key: str = None) -> dict[str, Any] | Any:
+def get_config(key: str | None = None) -> dict[str, Any] | Any:
     """
     Get the configs object by reading the corresponding .yaml file.
 
@@ -117,9 +126,8 @@ def get_config(key: str = None) -> dict[str, Any] | Any:
         A config object mapping setting names to values, or the value itself
             if the setting name is given as an argument.
     """
-    with open('configs/config.yaml', 'r', encoding='utf-8') as file:
+    with open("configs/config.yaml", "r", encoding="utf-8") as file:
         config = yaml.safe_load(file)
         if key is None:
             return config
-        else:
-            return config[key]
+        return config[key]
