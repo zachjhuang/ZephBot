@@ -101,7 +101,10 @@ def get_roster() -> list[dict]:
         list[dict]: The roster, represented by a list of characters (dictionaries).
     """
     with open("configs/roster.yaml", "r", encoding="utf-8") as file:
-        return yaml.safe_load(file)
+        roster = yaml.safe_load(file)
+        if roster is None:
+            return []
+        return roster
 
 
 def get_skills() -> dict[str, list[dict]]:
@@ -112,7 +115,10 @@ def get_skills() -> dict[str, list[dict]]:
         dict[str, list[dict]]: A skills object mapping class names to a list of skills.
     """
     with open("configs/skills.yaml", "r", encoding="utf-8") as file:
-        return yaml.safe_load(file)
+        skills = yaml.safe_load(file)
+        if skills is None:
+            return {}
+        return skills
 
 
 def get_config(key: str | None = None) -> dict[str, Any] | Any:
