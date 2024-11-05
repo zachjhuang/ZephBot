@@ -56,7 +56,7 @@ def add_skill():
 
 def reload_skills():
     global skills
-    skills = get_skills
+    skills = get_skills()
     skills_layout.refresh()
 
 
