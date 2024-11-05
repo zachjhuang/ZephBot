@@ -29,6 +29,8 @@ MARKDOWN_CONTENT = """
 
 ## 5. Configure keybinds and other options in CONFIG tab.
 
+## 6. Set up bifrosts for roster by following the EXAMPLES Tab.
+
 """
 
 def home_page():
