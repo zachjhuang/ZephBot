@@ -50,6 +50,8 @@ def add_skill():
         "castTime": None,
         "holdTime": None,
     }
+    if skills.get(SkillManager.curr_class) is None:
+        skills[SkillManager.curr_class] = []
     skills[SkillManager.curr_class].append(new_entry)
     skills_layout.refresh()
 
