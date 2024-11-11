@@ -59,8 +59,10 @@ class KurzanFrontBot(db.DungeonBot):
 
         await util.left_click_at_position(SCREEN_CENTER_POS)
         await util.rand_sleep(1500, 1600)
-
-        await self.use_skills()
+        try:
+            await self.use_skills()
+        except util.TimeoutException:
+            await quit_dungeon()
         end_time = int(time.time())
         self.update_print_metrics(end_time - self.run_start_time)
         self.remaining_tasks[self.curr] = 0
@@ -148,6 +150,20 @@ class KurzanFrontBot(db.DungeonBot):
                         target_found=True, pathfind=True
                     )
                     await self.move_in_direction(x, y, magnitude)
+                    new_x, new_y, new_magnitude = self.minimap.get_game_coords(
+                        target_found=(
+                            self.minimap.check_buff()
+                            or self.minimap.check_elite()
+                            or self.minimap.check_mob()
+                        ),
+                        pathfind=True,
+                    )
+                    if (
+                        0.9 * x < new_x < 1.1 * x
+                        and 0.9 * y < new_y < 1.1 * y
+                        and 0.9 * magnitude < new_magnitude < 1.1 * magnitude
+                    ):
+                        await self.random_move()
                     if util.check_image_on_screen(
                         "./image_references/chaos/bossBar.png", confidence=0.75
                     ):
