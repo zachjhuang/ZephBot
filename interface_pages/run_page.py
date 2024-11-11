@@ -10,7 +10,7 @@ from logging import StreamHandler, getLogger
 import keyboard
 from nicegui import app, ui
 
-import start_bot
+import modules.start as start
 
 logger = getLogger(__name__)
 logger.setLevel("DEBUG")
@@ -32,7 +32,7 @@ def toggle(x, v):
 
 
 async def controller():
-    script_task = asyncio.create_task(start_bot.start_script(options=options))
+    script_task = asyncio.create_task(start.start_script(options=options))
     keyboard.add_hotkey("ctrl+page down", script_task.cancel)
     while True:
         try:
