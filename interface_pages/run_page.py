@@ -24,6 +24,8 @@ options = {
 
 script_button = {"not running": True}
 
+delay = {"duration": 0}
+
 
 def toggle(x, v):
     x["not running"] = v
@@ -45,6 +47,7 @@ async def start_script():
     """Called after button click"""
     while True:
         if not script_button["not running"]:
+            await asyncio.sleep(delay["duration"])
             await controller()
             script_button["not running"] = True
         await asyncio.sleep(1)
@@ -80,6 +83,10 @@ def run_page():
             ui.button(
                 "Start script", on_click=lambda: toggle(script_button, False)
             ).bind_enabled(script_button, "not running")
+            ui.label("Delay")
+            ui.slider(min=0, max=18000, step=100, value=0).bind_value(
+                delay, "duration"
+            ).props("label-always")
         log = ui.log().classes("w-full").style("height: 500px")
     app.on_startup(start_stream(log))
     app.on_startup(start_script())
