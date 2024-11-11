@@ -21,7 +21,7 @@ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 py get-pip.py
 py -m pip install --upgrade pip
 ```
-- Clone repository
+### 1. Clone repository
 ```
 git clone https://github.com/zachjhuang/chaos-script.git
 cd chaos-script
@@ -32,7 +32,7 @@ py -m venv venv
 venv/Scripts/Activate
 ```
 
-- Install requirements
+### 2. Install requirements
 ```
 pip install -r requirements.txt
 ```
