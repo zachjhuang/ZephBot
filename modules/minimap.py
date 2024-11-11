@@ -2,6 +2,7 @@
 Implements Minimap class and various functions for working with
 (x, y) coordinates represeted as two member tuples
 """
+
 import math
 import time
 from collections import deque
@@ -27,10 +28,10 @@ class Minimap:
     translating them to in game coordinates.
 
     Attributes:
-        targets (list[tuple[int, int]]): (x, y) coordinates of determined targets, 
+        targets (list[tuple[int, int]]): (x, y) coordinates of determined targets,
             relative to center of minimap. Ordered from least to most recently acquired targets.
 
-        valid_coords (list[tuple[int, int]]): All (x, y) coordinates that are valid, 
+        valid_coords (list[tuple[int, int]]): All (x, y) coordinates that are valid,
             relative to center of minimap.
     """
 
@@ -76,7 +77,6 @@ class Minimap:
         Returns:
             True if found, False otherwise.
         """
-        print("finding closest pixel")
         minimap = pyautogui.screenshot(region=MINIMAP_REGION)
         width, height = minimap.size
 
@@ -95,9 +95,8 @@ class Minimap:
                         closest_y = dy
                         closest_dist = math.sqrt(dx**2 + dy**2)
         if closest_dist < 200:
-            print(f"{name} pixel at x:{closest_x} y:{closest_y}")
+            # print(f"{name} pixel at x:{closest_x} y:{closest_y}")
             self.targets.append((closest_x, closest_y))
-            print("found closest pixel")
             return True
         else:
             return False
@@ -106,19 +105,19 @@ class Minimap:
         self, target_found: bool = False, pathfind: bool = False
     ) -> tuple[int, int, int]:
         """
-        Translates coordinates of most recently acquired target from relative minimap coordinates 
+        Translates coordinates of most recently acquired target from relative minimap coordinates
         into valid, ingame coordinates.
 
         Args:
-            target_found: If `True`, calculate where to click based on the most recently acquired 
-                target's location. Otherwise, calculate based on an average of all previously 
+            target_found: If `True`, calculate where to click based on the most recently acquired
+                target's location. Otherwise, calculate based on an average of all previously
                 acquired targets.
 
-            pathfind: If `True`, find the location connected to the target that is closest 
+            pathfind: If `True`, find the location connected to the target that is closest
                 to the player. Otherwise, directly use the target's location.
 
         Returns:
-            The `x` and `y` values of where to click in the game, 
+            The `x` and `y` values of where to click in the game,
                 as well as the `duration` (magnitude).
         """
         if len(self.targets) == 0:
@@ -137,15 +136,15 @@ class Minimap:
             coord = target
         # all other cases -> pathfind
         else:
-            print("finding closest valid coord")
-            start = time.time_ns()
+            # print("finding closest valid coord")
+            # start = time.time_ns()
             self.update_valid_coords()
             coord = closest_connected_coordinate(
                 self.valid_coords, self.get_closest_valid_coord(target)
             )
-            print(len(self.valid_coords))
-            print(f"ms taken: {(time.time_ns() - start) / 1000000}")
-            print(f"closest valid coord at {coord}")
+            # print(len(self.valid_coords))
+            # print(f"ms taken: {(time.time_ns() - start) / 1000000}")
+            # print(f"closest valid coord at {coord}")
         magnitude = math.sqrt(coord[0] ** 2 + coord[1] ** 2)
         magnitude = max(magnitude, 1)
 
@@ -223,7 +222,7 @@ class Minimap:
         if not self.config["performance"]:
             for portal_part in ["portal", "portalTop", "portalBot"]:
                 portal_coords = find_image_center(
-                    f"./screenshots/chaos/{portal_part}.png",
+                    f"./image_references/chaos/{portal_part}.png",
                     region=MINIMAP_REGION,
                     confidence=0.7,
                 )
@@ -253,7 +252,7 @@ class Minimap:
             `True` if found, `False` otherwise.
         """
         boss_location = find_image_center(
-            "./screenshots/chaos/boss.png", region=MINIMAP_REGION, confidence=0.65
+            "./image_references/chaos/boss.png", region=MINIMAP_REGION, confidence=0.65
         )
         if boss_location is not None:
             x, y = boss_location
@@ -275,7 +274,7 @@ class Minimap:
         """
         for tower_part in ["tower", "towerTop", "towerBot"]:
             tower_coords = find_image_center(
-                f"./screenshots/chaos/{tower_part}.png",
+                f"./image_references/chaos/{tower_part}.png",
                 region=MINIMAP_REGION,
                 confidence=0.7,
             )
@@ -298,9 +297,9 @@ class Minimap:
             `True` if found, `False` otherwise.
         """
         match find_image_center(
-            "./screenshots/chaos/jumpIconForward.png",
+            "./image_references/chaos/jumpIconForward.png",
             region=MINIMAP_REGION,
-            confidence=0.75,
+            confidence=0.85,
         ):
             case x, y:
                 x = x - MINIMAP_CENTER_X - 7
@@ -309,9 +308,9 @@ class Minimap:
                 print("forward jump icon")
                 return True
         match find_image_center(
-            "./screenshots/chaos/jumpIconBack.png",
+            "./image_references/chaos/jumpIconBack.png",
             region=MINIMAP_REGION,
-            confidence=0.75,
+            confidence=0.85,
         ):
             case x, y:
                 x = x - MINIMAP_CENTER_X - 27
@@ -326,8 +325,7 @@ def distance_between_coords(coord1: tuple[int, int], coord2: tuple[int, int]) ->
     """
     Calculates the distance between two coordinates.
     """
-    target_dist = math.sqrt(
-        (coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
+    target_dist = math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
     return int(target_dist)
 
 
@@ -392,7 +390,9 @@ def closest_connected_coordinate(
 
     return closest_coord
 
+
 # pylint: disable=missing-function-docstring
+
 
 def mob_rgb_range(r: int, g: int, b: int) -> bool:
     return 180 < r < 215 and 17 < g < 35 and 17 < b < 55
@@ -434,8 +434,8 @@ def valid_area_rgb_range(r: int, g: int, b: int) -> bool:
 
 def portal_rgb_range(r: int, g: int, b: int) -> bool:
     return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
-            120 < r < 130 and 210 < g < 240 and 240 < b < 256
-        )
+        120 < r < 130 and 210 < g < 240 and 240 < b < 256
+    )
     # if get_config("GFN"):
     #     return (75 < r < 105 and 140 < g < 170 and 240 < b < 256) or (
     #         120 < r < 130 and 210 < g < 240 and 240 < b < 256

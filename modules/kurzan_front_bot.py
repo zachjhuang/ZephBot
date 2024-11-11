@@ -10,7 +10,7 @@ from modules.menu_nav import (
     restart_check,
     toggle_menu,
     wait_for_menu_load,
-    quit_dungeon
+    quit_dungeon,
 )
 from modules.minimap import Minimap
 
@@ -104,7 +104,7 @@ class KurzanFrontBot(db.DungeonBot):
                     while True:
                         if (
                             util.find_image_center(
-                                "./screenshots/jumpArrow.png", confidence=0.75
+                                "./image_references/jumpArrow.png", confidence=0.75
                             )
                             is not None
                         ):
@@ -115,7 +115,7 @@ class KurzanFrontBot(db.DungeonBot):
                             await util.rand_sleep(1000, 1100)
 
                         if util.check_image_on_screen(
-                            "./screenshots/chaos/jump.png",
+                            "./image_references/chaos/jump.png",
                             confidence=0.75,
                         ):
                             await util.left_click_at_position(SCREEN_CENTER_POS)
@@ -149,7 +149,7 @@ class KurzanFrontBot(db.DungeonBot):
                     )
                     await self.move_in_direction(x, y, magnitude)
                     if util.check_image_on_screen(
-                        "./screenshots/chaos/bossBar.png", confidence=0.75
+                        "./image_references/chaos/bossBar.png", confidence=0.75
                     ):
                         await db.cast_skill(awakening_skill)
                 elif timeout == 5:
@@ -208,7 +208,7 @@ async def check_kurzan_finish() -> bool:
     Otherwise returns false.
     """
     match util.find_image_center(
-        "./screenshots/chaos/kurzanFrontClearOK.png",
+        "./image_references/chaos/kurzanFrontClearOK.png",
         confidence=0.65,
         region=(880, 820, 150, 70),
     ):

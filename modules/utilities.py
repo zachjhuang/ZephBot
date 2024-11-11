@@ -32,6 +32,7 @@ def random_sleep(min_duration, max_duration) -> None:
         return
     time.sleep(duration)
 
+
 async def rand_sleep(min_duration, max_duration) -> None:
     """Sleeps for a random amount of time (in ms) in the given range. Awaitable."""
     duration = random.randint(min_duration, max_duration) / 1000.0
@@ -87,7 +88,7 @@ async def find_and_click_image(
 ) -> None:
     """If image found on screen, click on center of image."""
     image_position = find_image_center(
-        f"./screenshots/{name}.png", region=region, confidence=confidence
+        f"./image_references/{name}.png", region=region, confidence=confidence
     )
     if image_position is not None:
         await left_click_at_position(image_position)

@@ -43,24 +43,22 @@ CHARACTER_SELECT_POS = [
 
 class BotManager:
     """
-    Manages a list of bots and switches between characters, 
+    Manages a list of bots and switches between characters,
     running each of the bots on each character.
     """
 
-    def __init__(
-        self, options
-    ) -> None:
+    def __init__(self, options) -> None:
         self.curr = 0
         self.roster = get_roster()
         self.config = get_config()
         self.running_bots: list[TaskBot] = []
-        if options['do_chaos']:
+        if options["do_chaos"]:
             self.running_bots.append(ChaosBot(self.roster, self.config))
-        if options['do_kurzan_front']:
+        if options["do_kurzan_front"]:
             self.running_bots.append(KurzanFrontBot(self.roster, self.config))
-        if options['do_unas']:
+        if options["do_unas"]:
             self.running_bots.append(UnaBot(self.roster, self.config))
-        if options['do_guild']:
+        if options["do_guild"]:
             self.running_bots.append(GuildBot(self.roster, self.config))
 
     def all_bots_done(self) -> bool:
@@ -77,7 +75,7 @@ class BotManager:
 
     async def run(self) -> None:
         """
-        Loop through the roster. 
+        Loop through the roster.
         On each character, run all available bots.
         Stop when all bots have no remaining tasks.
         """
@@ -140,9 +138,9 @@ class BotManager:
         for bot in self.running_bots:
             print(f"{bot.__class__.__name__}: {bot.remaining_tasks}")
         print("----------------------------")
-        print(f"switching to {index}")
+        print(f"switching to {self.roster[index]["name"]}")
         while not check_image_on_screen(
-            "./screenshots/menus/gameMenu.png", confidence=0.7
+            "./image_references/menus/gameMenu.png", confidence=0.7
         ):
             pydirectinput.press("esc")
             await rand_sleep(1000, 1100)
@@ -172,7 +170,7 @@ class BotManager:
             print("character already done, switching to next")
             await self.switch_to_char((index + 1) % len(self.roster))
         elif check_image_on_screen(
-            "./screenshots/alreadyConnected.png", confidence=0.85
+            "./image_references/alreadyConnected.png", confidence=0.85
         ):
             print("character already connected")
             pydirectinput.press("esc")
@@ -191,8 +189,8 @@ class BotManager:
 
     def check_and_update_status(self, index: int):
         """
-        Detect what tasks have been completed based on the character 
-        status on the ESC menu screen and update accordingly. 
+        Detect what tasks have been completed based on the character
+        status on the ESC menu screen and update accordingly.
 
         Args:
             index (int): Index of the character to update.
@@ -217,7 +215,7 @@ async def do_city_repair() -> None:
     With the character standing next to a repair NPC, repairs armor.
     """
     if check_image_on_screen(
-        "./screenshots/repair.png",
+        "./image_references/repair.png",
         grayscale=True,
         confidence=0.4,
         region=(1500, 134, 100, 100),
@@ -238,7 +236,7 @@ async def clear_notifs() -> None:
     Gets rid of any quest and/or level up notifications that appear below the center of the screen.
     """
     match find_image_center(
-        "./screenshots/quest.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
+        "./image_references/quest.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
     ):
         case x, y:
             print("clear quest notification")
@@ -248,7 +246,7 @@ async def clear_notifs() -> None:
             await rand_sleep(800, 900)
 
     match find_image_center(
-        "./screenshots/leveledup.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
+        "./image_references/leveledup.png", region=CLEAR_NOTIFS_REGION, confidence=0.8
     ):
         case x, y:
             print("clear level")
@@ -265,11 +263,11 @@ def check_unas_completed() -> int:
     Does not account for task limit increases.
 
     Returns:
-        int: The number of unas completed on the currently selected character. 0 if unas icon 
+        int: The number of unas completed on the currently selected character. 0 if unas icon
             not detected.
     """
     una_icon = find_image_center(
-        "./screenshots/unaIcon.png",
+        "./image_references/unaIcon.png",
         region=CHARACTER_STATUS_ICON_REGION,
         confidence=0.75,
     )
@@ -277,7 +275,7 @@ def check_unas_completed() -> int:
         x, y = una_icon
         for i in range(4):
             if check_image_on_screen(
-                f"./screenshots/{i}.png",
+                f"./image_references/{i}.png",
                 region=(x + 180, y - 10, 25, 21),
                 confidence=0.95,
             ):
@@ -292,28 +290,34 @@ def check_chaos_completed() -> int:
     When viewing character status in ESC menu, check how many chaos runs have been completed.
 
     Returns:
-        int: The number of chaos dungeons completed on the currently selected character. 
-            0 if chaos icon not detected. 
+        int: The number of chaos dungeons completed on the currently selected character.
+            0 if chaos icon not detected.
     """
     chaos_icon = find_image_center(
-        "./screenshots/chaosIcon.png",
+        "./image_references/chaosIcon.png",
         region=CHARACTER_STATUS_ICON_REGION,
         confidence=0.75,
     )
     if chaos_icon is not None:
         x, y = chaos_icon
         if check_image_on_screen(
-            "./screenshots/100.png", region=(x + 180, y - 10, 25, 21), confidence=0.75
+            "./image_references/100.png",
+            region=(x + 180, y - 10, 25, 21),
+            confidence=0.75,
         ):
             print("no chaos runs completed")
             return 0
         if check_image_on_screen(
-            "./screenshots/50.png", region=(x + 180, y - 10, 25, 21), confidence=0.75
+            "./image_references/50.png",
+            region=(x + 180, y - 10, 25, 21),
+            confidence=0.75,
         ):
             print("one chaos run completed")
             return 1
         if check_image_on_screen(
-            "./screenshots/0.png", region=(x + 180, y - 10, 25, 21), confidence=0.75
+            "./image_references/0.png",
+            region=(x + 180, y - 10, 25, 21),
+            confidence=0.75,
         ):
             print("both chaos runs completed")
             return 2
@@ -330,19 +334,23 @@ def check_kurzan_front_completed() -> int:
             0 if Kurzan Front icon not detected.
     """
     kurzan_front_icon = find_image_center(
-        "./screenshots/kurzanFrontIcon.png",
+        "./image_references/kurzanFrontIcon.png",
         region=CHARACTER_STATUS_ICON_REGION,
         confidence=0.65,
     )
     if kurzan_front_icon is not None:
         x, y = kurzan_front_icon
         if check_image_on_screen(
-            "./screenshots/100.png", region=(x + 180, y - 10, 25, 21), confidence=0.75
+            "./image_references/100.png",
+            region=(x + 180, y - 10, 25, 21),
+            confidence=0.75,
         ):
             print("kurzan front not completed")
             return 0
         if check_image_on_screen(
-            "./screenshots/0.png", region=(x + 180, y - 10, 25, 21), confidence=0.75
+            "./image_references/0.png",
+            region=(x + 180, y - 10, 25, 21),
+            confidence=0.75,
         ):
             print("kurzan front completed")
             return 1

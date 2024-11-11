@@ -164,7 +164,7 @@ class UnaBot(TaskBot):
         for _ in range(10):
             await self.spam_interact(1000)
             if check_image_on_screen(
-                "./screenshots/sageTowerCompleted.png",
+                "./image_references/sageTowerCompleted.png",
                 region=SAGE_TOWER_COMPLETED_REGION,
                 confidence=0.65,
             ):
@@ -178,7 +178,7 @@ class UnaBot(TaskBot):
         for _ in range(15):
             await self.spam_interact(1000)
             if check_image_on_screen(
-                "./screenshots/ghostStoryF5.png",
+                "./image_references/ghostStoryF5.png",
                 region=GHOST_STORY_F5_REGION,
                 confidence=0.85,
             ):
@@ -274,11 +274,15 @@ async def accept_dailies() -> None:
     await toggle_menu("unas")
     await wait_for_menu_load("unas")
     # switch to daily tab
-    if not check_image_on_screen("./screenshots/dailyTabActive.png", confidence=0.95):
+    if not check_image_on_screen(
+        "./image_references/dailyTabActive.png", confidence=0.95
+    ):
         await left_click_at_position((550, 255))
         await rand_sleep(500, 600)
     # toggle dropdown and swap to favorites
-    if not check_image_on_screen("./screenshots/addedToFavorites.png", confidence=0.95):
+    if not check_image_on_screen(
+        "./image_references/addedToFavorites.png", confidence=0.95
+    ):
         await left_click_at_position((632, 316))
         await rand_sleep(1000, 1100)
         await left_click_at_position((634, 337))
@@ -292,13 +296,15 @@ async def accept_dailies() -> None:
     await rand_sleep(500, 600)
 
     # click all accept buttons
-    # while check_image_on_screen("./screenshots/acceptUna.png", region=ACCEPT_UNAS_REGION, confidence=0.85):
+    # while check_image_on_screen("./image_references/acceptUna.png", region=ACCEPT_UNAS_REGION, confidence=0.85):
     #     await find_and_click_image("acceptUna", region=ACCEPT_UNAS_REGION, confidence=0.85)
     #     await rand_sleep(1700, 1800)
     try:
         accept_buttons = list(
             pyautogui.locateAllOnScreen(
-                "./screenshots/acceptUna.png", region=ACCEPT_UNAS_REGION, confidence=0.85
+                "./image_references/acceptUna.png",
+                region=ACCEPT_UNAS_REGION,
+                confidence=0.85,
             )
         )
         for region in accept_buttons:
@@ -334,12 +340,12 @@ async def go_to_bifrost(location: str) -> bool:
     """
     print(f"bifrost to: {location}")
     if not check_image_on_screen(
-        "./screenshots/menus/bifrostMenu.png", confidence=0.85
+        "./image_references/menus/bifrostMenu.png", confidence=0.85
     ):
         await toggle_menu("bifrost")
     await wait_for_menu_load("bifrost")
     match find_image_center(
-        f"./screenshots/bifrosts/{location}Bifrost.png", confidence=0.80
+        f"./image_references/bifrosts/{location}Bifrost.png", confidence=0.80
     ):
         case x, y:
             await left_click_at_position((x + 280, y - 25))
@@ -359,7 +365,7 @@ async def go_to_bifrost(location: str) -> bool:
     else:
         while True:
             match find_image_center(
-                "./screenshots/ok.png",
+                "./image_references/ok.png",
                 confidence=0.75,
                 region=SCREEN_CENTER_REGION,
             ):
@@ -377,7 +383,7 @@ async def go_to_bifrost(location: str) -> bool:
 def check_bifrost_on_cooldown() -> bool:
     """Return false if bifrost move confirmation costs silver."""
     silver_1k = find_image_center(
-        "./screenshots/silver1k.png",
+        "./image_references/silver1k.png",
         confidence=0.75,
         region=SCREEN_CENTER_REGION,
     )

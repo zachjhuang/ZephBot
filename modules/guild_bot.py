@@ -48,6 +48,7 @@ class GuildBot(TaskBot):
         await toggle_menu("guild")
         self.remaining_tasks[self.curr] = 0
 
+
 # pylint: disable=missing-function-docstring
 async def accept_checkin() -> None:
     await rand_sleep(500, 600)
@@ -69,7 +70,7 @@ async def support_research() -> None:
     )
     await rand_sleep(500, 600)
     if check_image_on_screen(
-        "./screenshots/canSupportResearch.png",
+        "./image_references/canSupportResearch.png",
         region=CAN_SUPPORT_RESEARCH_REGION,
         confidence=0.75,
     ):
@@ -81,7 +82,7 @@ async def support_research() -> None:
         await rand_sleep(500, 600)
         await left_click_at_position(RESEARCH_CONFIRM_POS)
     elif check_image_on_screen(
-        "./screenshots/alreadySupportedResearch.png",
+        "./image_references/alreadySupportedResearch.png",
         region=CAN_SUPPORT_RESEARCH_REGION,
         confidence=0.75,
     ):

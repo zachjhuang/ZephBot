@@ -204,9 +204,7 @@ class ChaosBot(DungeonBot):
                 if (floor == 1 or floor == 2) and self.minimap.check_portal():
                     await self.enter_portal()
                     return
-                print("moving")
                 await self.move_to_targets(floor)
-                print("moved")
 
                 if floor == 3:
                     await self.click_rift_core()
@@ -265,21 +263,21 @@ class ChaosBot(DungeonBot):
         """
         match floor:
             case 1:
-                x, y, move_duration = self.minimap.get_game_coords(
+                x, y, magnitude = self.minimap.get_game_coords(
                     target_found=self.minimap.check_mob()
                 )
-                await self.move_in_direction(x, y, move_duration)
+                await self.move_in_direction(x, y, magnitude)
             case 2:
-                x, y, move_duration = self.minimap.get_game_coords(
+                x, y, magnitude = self.minimap.get_game_coords(
                     target_found=(
                         self.minimap.check_boss()
                         or self.minimap.check_elite()
                         or self.minimap.check_mob()
                     )
                 )
-                await self.move_in_direction(x, y, move_duration)
+                await self.move_in_direction(x, y, magnitude)
             case 3:
-                x, y, move_duration = self.minimap.get_game_coords(
+                x, y, magnitude = self.minimap.get_game_coords(
                     target_found=(
                         self.minimap.check_rift_core()
                         or self.minimap.check_elite()
@@ -287,8 +285,8 @@ class ChaosBot(DungeonBot):
                     ),
                     pathfind=True,
                 )
-                await self.move_in_direction(x, y, move_duration)
-                new_x, new_y, new_move_duration = self.minimap.get_game_coords(
+                await self.move_in_direction(x, y, magnitude)
+                new_x, new_y, new_magnitude = self.minimap.get_game_coords(
                     target_found=(
                         self.minimap.check_rift_core()
                         or self.minimap.check_elite()
@@ -296,7 +294,7 @@ class ChaosBot(DungeonBot):
                     ),
                     pathfind=True,
                 )
-                if new_x == x and new_y == y and new_move_duration == move_duration:
+                if new_x == x and new_y == y and new_magnitude == magnitude:
                     await self.random_move()
 
     async def click_rift_core(self) -> None:
@@ -305,7 +303,7 @@ class ChaosBot(DungeonBot):
         """
         for i in [1, 2]:
             rift_core = find_image_center(
-                f"./screenshots/chaos/riftcore{i}.png",
+                f"./image_references/chaos/riftcore{i}.png",
                 confidence=0.6,
                 region=PORTAL_REGION,
             )
@@ -331,7 +329,7 @@ async def enter_chaos(ilvl: int) -> None:
     await wait_for_menu_load("content")
 
     element_pos = find_image_center(
-        "./screenshots/menus/chaosDungeonContentMenuElement.png", confidence=0.9
+        "./image_references/menus/chaosDungeonContentMenuElement.png", confidence=0.9
     )
     if element_pos is not None:
         x, y = element_pos
@@ -341,7 +339,7 @@ async def enter_chaos(ilvl: int) -> None:
     await rand_sleep(800, 900)
     await wait_for_menu_load("chaosDungeon")
     correct_chaos_dungeon = check_image_on_screen(
-        f"./screenshots/chaos/ilvls/{ilvl}.png",
+        f"./image_references/chaos/ilvls/{ilvl}.png",
         region=(1255, 380, 80, 50),
         confidence=0.95,
     )
@@ -370,7 +368,7 @@ async def select_chaos_dungeon(ilvl: int) -> None:
         ilvl: A valid item level entry requirement for a chaos dungeon.
     """
     chaos_menu_right_arrow = find_image_center(
-        "./screenshots/chaosMenuRightArrow.png", confidence=0.95
+        "./image_references/chaosMenuRightArrow.png", confidence=0.95
     )
     if chaos_menu_right_arrow is not None:
         x, y = chaos_menu_right_arrow
@@ -393,7 +391,9 @@ async def check_chaos_finish() -> bool:
         True if completion overlay detected, False otherwise.
     """
     match find_image_center(
-        "./screenshots/chaos/clearOk.png", confidence=0.75, region=(625, 779, 500, 155)
+        "./image_references/chaos/clearOk.png",
+        confidence=0.75,
+        region=(625, 779, 500, 155),
     ):
         case x, y:
             await left_click_at_position((x, y))
@@ -430,7 +430,7 @@ def check_boss_bar() -> bool:
         True if found, False otherwise.
     """
     return check_image_on_screen(
-        "./screenshots/chaos/bossBar.png",
+        "./image_references/chaos/bossBar.png",
         region=(406, 159, 1000, 200),
         confidence=0.8,
     )

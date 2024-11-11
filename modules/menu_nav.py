@@ -12,7 +12,7 @@ from modules.utilities import (
     find_and_click_image,
     find_image_center,
     rand_sleep,
-    get_config
+    get_config,
 )
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
@@ -34,17 +34,17 @@ async def restart_check() -> None:
 
     -   GFN inactive (rare case)
 
-    -   General catch-all where black bars from forcing 21:9 on GFN are not detected 
+    -   General catch-all where black bars from forcing 21:9 on GFN are not detected
         (i.e. GFN closed)
 
     """
     dc_popup = check_image_on_screen(
-        "./screenshots/dc.png",
+        "./image_references/dc.png",
         region=SCREEN_CENTER_REGION,
         confidence=0.9,
     )
     enter_server_button = check_image_on_screen(
-        "./screenshots/enterServer.png",
+        "./image_references/enterServer.png",
         region=(885, 801, 160, 55),
         confidence=0.9,
     )
@@ -57,7 +57,7 @@ async def restart_check() -> None:
     if get_config("GFN"):
         for error_type in ["sessionLimitReached", "updateMembership", "inactiveGFN"]:
             error_presence = check_image_on_screen(
-                f"./screenshots/GFN/{error_type}.png",
+                f"./image_references/GFN/{error_type}.png",
                 region=SCREEN_CENTER_REGION,
                 confidence=0.8,
             )
@@ -89,7 +89,7 @@ async def boot_gfn_session() -> None:
     """
     while True:
         match find_image_center(
-            "./screenshots/GFN/loaGFNplay.png",
+            "./image_references/GFN/loaGFNplay.png",
             confidence=0.8,
         ):
             case x, y:
@@ -98,7 +98,7 @@ async def boot_gfn_session() -> None:
                 await rand_sleep(40000, 42000)
                 break
         match find_image_center(
-            "./screenshots/GFN/loaGFN.png",
+            "./image_references/GFN/loaGFN.png",
             confidence=0.8,
         ):
             case x, y:
@@ -107,7 +107,7 @@ async def boot_gfn_session() -> None:
                 await rand_sleep(40000, 42000)
                 break
         match find_image_center(
-            "./screenshots/GFN/closeGFN.png",
+            "./image_references/GFN/closeGFN.png",
             confidence=0.75,
         ):
             case x, y:
@@ -126,17 +126,17 @@ async def boot_steam_session() -> None:
     while True:
         os.system("start steam://launch/1599340/dialog")
         await rand_sleep(60000, 60000)
-        match find_image_center("./screenshots/steamStop.png", confidence=0.75):
+        match find_image_center("./image_references/steamStop.png", confidence=0.75):
             case x, y:
                 print("clicking stop game on steam")
                 await left_click_at_position((x, y))
                 await rand_sleep(500, 600)
-        match find_image_center("./screenshots/steamConfirm.png", confidence=0.75):
+        match find_image_center("./image_references/steamConfirm.png", confidence=0.75):
             case x, y:
                 print("confirming stop game")
                 await left_click_at_position((x, y))
                 await rand_sleep(10000, 12000)
-        match find_image_center("./screenshots/steamPlay.png", confidence=0.75):
+        match find_image_center("./image_references/steamPlay.png", confidence=0.75):
             case x, y:
                 print("restarting Lost Ark game client...")
                 await left_click_at_position((x, y))
@@ -149,14 +149,14 @@ async def enter_server() -> None:
     """
     while True:
         if check_image_on_screen(
-            "./screenshots/channelDropdownArrow.png",
+            "./image_references/channelDropdownArrow.png",
             confidence=0.75,
             region=(1870, 133, 25, 30),
         ):
             break
 
         match find_image_center(
-            "./screenshots/enterServer.png",
+            "./image_references/enterServer.png",
             confidence=0.9,
             region=(885, 801, 160, 55),
         ):
@@ -177,7 +177,7 @@ async def enter_character() -> None:
     """
     while True:
         match find_image_center(
-            "./screenshots/enterCharacter.png",
+            "./image_references/enterCharacter.png",
             confidence=0.75,
             region=(745, 854, 400, 80),
         ):
@@ -233,8 +233,7 @@ async def wait_for_menu_load(menu: str) -> None:
     """
     timeout = 0
     while not check_image_on_screen(
-        f"./screenshots/menus/{menu}Menu.png",
-        confidence=0.85
+        f"./image_references/menus/{menu}Menu.png", confidence=0.85
     ):
         await rand_sleep(180, 220)
         timeout += 1
@@ -251,7 +250,7 @@ async def wait_overworld_load() -> None:
     while True:
         await restart_check()
         if check_image_on_screen(
-            "./screenshots/channelDropdownArrow.png",
+            "./image_references/channelDropdownArrow.png",
             region=(1870, 133, 25, 30),
             confidence=0.75,
         ):
@@ -260,9 +259,9 @@ async def wait_overworld_load() -> None:
         await rand_sleep(1000, 1100)
 
         if check_image_on_screen(
-            "./screenshots/inChaos.png", 
+            "./image_references/inChaos.png",
             region=(247, 146, 222, 50),
-            confidence=0.75
+            confidence=0.75,
         ):
             print("still in the last chaos run, quitting")
             await quit_dungeon()
@@ -274,13 +273,11 @@ async def quit_dungeon() -> None:
     Quit chaos dungeon after finishing a run.
     """
     print("quitting chaos")
-    await find_and_click_image("chaos/exit",
-                         region=CHAOS_LEAVE_MENU_REGION,
-                         confidence=0.7)
+    await find_and_click_image(
+        "chaos/exit", region=CHAOS_LEAVE_MENU_REGION, confidence=0.7
+    )
     await rand_sleep(800, 900)
-    await find_and_click_image("ok",
-                         region=SCREEN_CENTER_REGION,
-                         confidence=0.75)
+    await find_and_click_image("ok", region=SCREEN_CENTER_REGION, confidence=0.75)
     await rand_sleep(5000, 7000)
     await wait_overworld_load()
     return

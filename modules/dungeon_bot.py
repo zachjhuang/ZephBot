@@ -72,13 +72,13 @@ class DungeonBot(TaskBot):
         Checks if death menu on screen and clicks revive.
         """
         if check_image_on_screen(
-            "./screenshots/chaos/died.png", grayscale=True, confidence=0.8
+            "./image_references/chaos/died.png", grayscale=True, confidence=0.8
         ):
             print("died")
             self.death_count += 1
             await rand_sleep(5000, 5500)
             if check_image_on_screen(
-                "./screenshots/chaos/resReady.png", confidence=0.7
+                "./image_references/chaos/resReady.png", confidence=0.7
             ):
                 await left_click_at_position(INSTANT_RES_POS)
                 await rand_sleep(600, 800)
@@ -101,23 +101,35 @@ class DungeonBot(TaskBot):
         """
         Updates bot statistics and prints summary.
         """
-        print("-------------------------------------")
-        print(f"run completed in {clear_time}s")
         self.completed_count += 1
         self.total_time += clear_time
+        avg_time = self.total_time / self.completed_count
         self.fastest_clear = min(clear_time, self.fastest_clear)
         self.slowest_clear = max(clear_time, self.slowest_clear)
-        print("-------------------------------------")
-        print(f"total timeouts: {self.timeout_count}")
-        print(f"total deaths: {self.death_count}")
-        print(f"total low hp: {self.health_pot_count}")
-        print("-------------------------------------")
-        avg_time = self.total_time / self.completed_count
-        print(
-            f"average: {avg_time}, fastest: {
-                self.fastest_clear}, slowest: {self.slowest_clear}"
-        )
-        print("-------------------------------------")
+        print(f"""
+            -------------------------------------
+            run completed in {clear_time}s
+            -------------------------------------
+            total timeouts: {self.timeout_count}
+            total deaths: {self.death_count}
+            total low hp: {self.health_pot_count}
+            -------------------------------------
+            average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear}
+            -------------------------------------
+            """)
+
+        # print("-------------------------------------")
+        # print(f"run completed in {clear_time}s")
+        # print("-------------------------------------")
+        # print(f"total timeouts: {self.timeout_count}")
+        # print(f"total deaths: {self.death_count}")
+        # print(f"total low hp: {self.health_pot_count}")
+        # print("-------------------------------------")
+        # print(
+        #     f"average: {avg_time}, fastest: {
+        #         self.fastest_clear}, slowest: {self.slowest_clear}"
+        # )
+        # print("-------------------------------------")
 
     async def perform_class_specialty(
         self, char_class: str, i: int, skills: list[dict]
@@ -131,7 +143,7 @@ class DungeonBot(TaskBot):
                 pydirectinput.press(self.config["specialty2"])
             case "souleater":
                 soul_snatch = check_image_on_screen(
-                    "./screenshots/classSpecialties/soulSnatch.png",
+                    "./image_references/classSpecialties/soulSnatch.png",
                     region=CHARACTER_DEBUFFS_REGION,
                     confidence=0.85,
                 )
@@ -144,7 +156,7 @@ class DungeonBot(TaskBot):
                 #     random_sleep(300, 400)
             case "slayer":
                 slayer_specialty = check_image_on_screen(
-                    "./screenshots/classSpecialties/slayerSpecialty.png",
+                    "./image_references/classSpecialties/slayerSpecialty.png",
                     region=CHARACTER_SPECIALTY_REGION,
                     confidence=0.85,
                 )
@@ -153,7 +165,7 @@ class DungeonBot(TaskBot):
                     await rand_sleep(150, 160)
             case "deathblade":
                 deathblade_three_orbs = check_image_on_screen(
-                    "./screenshots/classSpecialties/deathTrance.png",
+                    "./image_references/classSpecialties/deathTrance.png",
                     region=CHARACTER_SPECIALTY_REGION,
                     confidence=0.80,
                 )
@@ -162,17 +174,17 @@ class DungeonBot(TaskBot):
                     await rand_sleep(150, 160)
             case "gunslinger":
                 pistol_stance = check_image_on_screen(
-                    "./screenshots/classSpecialties/pistolStance.png",
+                    "./image_references/classSpecialties/pistolStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
                 shotgun_stance = check_image_on_screen(
-                    "./screenshots/classSpecialties/shotgunStance.png",
+                    "./image_references/classSpecialties/shotgunStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
                 sniper_stance = check_image_on_screen(
-                    "./screenshots/classSpecialties/sniperStance.png",
+                    "./image_references/classSpecialties/sniperStance.png",
                     region=(930, 819, 58, 56),
                     confidence=0.75,
                 )
@@ -202,7 +214,7 @@ class DungeonBot(TaskBot):
                         await rand_sleep(150, 160)
             case "artist":
                 artist_orb = check_image_on_screen(
-                    "./screenshots/classSpecialties/artistOrb.png",
+                    "./image_references/classSpecialties/artistOrb.png",
                     region=CHARACTER_SPECIALTY_REGION,
                     confidence=0.85,
                 )
@@ -214,7 +226,7 @@ class DungeonBot(TaskBot):
                     pydirectinput.press(self.config["interact"])
             case "aeromancer":
                 aero_specialty = check_image_on_screen(
-                    "./screenshots/classSpecialties/aeroSpecialty.png",
+                    "./image_references/classSpecialties/aeroSpecialty.png",
                     region=CHARACTER_SPECIALTY_REGION,
                     confidence=0.95,
                 )
@@ -223,7 +235,7 @@ class DungeonBot(TaskBot):
                     pydirectinput.press(self.config["specialty1"])
             case "scrapper":
                 scrapper_specialty = check_image_on_screen(
-                    "./screenshots/classSpecialties/scrapperSpecialty.png",
+                    "./image_references/classSpecialties/scrapperSpecialty.png",
                     region=CHARACTER_SPECIALTY_REGION,
                     confidence=0.85,
                 )
@@ -232,7 +244,7 @@ class DungeonBot(TaskBot):
                     pydirectinput.press(self.config["specialty1"])
             case "bard":
                 courage_buff = check_image_on_screen(
-                    "./screenshots/classSpecialties/bardCourage120.png",
+                    "./image_references/classSpecialties/bardCourage120.png",
                     region=CHARACTER_BUFFS_REGION,
                     confidence=0.75,
                 )
@@ -303,7 +315,7 @@ async def do_aura_repair(forced: bool) -> None:
     Repair through pet menu if forced or yellow/red armor icon detected.
     """
     if forced or check_image_on_screen(
-        "./screenshots/repair.png",
+        "./image_references/repair.png",
         grayscale=True,
         confidence=0.4,
         region=DAMAGED_ARMOR_REGION,
@@ -341,7 +353,7 @@ async def wait_dungeon_load() -> None:
             await rand_sleep(10000, 15000)
             return
         leave_button = check_image_on_screen(
-            "./screenshots/chaos/exit.png",
+            "./image_references/chaos/exit.png",
             grayscale=True,
             confidence=0.7,
             region=LEAVE_MENU_REGION,
