@@ -15,7 +15,7 @@ def setup_examples_page() -> None:
             ui.tab("Writer's Life: Fan Meeting")
             ui.tab("Birth of a Ghost Story")
 
-    with ui.tab_panels(tabs).classes("w-full"):
+    with ui.tab_panels(tabs, value="Bifrost Menu").classes("w-full"):
         with ui.tab_panel("Bifrost Menu"):
             bifrost_menu()
         with ui.tab_panel("Special Delivery (Lopang)"):
@@ -32,7 +32,9 @@ def setup_examples_page() -> None:
                 "Set the 'hesteraGarden' bifrost in the interact circle, and set emote keybind in CONFIG tab."
             )
         with ui.tab_panel("Finding Valuable Resources"):
-            ui.label("Set the 'sageTower' bifrost between the two interact points here.")
+            ui.label(
+                "Set the 'sageTower' bifrost between the two interact points here."
+            )
             ui.image("./una_examples/sageTowerUna_ex.png").classes("w-96")
         with ui.tab_panel("Preserve the ancient relic"):
             ui.label(
