@@ -2,7 +2,6 @@
 # https://github.com/zauberzeug/nicegui/discussions/1663
 
 import asyncio
-import os
 import sys
 from io import StringIO
 from logging import StreamHandler, getLogger
@@ -15,24 +14,29 @@ import modules.start as start
 logger = getLogger(__name__)
 logger.setLevel("DEBUG")
 
-options = {
+bot_options = {
     "do_chaos": False,
     "do_kurzan_front": False,
     "do_unas": False,
     "do_guild": False,
 }
 
+start_options = {"running": False, "delay_duration": 0, "quit_on_finish": False}
 script_button = {"not running": True}
 
 delay = {"duration": 0}
 
 
-def toggle(x, v):
-    x["not running"] = v
+def toggle(d, k, v):
+    d[k] = v
 
 
 async def controller():
-    script_task = asyncio.create_task(start.start_script(options=options))
+    script_task = asyncio.create_task(
+        start.start_script(
+            options=bot_options, quit_on_finish=start_options["quit_on_finish"]
+        )
+    )
     keyboard.add_hotkey("ctrl+page down", script_task.cancel)
     while True:
         try:
@@ -46,10 +50,10 @@ async def controller():
 async def start_script():
     """Called after button click"""
     while True:
-        if not script_button["not running"]:
-            await asyncio.sleep(delay["duration"])
+        if start_options["running"]:
+            await asyncio.sleep(start_options["delay_duration"])
             await controller()
-            script_button["not running"] = True
+            start_options["running"] = False
         await asyncio.sleep(1)
 
 
@@ -76,17 +80,18 @@ async def start_stream(log):
 def run_page():
     with ui.row(wrap=False).classes("w-full"):
         with ui.column().classes("w-1/6"):
-            ui.switch("Chaos").bind_value(options, "do_chaos")
-            ui.switch("Unas").bind_value(options, "do_unas")
-            ui.switch("Kurzan Front (WIP)").bind_value(options, "do_kurzan_front")
-            ui.switch("Guild").bind_value(options, "do_guild")
+            ui.switch("Chaos").bind_value(bot_options, "do_chaos")
+            ui.switch("Unas").bind_value(bot_options, "do_unas")
+            ui.switch("Kurzan Front (WIP)").bind_value(bot_options, "do_kurzan_front")
+            ui.switch("Guild").bind_value(bot_options, "do_guild")
             ui.button(
-                "Start script", on_click=lambda: toggle(script_button, False)
-            ).bind_enabled(script_button, "not running")
+                "Start script", on_click=lambda: toggle(start_options, "running", True)
+            ).bind_enabled_from(start_options, "running", backward=lambda x: not x)
             ui.label("Delay")
             ui.slider(min=0, max=18000, step=100, value=0).bind_value(
-                delay, "duration"
+                start_options, "delay_duration"
             ).props("label-always")
+            ui.checkbox("Quit on finish").bind_value(start_options, "quit_on_finish")
         log = ui.log().classes("w-full").style("height: 500px")
     app.on_startup(start_stream(log))
     app.on_startup(start_script())

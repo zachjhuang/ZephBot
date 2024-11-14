@@ -6,15 +6,14 @@ import math
 import pyautogui
 import pydirectinput
 
-from modules.menu_nav import restart_check, toggle_menu, wait_overworld_load
+from modules.menu_nav import restart_check, toggle_menu, quit_game
 from modules.task_bot import TaskBot
 from modules.utilities import (
     left_click_at_position,
     check_image_on_screen,
-    find_and_click_image,
     rand_sleep,
     TimeoutException,
-    get_skills,
+    get_skills
 )
 
 SCREEN_CENTER_X = 960
@@ -106,17 +105,19 @@ class DungeonBot(TaskBot):
         avg_time = self.total_time / self.completed_count
         self.fastest_clear = min(clear_time, self.fastest_clear)
         self.slowest_clear = max(clear_time, self.slowest_clear)
-        print(f"""
-            -------------------------------------
-            run completed in {clear_time}s
-            -------------------------------------
-            total timeouts: {self.timeout_count}
-            total deaths: {self.death_count}
-            total low hp: {self.health_pot_count}
-            -------------------------------------
-            average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear}
-            -------------------------------------
-            """)
+        print(
+            f"""
+-------------------------------------
+run completed in {clear_time}s
+-------------------------------------
+total timeouts: {self.timeout_count}
+total deaths: {self.death_count}
+total low hp: {self.health_pot_count}
+-------------------------------------
+average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear}
+-------------------------------------
+"""
+        )
 
         # print("-------------------------------------")
         # print(f"run completed in {clear_time}s")
@@ -341,16 +342,7 @@ async def wait_dungeon_load() -> None:
         await restart_check()
         curr_time = int(time.time())
         if curr_time - black_screen_start_time > 50:
-            print("alt f4")
-            pydirectinput.keyDown("alt")
-            await rand_sleep(350, 400)
-            pydirectinput.keyDown("f4")
-            await rand_sleep(350, 400)
-            pydirectinput.keyUp("alt")
-            await rand_sleep(350, 400)
-            pydirectinput.keyUp("f4")
-            await rand_sleep(350, 400)
-            await rand_sleep(10000, 15000)
+            await quit_game()
             return
         leave_button = check_image_on_screen(
             "./image_references/chaos/exit.png",
@@ -363,14 +355,14 @@ async def wait_dungeon_load() -> None:
         await rand_sleep(100, 150)
 
 
-async def quit_dungeon() -> None:
-    """
-    Quit dungeon after finishing a run.
-    """
-    print("quitting dungeon")
-    await find_and_click_image("chaos/exit", region=LEAVE_MENU_REGION, confidence=0.7)
-    await rand_sleep(800, 900)
-    await find_and_click_image("ok", region=CLICKABLE_REGION, confidence=0.75)
-    await rand_sleep(5000, 7000)
-    await wait_overworld_load()
-    return
+# async def quit_dungeon() -> None:
+#     """
+#     Quit dungeon after finishing a run.
+#     """
+#     print("quitting dungeon")
+#     await find_and_click_image("chaos/exit", region=LEAVE_MENU_REGION, confidence=0.7)
+#     await rand_sleep(800, 900)
+#     await find_and_click_image("ok", region=CLICKABLE_REGION, confidence=0.75)
+#     await rand_sleep(5000, 7000)
+#     await wait_overworld_load()
+#     return

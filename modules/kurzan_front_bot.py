@@ -172,7 +172,7 @@ class KurzanFrontBot(db.DungeonBot):
                     await self.random_move()
                     timeout = 0
                 else:
-                    print("target not found")
+                    # print("target not found")
                     x, y, magnitude = self.minimap.get_game_coords(
                         target_found=False, pathfind=True
                     )

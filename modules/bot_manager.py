@@ -22,6 +22,7 @@ SCREEN_CENTER_Y = 540
 
 SCREEN_CENTER_REGION = (685, 280, 600, 420)
 CLEAR_NOTIFS_REGION = (880, 720, 160, 40)
+DAMAGED_ARMOR_REGION = (1500, 134, 100, 100)
 
 MINIMAP_REGION = (1655, 170, 240, 200)
 MINIMAP_CENTER_X = 1772
@@ -218,7 +219,7 @@ async def do_city_repair() -> None:
         "./image_references/repair.png",
         grayscale=True,
         confidence=0.4,
-        region=(1500, 134, 100, 100),
+        region=DAMAGED_ARMOR_REGION,
     ):
         print("repairing")
         pydirectinput.press(get_config("interact"))
@@ -354,7 +355,7 @@ def check_kurzan_front_completed() -> int:
         ):
             print("kurzan front completed")
             return 1
-        print("cant detect aura")
+        print("can't detect aura")
     else:
         print("unable to detect kurzan front icon")
     return 0
