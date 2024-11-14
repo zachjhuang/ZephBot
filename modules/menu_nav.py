@@ -281,3 +281,17 @@ async def quit_dungeon() -> None:
     await rand_sleep(5000, 7000)
     await wait_overworld_load()
     return
+
+async def quit_game() -> None:
+    """
+    Quit the GFN instance with alt F4.
+    """
+    print("alt f4")
+    pydirectinput.keyDown("alt")
+    await rand_sleep(900, 1000)
+    pydirectinput.press("f4")
+    await rand_sleep(900, 1000)
+    pydirectinput.keyUp("alt")
+    await rand_sleep(900, 1000)
+    pydirectinput.press("enter")
+    await rand_sleep(5000, 6000)

@@ -4,7 +4,7 @@ import time
 import pydirectinput
 
 from modules.bot_manager import BotManager
-from modules.menu_nav import restart_game, wait_overworld_load
+from modules.menu_nav import restart_game, wait_overworld_load, quit_game
 from modules.utilities import (
     ResetException,
     RestartException,
@@ -17,7 +17,7 @@ SCREEN_CENTER_POS = (960, 540)
 pydirectinput.PAUSE = 0.05
 
 
-async def start_script(options: dict[str, bool]):
+async def start_script(options: dict[str, bool], quit_on_finish: bool = False):
 
     print(f"script starting at {time.asctime(time.localtime())}")
     start_time = time.time()
@@ -38,6 +38,8 @@ async def start_script(options: dict[str, bool]):
             h, rem = divmod(runtime, 3600)
             m, s = divmod(rem, 60)
             print(f"time elapsed: {int(h)}h {int(m)}m {int(s)}s")
+            if quit_on_finish:
+                await quit_game()
             break
         except asyncio.CancelledError:
             print("script aborted")

@@ -25,12 +25,14 @@ class TimeoutException(Exception):
     """Raised when time spent in a dungeon instance exceeds a limit"""
 
 
-def random_sleep(min_duration, max_duration) -> None:
-    """Sleeps for a random amount of time (in ms) in the given range."""
-    duration = random.randint(min_duration, max_duration) / 1000.0
-    if duration < 0:
-        return
-    time.sleep(duration)
+# DEPRECATED
+
+# def random_sleep(min_duration, max_duration) -> None:
+#     """Sleeps for a random amount of time (in ms) in the given range."""
+#     duration = random.randint(min_duration, max_duration) / 1000.0
+#     if duration < 0:
+#         return
+#     time.sleep(duration)
 
 
 async def rand_sleep(min_duration, max_duration) -> None:
@@ -49,7 +51,7 @@ async def left_click_at_position(position: tuple[int, int]) -> None:
         position: (x, y) coordinate
     """
     pydirectinput.moveTo(x=position[0], y=position[1])
-    pydirectinput.moveTo(x=position[0], y=position[1])
+    pydirectinput.moveTo(x=position[0], y=position[1]) # redundant call because buggy sometimes
     await rand_sleep(200, 250)
     pydirectinput.click(x=position[0], y=position[1], button="left")
 
