@@ -13,7 +13,7 @@ from modules.utilities import (
     check_image_on_screen,
     rand_sleep,
     TimeoutException,
-    get_skills
+    get_skills,
 )
 
 SCREEN_CENTER_X = 960
@@ -190,7 +190,7 @@ average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear
                     confidence=0.75,
                 )
                 # swap to shotgun
-                if i == 0 and not shotgun_stance:
+                if skills[i]["stance"] == "shotgun" and not shotgun_stance:
                     if pistol_stance:
                         pydirectinput.press(self.config["specialty1"])
                         await rand_sleep(150, 160)
@@ -198,7 +198,7 @@ average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear
                         pydirectinput.press(self.config["specialty2"])
                         await rand_sleep(150, 160)
                 # swap to sniper
-                elif i < 3 and not sniper_stance:
+                elif skills[i]["stance"] == "sniper" and not sniper_stance:
                     if pistol_stance:
                         pydirectinput.press(self.config["specialty2"])
                         await rand_sleep(150, 160)
@@ -206,7 +206,7 @@ average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear
                         pydirectinput.press(self.config["specialty1"])
                         await rand_sleep(150, 160)
                 # swap to pistol
-                elif not pistol_stance:
+                elif skills[i]["stance"] == "pistol" and not pistol_stance:
                     if shotgun_stance:
                         pydirectinput.press(self.config["specialty2"])
                         await rand_sleep(150, 160)

@@ -50,6 +50,8 @@ def add_skill():
         "castTime": None,
         "holdTime": None,
     }
+    if SkillManager.curr_class == "gunslinger":
+        new_entry["stance"] = "pistol"
     if skills.get(SkillManager.curr_class) is None:
         skills[SkillManager.curr_class] = []
     skills[SkillManager.curr_class].append(new_entry)
@@ -123,6 +125,17 @@ def skills_layout():
                     ).bind_value(
                         skills[SkillManager.curr_class][i], "castTime"
                     ).classes("w-11/12 m-auto").props("label-always")
+                    if SkillManager.curr_class == "gunslinger":
+                        ui.select(
+                            options={"pistol": "Pistol", "shotgun": "Shotgun", "sniper": "Sniper"},
+                            label="Stance",
+                            with_input=True,
+                        ).bind_value(
+                            skills[SkillManager.curr_class][i], "stance"
+                        ).classes(
+                            "w-11/12 m-auto"
+                        )
+                        
     else:
         ui.label(text="Skills for class not found. Click the + in the bottom left corner to add a skill.")
 

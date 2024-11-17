@@ -23,8 +23,8 @@ py -m pip install --upgrade pip
 ```
 ### 1. Clone repository
 ```
-git clone https://github.com/zachjhuang/chaos-script.git
-cd chaos-script
+git clone https://github.com/zachjhuang/ZephBot.git
+cd ZephBot
 ```
 - (Optional but recommended) Set up and activate a virtual environment
 ```
