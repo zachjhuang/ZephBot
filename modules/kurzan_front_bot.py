@@ -153,15 +153,14 @@ class KurzanFrontBot(db.DungeonBot):
                     new_x, new_y, new_magnitude = self.minimap.get_game_coords(
                         target_found=(
                             self.minimap.check_buff()
-                            or self.minimap.check_elite()
-                            or self.minimap.check_mob()
                         ),
                         pathfind=True,
                     )
                     if (
-                        0.9 * x < new_x < 1.1 * x
-                        and 0.9 * y < new_y < 1.1 * y
-                        and 0.9 * magnitude < new_magnitude < 1.1 * magnitude
+                        self.minimap.check_buff()
+                        and 0.95 * x < new_x < 1.05 * x
+                        and 0.95 * y < new_y < 1.05 * y
+                        and 0.95 * magnitude < new_magnitude < 1.05 * magnitude
                     ):
                         await self.random_move()
                     if util.check_image_on_screen(
