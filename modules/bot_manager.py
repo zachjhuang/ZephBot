@@ -309,19 +309,12 @@ def check_chaos_completed() -> int:
             print("no chaos runs completed")
             return 0
         if check_image_on_screen(
-            "./image_references/50.png",
-            region=(x + 180, y - 10, 25, 21),
-            confidence=0.75,
-        ):
-            print("one chaos run completed")
-            return 1
-        if check_image_on_screen(
             "./image_references/0.png",
             region=(x + 180, y - 10, 25, 21),
             confidence=0.75,
         ):
-            print("both chaos runs completed")
-            return 2
+            print("chaos run completed")
+            return 1
     print("unable to detect chaos")
     return 0
 
