@@ -242,7 +242,7 @@ async def clear_notifs() -> None:
         case x, y:
             print("clear quest notification")
             await left_click_at_position((x, y))
-            await rand_sleep(800, 900)
+            await rand_sleep(1800, 1900)
             pydirectinput.press("esc")
             await rand_sleep(800, 900)
 
@@ -252,7 +252,7 @@ async def clear_notifs() -> None:
         case x, y:
             print("clear level")
             await left_click_at_position((x, y))
-            await rand_sleep(800, 900)
+            await rand_sleep(1800, 900)
             pydirectinput.press("esc")
             await rand_sleep(800, 900)
 

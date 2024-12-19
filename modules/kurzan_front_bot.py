@@ -61,12 +61,12 @@ class KurzanFrontBot(db.DungeonBot):
         await util.rand_sleep(1500, 1600)
         try:
             await self.use_skills()
+            end_time = int(time.time())
+            self.update_print_metrics(end_time - self.run_start_time)
+            self.remaining_tasks[self.curr] = 0
+            await quit_dungeon()
         except util.TimeoutException:
             await quit_dungeon()
-        end_time = int(time.time())
-        self.update_print_metrics(end_time - self.run_start_time)
-        self.remaining_tasks[self.curr] = 0
-        await quit_dungeon()
 
     async def use_skills(self) -> None:
         """
@@ -175,7 +175,7 @@ class KurzanFrontBot(db.DungeonBot):
                     x, y, magnitude = self.minimap.get_game_coords(
                         target_found=False, pathfind=True
                     )
-                    await self.move_in_direction(x, y, magnitude)
+                    await self.move_in_direction(x, y, 1)
                     timeout += 1
                 await self.perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
