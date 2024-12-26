@@ -214,12 +214,12 @@ class ChaosBot(DungeonBot):
         Returns:
             True if on wrong floor, False otherwise.
         """
-        if floor == 1 and self.minimap.check_boss():
-            print("accidentally entered floor 2")
-            return True
-        elif floor == 2 and self.minimap.check_rift_core():
+        if floor == 2 and self.minimap.check_rift_core():
             print("accidentally entered floor 3")
             return True
+        # elif floor == 1 and self.minimap.check_boss():
+        #     print("accidentally entered floor 2")
+        #     return True
         return False
 
     async def enter_portal(self) -> None:
