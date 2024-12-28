@@ -272,7 +272,7 @@ average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear
             return
         for _ in range(math.floor(magnitude / 10) + 1):
             pydirectinput.click(x=x, y=y, button=self.config["move"])
-            await rand_sleep(100, 110)
+            await rand_sleep(200, 300)
 
     async def random_move(self) -> None:
         """

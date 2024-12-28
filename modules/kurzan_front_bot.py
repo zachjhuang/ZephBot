@@ -24,6 +24,7 @@ CHAOS_CLICKABLE_REGION = (460, 290, 1000, 500)
 CHAOS_LEAVE_MENU_REGION = (0, 154, 250, 300)
 
 ABIDOS_ICON_POS = {1640: (830, 670), 1660: (965, 590)}
+MAP_NAME_REGION = (1652, 145, 112, 11)
 
 
 class KurzanFrontBot(db.DungeonBot):
@@ -81,8 +82,15 @@ class KurzanFrontBot(db.DungeonBot):
         awakening_skill = [
             skill for skill in char_skills if skill["skillType"] == "awakening"
         ][0]
+        awakening_skill = [
+            skill for skill in char_skills if skill["skillType"] == "awakening"
+        ][0]
         # awakeningUsed = False
-        jumped = False
+        should_jump = util.check_image_on_screen(
+            "./image_references/jumpMapName.png",
+            region=MAP_NAME_REGION,
+            confidence=0.95,
+        )
         x, y, magnitude = self.minimap.get_game_coords()
         timeout = 0
         while True:
@@ -97,90 +105,88 @@ class KurzanFrontBot(db.DungeonBot):
                     return
                 await self.died_check()
                 self.health_check()
-                if (
-                    not jumped
-                    and check_50_percent_progress()
-                    and self.minimap.check_jump()
-                ):
-                    jump_timeout = 0
-                    while True:
-                        if (
-                            util.find_image_center(
-                                "./image_references/jumpArrow.png", confidence=0.75
-                            )
-                            is not None
-                        ):
-                            print("arrow found")
-                            await util.find_and_click_image(
-                                "jumpArrow", confidence=0.75
-                            )
-                            await util.rand_sleep(1000, 1100)
 
-                        if util.check_image_on_screen(
-                            "./image_references/chaos/jump.png",
-                            confidence=0.75,
-                        ):
-                            await util.left_click_at_position(SCREEN_CENTER_POS)
-
-                            pydirectinput.press(self.config["interact"])
-                            await util.rand_sleep(300, 350)
-                            pydirectinput.press(self.config["interact"])
-                            print("jumped")
-                            jumped = True
-                            self.minimap.targets = []
-                            break
-                        x, y, magnitude = self.minimap.get_game_coords(
-                            target_found=self.minimap.check_jump(), pathfind=True
-                        )
-                        await self.move_in_direction(x, y, magnitude)
-                        await util.rand_sleep(100, 150)
-                        await util.left_click_at_position(SCREEN_CENTER_POS)
-                        jump_timeout += 1
-                        if jump_timeout == 10:
-                            await self.random_move()
-                            await util.rand_sleep(400, 500)
-                            break
-
-                elif (
+                # try perform jump if needed
+                if should_jump and check_50_percent_progress():
+                    await self.jump()
+                    should_jump = False
+                    
+                # update minimap target
+                target_found = (
                     self.minimap.check_buff()
                     or self.minimap.check_boss()
                     or self.minimap.check_elite()
+                )
+                
+                # move in target direction
+                x, y, magnitude = self.minimap.get_game_coords(
+                    target_found=target_found,
+                    pathfind=True,
+                )
+                await self.move_in_direction(x, y, magnitude)
+                
+                if self.minimap.check_buff():
+                    while True:
+                        new_x, new_y, new_magnitude = self.minimap.get_game_coords(
+                            target_found=self.minimap.check_buff(),
+                            pathfind=True,
+                        )
+                        if new_x == x and new_y == y and new_magnitude == magnitude:
+                            await self.random_move()
+                        else:
+                            break
+                    
+
+                # cast awakening for bosses
+                if util.check_image_on_screen(
+                    "./image_references/chaos/bossBar.png", confidence=0.75
                 ):
-                    x, y, magnitude = self.minimap.get_game_coords(
-                        target_found=True, pathfind=True
-                    )
-                    await self.move_in_direction(x, y, magnitude)
-                    new_x, new_y, new_magnitude = self.minimap.get_game_coords(
-                        target_found=(
-                            self.minimap.check_buff()
-                        ),
-                        pathfind=True,
-                    )
-                    if (
-                        self.minimap.check_buff()
-                        and 0.95 * x < new_x < 1.05 * x
-                        and 0.95 * y < new_y < 1.05 * y
-                        and 0.95 * magnitude < new_magnitude < 1.05 * magnitude
-                    ):
-                        await self.random_move()
-                    if util.check_image_on_screen(
-                        "./image_references/chaos/bossBar.png", confidence=0.75
-                    ):
-                        await db.cast_skill(awakening_skill)
-                elif timeout == 5:
+                    await db.cast_skill(awakening_skill)
+                
+                # handle no target timeout
+                if not target_found:
+                    timeout += 1
+                if timeout == 5:
                     await self.random_move()
                     timeout = 0
-                else:
-                    # print("target not found")
-                    x, y, magnitude = self.minimap.get_game_coords(
-                        target_found=False, pathfind=True
-                    )
-                    await self.move_in_direction(x, y, magnitude)
-                    timeout += 1
+                    
                 await self.perform_class_specialty(
                     self.roster[self.curr]["class"], i, normal_skills
                 )
                 await db.cast_skill(skill)
+
+    async def jump(self):
+        timeout = 0
+        while True:
+            if util.check_image_on_screen(
+                "./image_references/jumpArrow.png", confidence=0.75
+            ):
+                print("arrow found")
+                await util.find_and_click_image("jumpArrow", confidence=0.75)
+                await util.rand_sleep(1000, 1100)
+
+            if util.check_image_on_screen(
+                "./image_references/chaos/jump.png",
+                confidence=0.75,
+            ):
+                await util.left_click_at_position(SCREEN_CENTER_POS)
+
+                pydirectinput.press(self.config["interact"])
+                await util.rand_sleep(300, 350)
+                pydirectinput.press(self.config["interact"])
+                print("jumped")
+                self.minimap.targets = []
+                break
+            x, y, magnitude = self.minimap.get_game_coords(
+                target_found=self.minimap.check_jump(), pathfind=True
+            )
+            await self.move_in_direction(x, y, magnitude)
+            await util.rand_sleep(100, 150)
+            await util.left_click_at_position(SCREEN_CENTER_POS)
+            timeout += 1
+            if timeout % 4 == 0:
+                await self.random_move()
+                await util.rand_sleep(400, 500)
 
 
 def check_50_percent_progress() -> bool:
@@ -193,7 +199,7 @@ def check_50_percent_progress() -> bool:
         bool: True if progress is around 50%, False otherwise.
     """
     im = pyautogui.screenshot()
-    r, _g, _b = im.getpixel((89, 292))
+    r, _g, _b = im.getpixel((89, 294))
     return r > 130
 
 
