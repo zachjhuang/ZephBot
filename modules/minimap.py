@@ -295,26 +295,15 @@ class Minimap:
             `True` if found, `False` otherwise.
         """
         match find_image_center(
-            "./image_references/chaos/jumpIconForward.png",
+            "./image_references/jump.png",
             region=MINIMAP_REGION,
-            confidence=0.85,
+            confidence=0.65,
         ):
             case x, y:
-                x = x - MINIMAP_CENTER_X - 7
-                y = y - MINIMAP_CENTER_Y + 7
+                x = x - MINIMAP_CENTER_X - 16
+                y = y - MINIMAP_CENTER_Y + 16
                 self.targets.append((x, y))
-                print("forward jump icon")
-                return True
-        match find_image_center(
-            "./image_references/chaos/jumpIconBack.png",
-            region=MINIMAP_REGION,
-            confidence=0.85,
-        ):
-            case x, y:
-                x = x - MINIMAP_CENTER_X - 27
-                y = y - MINIMAP_CENTER_Y + 27
-                self.targets.append((x, y))
-                print("back jump icon")
+                print("jump icons detected")
                 return True
         return False
 

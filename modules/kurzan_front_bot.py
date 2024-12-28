@@ -91,6 +91,8 @@ class KurzanFrontBot(db.DungeonBot):
             region=MAP_NAME_REGION,
             confidence=0.95,
         )
+        if should_jump:
+            print("jump mat detected")
         x, y, magnitude = self.minimap.get_game_coords()
         timeout = 0
         while True:
