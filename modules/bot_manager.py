@@ -242,7 +242,7 @@ async def clear_notifs() -> None:
         case x, y:
             print("clear quest notification")
             await left_click_at_position((x, y))
-            await rand_sleep(800, 900)
+            await rand_sleep(1800, 1900)
             pydirectinput.press("esc")
             await rand_sleep(800, 900)
 
@@ -252,7 +252,7 @@ async def clear_notifs() -> None:
         case x, y:
             print("clear level")
             await left_click_at_position((x, y))
-            await rand_sleep(800, 900)
+            await rand_sleep(1800, 900)
             pydirectinput.press("esc")
             await rand_sleep(800, 900)
 
@@ -309,19 +309,12 @@ def check_chaos_completed() -> int:
             print("no chaos runs completed")
             return 0
         if check_image_on_screen(
-            "./image_references/50.png",
-            region=(x + 180, y - 10, 25, 21),
-            confidence=0.75,
-        ):
-            print("one chaos run completed")
-            return 1
-        if check_image_on_screen(
             "./image_references/0.png",
             region=(x + 180, y - 10, 25, 21),
             confidence=0.75,
         ):
-            print("both chaos runs completed")
-            return 2
+            print("chaos run completed")
+            return 1
     print("unable to detect chaos")
     return 0
 

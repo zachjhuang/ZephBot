@@ -62,12 +62,12 @@ class KurzanFrontBot(db.DungeonBot):
         await util.rand_sleep(1500, 1600)
         try:
             await self.use_skills()
+            end_time = int(time.time())
+            self.update_print_metrics(end_time - self.run_start_time)
+            self.remaining_tasks[self.curr] = 0
+            await quit_dungeon()
         except util.TimeoutException:
             await quit_dungeon()
-        end_time = int(time.time())
-        self.update_print_metrics(end_time - self.run_start_time)
-        self.remaining_tasks[self.curr] = 0
-        await quit_dungeon()
 
     async def use_skills(self) -> None:
         """

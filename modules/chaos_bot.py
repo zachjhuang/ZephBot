@@ -83,9 +83,7 @@ class ChaosBot(DungeonBot):
         super().__init__(roster, config)
         self.remaining_tasks: list[int] = [
             (
-                2
-                if char["chaosItemLevel"] is not None and char["chaosItemLevel"] <= 1610
-                else 0
+                int(char["chaosItemLevel"] is not None and char["chaosItemLevel"] <= 1610)
             )
             for char in self.roster
         ]
@@ -99,25 +97,17 @@ class ChaosBot(DungeonBot):
 
         await enter_chaos(self.roster[self.curr]["chaosItemLevel"])
 
-        while self.remaining_tasks[self.curr] > 0:
-            try:
-                self.run_start_time = int(time.time())
-                await self.do_chaos_floor(1)
-                await self.do_chaos_floor(2)
-                await self.do_chaos_floor(3)
-                end_time = int(time.time())
-                self.update_print_metrics(end_time - self.run_start_time)
-            except TimeoutException:
-                await quit_dungeon()
-                await enter_chaos(self.roster[self.curr]["chaosItemLevel"])
+        try:
+            self.run_start_time = int(time.time())
+            await self.do_chaos_floor(1)
+            await self.do_chaos_floor(2)
+            await self.do_chaos_floor(3)
+            end_time = int(time.time())
+            self.update_print_metrics(end_time - self.run_start_time)
             self.remaining_tasks[self.curr] -= 1
-            if self.remaining_tasks[self.curr] > 0:
-                await reenter_chaos()
-            # if datetime.now().hour == get_config("resetHour") and not self.resetOnce:
-            #     self.resetOnce = True
-            #     quit_chaos()
-            #     raise ResetException
-        await quit_dungeon()
+            await quit_dungeon()
+        except TimeoutException:
+            await quit_dungeon()
 
     async def do_chaos_floor(self, floor: int) -> None:
         """
@@ -224,12 +214,12 @@ class ChaosBot(DungeonBot):
         Returns:
             True if on wrong floor, False otherwise.
         """
-        if floor == 1 and self.minimap.check_elite():
-            print("accidentally entered floor 2")
-            return True
-        elif floor == 2 and self.minimap.check_rift_core():
+        if floor == 2 and self.minimap.check_rift_core():
             print("accidentally entered floor 3")
             return True
+        # elif floor == 1 and self.minimap.check_boss():
+        #     print("accidentally entered floor 2")
+        #     return True
         return False
 
     async def enter_portal(self) -> None:
@@ -402,24 +392,25 @@ async def check_chaos_finish() -> bool:
         case _:
             return False
 
+# DEPRECATED
 
-async def reenter_chaos() -> None:
-    """
-    Start new chaos dungeon after finishing.
-    """
-    print("reentering chaos")
-    await rand_sleep(1200, 1400)
-    await find_and_click_image(
-        "chaos/selectLevel", region=LEAVE_MENU_REGION, confidence=0.7
-    )
-    await rand_sleep(800, 900)
-    await find_and_click_image("enterButton", confidence=0.75)
-    await rand_sleep(800, 900)
-    await find_and_click_image(
-        "acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75
-    )
-    await rand_sleep(2000, 3200)
-    return
+# async def reenter_chaos() -> None:
+#     """
+#     Start new chaos dungeon after finishing.
+#     """
+#     print("reentering chaos")
+#     await rand_sleep(1200, 1400)
+#     await find_and_click_image(
+#         "chaos/selectLevel", region=LEAVE_MENU_REGION, confidence=0.7
+#     )
+#     await rand_sleep(800, 900)
+#     await find_and_click_image("enterButton", confidence=0.75)
+#     await rand_sleep(800, 900)
+#     await find_and_click_image(
+#         "acceptButton", region=SCREEN_CENTER_REGION, confidence=0.75
+#     )
+#     await rand_sleep(2000, 3200)
+#     return
 
 
 def check_boss_bar() -> bool:
