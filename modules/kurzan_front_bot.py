@@ -168,7 +168,7 @@ class KurzanFrontBot(db.DungeonBot):
                 await util.rand_sleep(1000, 1100)
 
             if util.check_image_on_screen(
-                "./image_references/chaos/jump.png",
+                "./image_references/jumpInteract.png",
                 confidence=0.75,
             ):
                 await util.left_click_at_position(SCREEN_CENTER_POS)
