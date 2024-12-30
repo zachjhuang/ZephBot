@@ -143,11 +143,20 @@ average: {avg_time}, fastest: {self.fastest_clear}, slowest: {self.slowest_clear
                 pydirectinput.press(self.config["specialty1"])
                 pydirectinput.press(self.config["specialty2"])
             case "souleater":
-                soul_snatch = check_image_on_screen(
-                    "./image_references/classSpecialties/soulSnatch.png",
-                    region=CHARACTER_DEBUFFS_REGION,
-                    confidence=0.85,
+                soul_decapitation = check_image_on_screen(
+                    "./image_references/classSpecialties/soulDecapitation.png", 
+                    region=(946,881,29,31), 
+                    confidence=0.75
                 )
+                if soul_decapitation:
+                    pydirectinput.press(self.config["specialty1"])
+                    await rand_sleep(400, 500)
+                    return
+                # soul_snatch = check_image_on_screen(
+                #     "./image_references/classSpecialties/soulSnatch.png",
+                #     region=CHARACTER_DEBUFFS_REGION,
+                #     confidence=0.85,
+                # )
                 # if soul_snatch:
                 #     cast_skill(skills[0])
                 #     random_sleep(300, 400)
@@ -322,7 +331,7 @@ async def do_aura_repair(forced: bool) -> None:
         region=DAMAGED_ARMOR_REGION,
     ):
         await toggle_menu("pet")
-        await left_click_at_position((1142, 661))
+        await left_click_at_position((1142, 675))
         await rand_sleep(2500, 2600)
         await left_click_at_position((1054, 455))
         await rand_sleep(2500, 2600)
