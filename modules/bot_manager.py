@@ -57,8 +57,8 @@ class BotManager:
             self.running_bots.append(ChaosBot(self.roster, self.config))
         if options["do_kurzan_front"]:
             self.running_bots.append(KurzanFrontBot(self.roster, self.config))
-        if options["do_unas"]:
-            self.running_bots.append(UnaBot(self.roster, self.config))
+        # if options["do_unas"]:
+        #     self.running_bots.append(UnaBot(self.roster, self.config))
         if options["do_guild"]:
             self.running_bots.append(GuildBot(self.roster, self.config))
 
@@ -205,10 +205,10 @@ class BotManager:
                 bot.remaining_tasks[index] = max(
                     0, bot.remaining_tasks[index] - check_kurzan_front_completed()
                 )
-            if isinstance(bot, UnaBot):
-                bot.remaining_tasks[index] = max(
-                    0, bot.remaining_tasks[index] - check_unas_completed()
-                )
+            # if isinstance(bot, UnaBot):
+            #     bot.remaining_tasks[index] = max(
+            #         0, bot.remaining_tasks[index] - check_unas_completed()
+            #     )
 
 
 async def do_city_repair() -> None:
@@ -257,33 +257,33 @@ async def clear_notifs() -> None:
             await rand_sleep(800, 900)
 
 
-def check_unas_completed() -> int:
-    """
-    When viewing character status in ESC menu, check how many una tasks have been completed.
+# def check_unas_completed() -> int:
+#     """
+#     When viewing character status in ESC menu, check how many una tasks have been completed.
 
-    Does not account for task limit increases.
+#     Does not account for task limit increases.
 
-    Returns:
-        int: The number of unas completed on the currently selected character. 0 if unas icon
-            not detected.
-    """
-    una_icon = find_image_center(
-        "./image_references/unaIcon.png",
-        region=CHARACTER_STATUS_ICON_REGION,
-        confidence=0.75,
-    )
-    if una_icon is not None:
-        x, y = una_icon
-        for i in range(4):
-            if check_image_on_screen(
-                f"./image_references/{i}.png",
-                region=(x + 180, y - 10, 25, 21),
-                confidence=0.95,
-            ):
-                print(f"{3 - i} una(s) completed")
-                return 3 - i
-    print("unable to detect unas")
-    return 0
+#     Returns:
+#         int: The number of unas completed on the currently selected character. 0 if unas icon
+#             not detected.
+#     """
+#     una_icon = find_image_center(
+#         "./image_references/unaIcon.png",
+#         region=CHARACTER_STATUS_ICON_REGION,
+#         confidence=0.75,
+#     )
+#     if una_icon is not None:
+#         x, y = una_icon
+#         for i in range(4):
+#             if check_image_on_screen(
+#                 f"./image_references/{i}.png",
+#                 region=(x + 180, y - 10, 25, 21),
+#                 confidence=0.95,
+#             ):
+#                 print(f"{3 - i} una(s) completed")
+#                 return 3 - i
+#     print("unable to detect unas")
+#     return 0
 
 
 def check_chaos_completed() -> int:
