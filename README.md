@@ -5,9 +5,8 @@ Recommended to use with GeForce Now.
 Based on the repo by any-other-guy and the fork by kotooh.
 
 Features:
-* Daily x2 T3 chaos dungeon.
+* Daily T3 chaos dungeon.
 * Daily Kurzan Front (still experimental)
-* Daily unas (lopang, select leapstone and shard unas)
 * Daily guild check-in, silver donation, and research support
 
 ## Getting started (Please read)

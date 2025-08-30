@@ -17,7 +17,7 @@ logger.setLevel("DEBUG")
 bot_options = {
     "do_chaos": False,
     "do_kurzan_front": False,
-    "do_unas": False,
+    # "do_unas": False,
     "do_guild": False,
 }
 
@@ -81,7 +81,7 @@ def run_page():
     with ui.row(wrap=False).classes("w-full"):
         with ui.column().classes("w-1/6"):
             ui.switch("Chaos").bind_value(bot_options, "do_chaos")
-            ui.switch("Unas").bind_value(bot_options, "do_unas")
+            # ui.switch("Unas").bind_value(bot_options, "do_unas")
             ui.switch("Kurzan Front (WIP)").bind_value(bot_options, "do_kurzan_front")
             ui.switch("Guild").bind_value(bot_options, "do_guild")
             ui.button(

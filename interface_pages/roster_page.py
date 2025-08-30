@@ -56,17 +56,17 @@ DUNGEON_ITEM_LEVELS = [
     1100,
 ]
 
-UNA_TASK_NAMES = {
-    "lopang": "Special Delivery (Lopang)",
-    "mokomoko": "How to Succeed at Length",
-    "bleakNightFog": "Bleak Night Fog",
-    "hesteraGarden": "Examine the Brilliant Spring",
-    "sageTower": "Finding Valuable Resources",
-    "southKurzan": "Preserve the ancient relic",
-    "prehilia": "Befriend the Hiliaberry Thief!",
-    "ghostStory": "Birth of a Ghost Story",
-    "writersLife": "Writer's Life: Fan Meeting",
-}
+# UNA_TASK_NAMES = {
+#     "lopang": "Special Delivery (Lopang)",
+#     "mokomoko": "How to Succeed at Length",
+#     "bleakNightFog": "Bleak Night Fog",
+#     "hesteraGarden": "Examine the Brilliant Spring",
+#     "sageTower": "Finding Valuable Resources",
+#     "southKurzan": "Preserve the ancient relic",
+#     "prehilia": "Befriend the Hiliaberry Thief!",
+#     "ghostStory": "Birth of a Ghost Story",
+#     "writersLife": "Writer's Life: Fan Meeting",
+# }
 
 # pylint: disable=global-statement
 roster = get_roster()
@@ -144,9 +144,9 @@ def character_card(char: dict) -> None:
             with_input=True,
             clearable=True,
         ).bind_value(char, "chaosItemLevel").classes("w-11/12 m-auto")
-        ui.select(
-            options=UNA_TASK_NAMES, label="Unas", with_input=True, multiple=True
-        ).bind_value(char, "unas").classes("w-11/12 m-auto").props("use-chips")
+        # ui.select(
+        #     options=UNA_TASK_NAMES, label="Unas", with_input=True, multiple=True
+        # ).bind_value(char, "unas").classes("w-11/12 m-auto").props("use-chips")
         ui.switch(
             text="Guild Donation",
         ).bind_value(

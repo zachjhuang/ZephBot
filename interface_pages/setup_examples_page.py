@@ -1,5 +1,37 @@
 from nicegui import ui
 
+###
+
+
+
+
+
+
+
+
+
+
+
+
+
+# DEPRECATED
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###
 
 def setup_examples_page() -> None:
     with ui.scroll_area().classes("h-20 items-center"):
