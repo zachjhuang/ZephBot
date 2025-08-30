@@ -31,9 +31,13 @@ CLASS_NAMES = {
     "reaper": "Reaper",
     "shadowhunter": "Shadowhunter",
     "souleater": "Souleater",
+    "wildsoul": "Wildsoul",
+    "valkyrie": "Valkyrie",
 }
 
 DUNGEON_ITEM_LEVELS = [
+    1700,
+    1680,
     1660,
     1640,
     1610,

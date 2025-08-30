@@ -30,6 +30,8 @@ CLASS_NAMES = {
     "reaper": "Reaper",
     "shadowhunter": "Shadowhunter",
     "souleater": "Souleater",
+    "wildsoul": "Wildsoul",
+    "valkyrie": "Valkyrie",
 }
 
 
