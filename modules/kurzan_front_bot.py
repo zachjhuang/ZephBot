@@ -23,9 +23,14 @@ SCREEN_CENTER_REGION = (685, 280, 600, 420)
 CHAOS_CLICKABLE_REGION = (460, 290, 1000, 500)
 CHAOS_LEAVE_MENU_REGION = (0, 154, 250, 300)
 
-ABIDOS_ICON_POS = {1640: (830, 670), 1660: (965, 590)}
-MAP_NAME_REGION = (1652, 145, 112, 11)
+ABIDOS_ICON_POS = {
+    1640: (830, 670), 
+    1660: (965, 590),
+    1680: (1140, 440),
+    1700: (1362, 418)
+    }
 
+MAP_NAME_REGION = (1730, 130, 160, 90)
 
 class KurzanFrontBot(db.DungeonBot):
     """
@@ -216,7 +221,7 @@ async def enter_kurzan_front(ilvl: int) -> None:
     await wait_for_menu_load("kurzanFront")
     await util.rand_sleep(1200, 1300)
     await util.find_and_click_image(
-        "enterButton", region=(1300, 750, 210, 40), confidence=0.75
+        "enterButton", region=(1380, 750, 210, 50), confidence=0.75
     )
     await util.rand_sleep(1200, 1300)
     await util.find_and_click_image(
